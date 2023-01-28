@@ -2,20 +2,21 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Autonomous.TrajectoriySequences.TrajectorySequences;
 import org.firstinspires.ftc.teamcode.Subsystems.Lift;
 import org.firstinspires.ftc.teamcode.Subsystems.Servos;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
+import java.util.Objects;
+
 @TeleOp
 public class V1 extends LinearOpMode {
-
     boolean aFlag = false;
     boolean bFlag = false;
     boolean RBFlag = false;
@@ -32,6 +33,7 @@ public class V1 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        PhotonCore.enable();
         lift = new Lift(hardwareMap, telemetry);
         servos = new Servos(hardwareMap, telemetry);
         turret = new Turret(hardwareMap, "turret", telemetry);
@@ -53,7 +55,7 @@ public class V1 extends LinearOpMode {
             else if(gamepad1.dpad_down){
                 liftPos-=2;
             }
-            lift.extendTo((int)liftPos, 0.5);
+            lift.extendTo(liftPos, 0.5);
         }
 
         liftPos = 0;
@@ -118,20 +120,20 @@ public class V1 extends LinearOpMode {
 
             if(RB && !RBFlag){
                 RBFlag = true;
-                if(Servos.Gripper.gripperState == "OPEN"){
+                if(Objects.equals(Servos.Gripper.gripperState, "OPEN")){
                     Servos.Gripper.closeGripper();
                 }
-                else if(Servos.Gripper.gripperState == "CLOSED"){
+                else if(Objects.equals(Servos.Gripper.gripperState, "CLOSED")){
                     Servos.Gripper.openGripper();
                 }
             }
 
             if(LB && !LBFlag){
                 LBFlag = true;
-                if(Servos.Wrist.wristState == "GRIPPING"){
+                if(Objects.equals(Servos.Wrist.wristState, "GRIPPING")){
                     Servos.Wrist.goTop();
                 }
-                else if(Servos.Wrist.wristState == "TOP"){
+                else if(Objects.equals(Servos.Wrist.wristState, "TOP")){
                     Servos.Wrist.goGripping();
                 }
                 else{
@@ -192,7 +194,7 @@ public class V1 extends LinearOpMode {
 
     private void setTurret(){
         if(lift.getPosition()[0] < lift.SAFE_POSITION){
-
+//do nothing
         }
         else{
             turret.setDegree((int) (pos));
