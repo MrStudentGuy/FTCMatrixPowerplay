@@ -57,23 +57,39 @@ public class V1 extends LinearOpMode {
             }
             lift.extendTo(liftPos, 0.5);
         }
+        turret.setDegree(0);
 
         liftPos = 0;
 
 //        lift.reset();
-        turret.reset(
-
-        );
+//        turret.reset();
         setInitialPositions();
 
 
         while(opModeIsActive()){
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            Vector2d input = new Vector2d(-gamepad1.left_stick_y * 0.9, -gamepad1.left_stick_x * 0.9).rotated(-poseEstimate.getHeading());
+            double drivePowerThrottle, drivePowerTurn, drivePowerHeading;
 
-            drive.setWeightedDrivePower(new Pose2d(input.getX(), input.getY(), -gamepad1.right_stick_x * 0.5));
+            if(gamepad1.right_trigger > 0.3){       //Turn on slow mode
+                drivePowerThrottle = 0.3;
+                drivePowerTurn = 0.3;
+                drivePowerHeading = 0.2;
+            }
+            else{
+                drivePowerThrottle = 0.9;
+                drivePowerTurn = 0.9;
+                drivePowerHeading = 0.5;
+            }
+
+
+            //Field Oriented Drive
+            Pose2d poseEstimate = drive.getPoseEstimate();
+            Vector2d input = new Vector2d(-gamepad1.left_stick_y * drivePowerThrottle, -gamepad1.left_stick_x * drivePowerTurn).rotated(-poseEstimate.getHeading());
+
+            drive.setWeightedDrivePower(new Pose2d(input.getX(), input.getY(), -gamepad1.right_stick_x * drivePowerHeading));
             drive.update();
 
+
+            //UNCOMMENT FOLLOWING FOR ROBOT ORIENTED DRIVE
 //            drive.setWeightedDrivePower(
 //                    new Pose2d(
 //                            -gamepad1.left_stick_y * 0.4,
@@ -100,14 +116,36 @@ public class V1 extends LinearOpMode {
             boolean R3 = gamepad1.right_stick_button;
             boolean L3 = gamepad1.left_stick_button;
 
-//            if(gamepad1.right_trigger>0.8){
-//                drive.followTrajectorySequence(trajSeq);
-//            }
+            boolean UP2 = gamepad2.dpad_up;
+            boolean DOWN2 = gamepad2.dpad_down;
+            boolean LEFT2 = gamepad2.dpad_left;
+            boolean RIGHT2 = gamepad2.dpad_right;
+
+            boolean A2 = gamepad2.a;
+            boolean B2 = gamepad2.b;
+            boolean X2 = gamepad2.x;
+            boolean Y2 = gamepad2.y;
+
+
+            if(A2){
+                Servos.Wrist.goGripping();
+                lift.extendTo(lift.AUTO_POSITION[4], 0.8);
+            }   else if(B2){
+                Servos.Wrist.goGripping();
+                lift.extendTo(lift.AUTO_POSITION[3], 0.8);
+            }   else if(Y2){
+                Servos.Wrist.goGripping();
+                lift.extendTo(lift.AUTO_POSITION[2], 0.8);
+            }   else if(X2){
+                Servos.Wrist.goGripping();
+                lift.extendTo(lift.AUTO_POSITION[1], 0.8);
+            }
+
             if (UP) {
                 Servos.Wrist.goTop();
                 lift.extendToHighPole();
             } else if (RIGHT) {
-                Servos.Wrist.goTop();
+                Servos.Wrist.goGripping();
                 lift.extendToGrippingPosition();
             } else if (DOWN) {
                 Servos.Wrist.goTop();
@@ -149,20 +187,20 @@ public class V1 extends LinearOpMode {
                 LBFlag = false;
             }
 
-            if (A && !aFlag) {
+            if ((A || LEFT2) && !aFlag) {
                 aFlag = true;
                 pos += 45;
                 setTurret();
 
-            } else if (!A) {
+            } else if (!A && !LEFT2) {
                 aFlag = false;
             }
 
-            if (B && !bFlag) {
+            if ((B || RIGHT2) && !bFlag) {
                 bFlag = true;
                 pos  -=45;
                 setTurret();
-            } else if (!B) {
+            } else if (!B && !RIGHT2) {
                 bFlag = false;
             }
 
@@ -184,7 +222,6 @@ public class V1 extends LinearOpMode {
 
     private void setInitialPositions(){
         lift.extendTo(0, 0.5);
-//        lift.extendTo(0);
         Servos.Gripper.closeGripper();
         sleep(30);
         Servos.Wrist.goInit();
