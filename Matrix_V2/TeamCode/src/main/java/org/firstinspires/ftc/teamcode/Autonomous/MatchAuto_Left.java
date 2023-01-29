@@ -295,146 +295,99 @@ public class MatchAuto_Left extends LinearOpMode {
         Servos.Wrist.goTop();
         drive.followTrajectorySequence(startToCenter);
         drive.followTrajectorySequence(pickCone1);
-        double pos = 0.15;
-        ElapsedTime timer = new ElapsedTime();
-        timer.reset();
-        while(timer.milliseconds() < 4000 && opModeIsActive()) {
-            telemetry.addData("Distance: ", Sensors.GripperSensor.getDistanceMM());
-            telemetry.update();
-            Servos.Slider.moveSlider(pos);
-            if (Sensors.GripperSensor.getDistanceMM() > 22) {
-                pos += 0.005;
+        if(AutoTime.seconds() > 25){
+
+        }
+        else {
+            double pos = 0.15;
+            ElapsedTime timer = new ElapsedTime();
+            timer.reset();
+            while (timer.milliseconds() < 4000 && opModeIsActive() && AutoTime.seconds() < 25) {
+                telemetry.addData("Distance: ", Sensors.GripperSensor.getDistanceMM());
+                telemetry.update();
+                Servos.Slider.moveSlider(pos);
+                if (Sensors.GripperSensor.getDistanceMM() > 22) {
+                    pos += 0.005;
 
 //            drive.setWeightedDrivePower(-0.1);
+                } else if (Sensors.GripperSensor.getDistanceMM() < 21.6) {
+                    pos -= 0.001;
+                } else {
+                    break;
+                }
             }
-            else if(Sensors.GripperSensor.getDistanceMM() < 21.6){
-                pos-= 0.001;
-            }
-            else{
-                break;
-            }
-        }
-        Servos.Gripper.closeGripper();
-        drive.followTrajectorySequence(dropCone);
-
-        drive.followTrajectorySequence(pickCone2);
-        pos = 0.15;
-        timer.reset();
-        while(timer.milliseconds() < 4000 && opModeIsActive()) {
-            telemetry.addData("Distance: ", Sensors.GripperSensor.getDistanceMM());
-            telemetry.update();
-            Servos.Slider.moveSlider(pos);
-            if (Sensors.GripperSensor.getDistanceMM() > 22) {
-                pos += 0.005;
-
-//            drive.setWeightedDrivePower(-0.1);
-            }
-            else if(Sensors.GripperSensor.getDistanceMM() < 21.6){
-                pos-= 0.001;
-            }
-            else{
-                break;
-            }
-        }
-        Servos.Gripper.closeGripper();
-        drive.followTrajectorySequence(dropCone);
-
-
-
-
-        drive.followTrajectorySequence(pickCone3);
-        pos = 0.15;
-        timer.reset();
-        while(timer.milliseconds() < 4000) {
-            telemetry.addData("Distance: ", Sensors.GripperSensor.getDistanceMM());
-            telemetry.update();
-            Servos.Slider.moveSlider(pos);
-            if (Sensors.GripperSensor.getDistanceMM() > 22) {
-                pos += 0.005;
-
-//            drive.setWeightedDrivePower(-0.1);
-            }
-            else if(Sensors.GripperSensor.getDistanceMM() < 21.6){
-                pos-= 0.001;
-            }
-            else{
-                break;
-            }
-        }
-        Servos.Gripper.closeGripper();
-        drive.followTrajectorySequence(dropCone);
-
-
-
-
-
-
-
-        drive.followTrajectorySequence(pickCone4);
-        pos = 0.15;
-        timer.reset();
-        while(timer.milliseconds() < 4000) {
-            telemetry.addData("Distance: ", Sensors.GripperSensor.getDistanceMM());
-            telemetry.update();
-            Servos.Slider.moveSlider(pos);
-            if (Sensors.GripperSensor.getDistanceMM() > 22) {
-                pos += 0.005;
-
-//            drive.setWeightedDrivePower(-0.1);
-            }
-            else if(Sensors.GripperSensor.getDistanceMM() < 21.6){
-                pos-= 0.001;
-            }
-            else{
-                break;
-            }
-        }
-        Servos.Gripper.closeGripper();
-        drive.followTrajectorySequence(dropCone);
-
-
-
-
-
-
-
-
-
-        drive.followTrajectorySequence(pickCone5);
-        pos = 0.15;
-        timer.reset();
-        while(timer.milliseconds() < 4000) {
-            telemetry.addData("Distance: ", Sensors.GripperSensor.getDistanceMM());
-            telemetry.update();
-            Servos.Slider.moveSlider(pos);
-            if (Sensors.GripperSensor.getDistanceMM() > 22) {
-                pos += 0.005;
-
-//            drive.setWeightedDrivePower(-0.1);
-            }
-            else if(Sensors.GripperSensor.getDistanceMM() < 21.6){
-                pos-= 0.001;
-            }
-            else{
-                break;
-            }
-        }
-        Servos.Gripper.closeGripper();
-        drive.followTrajectorySequence(dropCone);
-        String ParkingZone = "None";
-//        if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE1]){
-//            ParkingZone = "1";
-//            drive.followTrajectorySequence(goToP1);
+            Servos.Gripper.closeGripper();
+            drive.followTrajectorySequence(dropCone);
 //
-//        }
-//        else if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE2]){
-//            ParkingZone = "2";
-//            drive.followTrajectorySequence(goToP2);
-//        }
-//        else if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE3]){
-//            ParkingZone = "3";
-//            drive.followTrajectorySequence(goToP3);
-//        }
+//            drive.followTrajectorySequence(pickCone2);
+//            pos = 0.15;
+//            timer.reset();0
+//            while (timer.milliseconds() < 4000 && opModeIsActive() && AutoTime.seconds() < 25) {
+//                telemetry.addData("Distance: ", Sensors.GripperSensor.getDistanceMM());
+//                telemetry.update();
+//                Servos.Slider.moveSlider(pos);
+//                if (Sensors.GripperSensor.getDistanceMM() > 22) {
+//                    pos += 0.005;
+//
+////            drive.setWeightedDrivePower(-0.1);
+//                } else if (Sensors.GripperSensor.getDistanceMM() < 21.6) {
+//                    pos -= 0.001;
+//                } else {
+//                    break;
+//                }
+//            }
+//            Servos.Gripper.closeGripper();
+//            drive.followTrajectorySequence(dropCone);
+//
+//            if(AutoTime.seconds() < 25) {
+//                drive.followTrajectorySequence(pickCone3);
+//            }
+//            pos = 0.15;
+//            timer.reset();
+//            while (timer.milliseconds() < 4000 && opModeIsActive() && AutoTime.seconds() < 25) {
+//                telemetry.addData("Distance: ", Sensors.GripperSensor.getDistanceMM());
+//                telemetry.update();
+//                Servos.Slider.moveSlider(pos);
+//                if (Sensors.GripperSensor.getDistanceMM() > 22) {
+//                    pos += 0.005;
+//
+////            drive.setWeightedDrivePower(-0.1);
+//                } else if (Sensors.GripperSensor.getDistanceMM() < 21.6) {
+//                    pos -= 0.001;
+//                } else {
+//                    break;
+//                }
+//            }
+//            if(AutoTime.seconds() < 25) {
+//                Servos.Gripper.closeGripper();
+//                drive.followTrajectorySequence(dropCone);
+//            }
+//            else{
+//                lift.extendToLowPole();
+//                Servos.Gripper.openGripper();
+//                turret.setDegree(0);
+//                Servos.Wrist.goGripping();
+//                Servos.Slider.moveInside();
+//            }
+        }
+            String ParkingZone = "3";
+
+        if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE1]){
+            ParkingZone = "1";
+            drive.followTrajectorySequence(goToP1);
+
+        }
+        else if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE2]){
+            ParkingZone = "2";
+            drive.followTrajectorySequence(goToP2);
+        }
+        else if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE3]){
+            ParkingZone = "3";
+            drive.followTrajectorySequence(goToP3);
+        }
+        else{
+            drive.followTrajectorySequence(goToP3);
+        }
 
         telemetry.addData("Parking Zone: ", ParkingZone);
         while(opModeIsActive()){

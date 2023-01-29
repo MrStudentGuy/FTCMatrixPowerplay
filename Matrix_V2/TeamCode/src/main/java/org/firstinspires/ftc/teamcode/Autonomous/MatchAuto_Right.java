@@ -36,6 +36,7 @@ public class MatchAuto_Right extends LinearOpMode {
     Turret turret = null;
     Sensors sensors = null;
 
+    ElapsedTime AutoTime = new ElapsedTime();
     ElapsedTime timer1 = new ElapsedTime();
     final double MAX_SPEED_AUTO = DriveConstants.MAX_VEL;
 
@@ -83,9 +84,9 @@ public class MatchAuto_Right extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Pose2d PARKING1 = new Pose2d(-60, -12, Math.toRadians(180));
-        Pose2d PARKING2 = new Pose2d(-36, -13, Math.toRadians(180));
-        Pose2d PARKING3 = new Pose2d(-12, -12, Math.toRadians(180));
+        Pose2d PARKING1 = new Pose2d(-60 + 72, -12, Math.toRadians(180));
+        Pose2d PARKING2 = new Pose2d(-36 + 72, -13, Math.toRadians(180));
+        Pose2d PARKING3 = new Pose2d(-12 + 72, -12, Math.toRadians(180));
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -118,23 +119,99 @@ public class MatchAuto_Right extends LinearOpMode {
         setInitialPositions();
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, telemetry);
-        Pose2d startPose = new Pose2d(-42.75, -63, Math.toRadians(90));
-        Pose2d startPoseOverall = new Pose2d(-41.5, -63, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(41.5, -67.75, Math.toRadians(90));
+        Pose2d startPoseOverall = new Pose2d(41.5, -67.75, Math.toRadians(90));
         drive.setPoseEstimate(startPoseOverall);
 
-        TrajectorySequence startToCenter = drive.trajectorySequenceBuilder(startPose)
-                .addTemporalMarker(()->Servos.Wrist.goTop())
-                .addTemporalMarker(()->lift.extendToLowPole())
-                .lineToConstantHeading(new Vector2d(-36, -63))
-                .UNSTABLE_addTemporalMarkerOffset(1, ()->turret.setDegree(45))
-                .lineToConstantHeading(new Vector2d(-36, -12))
+        TrajectorySequence startToCenter  = drive.trajectorySequenceBuilder(new Pose2d(41.50, -67.75, Math.toRadians(90.00)))
+                .splineTo(new Vector2d(35.77, -47.41), Math.toRadians(105.74))
+                .splineTo(new Vector2d(32, -13), Math.toRadians(90))
                 .UNSTABLE_addTemporalMarkerOffset(-1, ()->lift.extendToHighPole())
-                .addTemporalMarker(()->Servos.Slider.moveSlider(0.45))
-                .waitSeconds(1)
-                .addTemporalMarker(()->Servos.Wrist.goGripping())
-                .waitSeconds(0.8)
-                .addTemporalMarker(()->Servos.Gripper.openGripper())
+                .addTemporalMarker(()->turret.setDegree(45))
+                .waitSeconds(0.5)
+//                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.1))
+                .addTemporalMarker(()-> Servos.Wrist.goGripping())
+                .waitSeconds(0.4)
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
+                .waitSeconds(0.05)
+                .addTemporalMarker(()->turret.setDegree(0))
                 .build();
+
+
+        TrajectorySequence pickCone1 = drive.trajectorySequenceBuilder(startToCenter.end())
+                .addTemporalMarker(()->turret.setDegree(-90))
+                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4], 1))
+                .lineToConstantHeading(new Vector2d(39.77, -14))
+                .lineToConstantHeading(new Vector2d(55, -14.5))
+//                .splineTo(new Vector2d(-56.00, -12.00), Math.toRadians(180.00))
+                .build();
+
+
+
+        TrajectorySequence dropCone = drive.trajectorySequenceBuilder(pickCone1.end())
+//                .waitSeconds(0.1)
+//                .addTemporalMarker(()-> Servos.Gripper.closeGripper())
+                .waitSeconds(0.5)
+                .addTemporalMarker(()->lift.extendToLowPole())
+                .waitSeconds(0.3)
+                .addTemporalMarker(()->turret.setDegree(45))
+                .addTemporalMarker(()->lift.extendToHighPole())
+                .addTemporalMarker(()-> Servos.Wrist.goTop())
+                .lineToConstantHeading(new Vector2d(36, -14))
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.8))
+                .waitSeconds(1)
+
+                .addTemporalMarker(()-> Servos.Wrist.goGripping())
+                .waitSeconds(0.5)
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
+                .addTemporalMarker(()-> Servos.Slider.moveInside())
+                .build();
+
+        TrajectorySequence pickCone2 = drive.trajectorySequenceBuilder(dropCone.end())
+                .addTemporalMarker(()->turret.setDegree(-88))
+                .waitSeconds(1)
+                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[3], 1))
+                .lineToConstantHeading(new Vector2d(55, -14))
+//                .splineTo(new Vector2d(-56.00, -12.00), Math.toRadians(180.00))
+                .build();
+
+        TrajectorySequence pickCone3 = drive.trajectorySequenceBuilder(dropCone.end())
+                .addTemporalMarker(()->turret.setDegree(-88))
+                .waitSeconds(1)
+                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[2], 1))
+                .lineToConstantHeading(new Vector2d(55, -14))
+//                .splineTo(new Vector2d(-56.00, -12.00), Math.toRadians(180.00))
+                .build();
+
+        TrajectorySequence pickCone4 = drive.trajectorySequenceBuilder(dropCone.end())
+                .addTemporalMarker(()->turret.setDegree(-88))
+                .waitSeconds(1)
+                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[1], 1))
+                .lineToConstantHeading(new Vector2d(55, -11))
+//                .splineTo(new Vector2d(-56.00, -12.00), Math.toRadians(180.00))
+                .build();
+
+        TrajectorySequence pickCone5 = drive.trajectorySequenceBuilder(dropCone.end())
+                .addTemporalMarker(()->turret.setDegree(-90))
+                .waitSeconds(1)
+                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[0], 1))
+                .lineToConstantHeading(new Vector2d(55, -11))
+//                .splineTo(new Vector2d(-56.00, -12.00), Math.toRadians(180.00))
+                .build();
+//
+//        TrajectorySequence startToCenter = drive.trajectorySequenceBuilder(startPose)
+//                .addTemporalMarker(()->Servos.Wrist.goTop())
+//                .addTemporalMarker(()->lift.extendToLowPole())
+//                .lineToConstantHeading(new Vector2d(-36, -63))
+//                .UNSTABLE_addTemporalMarkerOffset(1, ()->turret.setDegree(-42))
+//                .lineToConstantHeading(new Vector2d(-36, -12))
+//                .UNSTABLE_addTemporalMarkerOffset(-1, ()->lift.extendToHighPole())
+//                .addTemporalMarker(()->Servos.Slider.moveSlider(0.5))
+//                .waitSeconds(1)
+//                .addTemporalMarker(()->Servos.Wrist.goGripping())
+//                .waitSeconds(0.8)
+//                .addTemporalMarker(()->Servos.Gripper.openGripper())
+//                .build();
 
 
         TrajectorySequence goToP1 = drive.trajectorySequenceBuilder((startToCenter.end()))
@@ -208,14 +285,93 @@ public class MatchAuto_Right extends LinearOpMode {
             sleep(20);
         }
 
+        AutoTime.reset();
         lift.reset();
         turret.reset();
 
-
-
+        Servos.Slider.moveInside();
+        lift.extendToLowPole();
+        sleep(50);
+        Servos.Wrist.goTop();
         drive.followTrajectorySequence(startToCenter);
+//        drive.followTrajectorySequence(pickCone1);
+//        if(AutoTime.seconds() > 25){
+//
+//        }
+//        else {
+//            double pos = 0.15;
+//            ElapsedTime timer = new ElapsedTime();
+//            timer.reset();
+//            while (timer.milliseconds() < 4000 && opModeIsActive() && AutoTime.seconds() < 25) {
+//                telemetry.addData("Distance: ", Sensors.GripperSensor.getDistanceMM());
+//                telemetry.update();
+//                Servos.Slider.moveSlider(pos);
+//                if (Sensors.GripperSensor.getDistanceMM() > 22) {
+//                    pos += 0.005;
+//
+////            drive.setWeightedDrivePower(-0.1);
+//                } else if (Sensors.GripperSensor.getDistanceMM() < 21.6) {
+//                    pos -= 0.001;
+//                } else {
+//                    break;
+//                }
+//            }
+//            Servos.Gripper.closeGripper();
+//            drive.followTrajectorySequence(dropCone);
+//
+//            drive.followTrajectorySequence(pickCone2);
+//            pos = 0.15;
+//            timer.reset();
+//            while (timer.milliseconds() < 4000 && opModeIsActive() && AutoTime.seconds() < 25) {
+//                telemetry.addData("Distance: ", Sensors.GripperSensor.getDistanceMM());
+//                telemetry.update();
+//                Servos.Slider.moveSlider(pos);
+//                if (Sensors.GripperSensor.getDistanceMM() > 22) {
+//                    pos += 0.005;
+//
+////            drive.setWeightedDrivePower(-0.1);
+//                } else if (Sensors.GripperSensor.getDistanceMM() < 21.6) {
+//                    pos -= 0.001;
+//                } else {
+//                    break;
+//                }
+//            }
+//            Servos.Gripper.closeGripper();
+//            drive.followTrajectorySequence(dropCone);
+//
+//            if(AutoTime.seconds() < 25) {
+//                drive.followTrajectorySequence(pickCone3);
+//            }
+//            pos = 0.15;
+//            timer.reset();
+//            while (timer.milliseconds() < 4000 && opModeIsActive() && AutoTime.seconds() < 25) {
+//                telemetry.addData("Distance: ", Sensors.GripperSensor.getDistanceMM());
+//                telemetry.update();
+//                Servos.Slider.moveSlider(pos);
+//                if (Sensors.GripperSensor.getDistanceMM() > 22) {
+//                    pos += 0.005;
+//
+////            drive.setWeightedDrivePower(-0.1);
+//                } else if (Sensors.GripperSensor.getDistanceMM() < 21.6) {
+//                    pos -= 0.001;
+//                } else {
+//                    break;
+//                }
+//            }
+//            if(AutoTime.seconds() < 25) {
+//                Servos.Gripper.closeGripper();
+//                drive.followTrajectorySequence(dropCone);
+//            }
+//            else{
+//                lift.extendToLowPole();
+//                Servos.Gripper.openGripper();
+//                turret.setDegree(0);
+//                Servos.Wrist.goGripping();
+//                Servos.Slider.moveInside();
+//            }
+//        }
+        String ParkingZone = "3";
 
-        String ParkingZone = "None";
         if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE1]){
             ParkingZone = "1";
             drive.followTrajectorySequence(goToP1);
@@ -229,9 +385,13 @@ public class MatchAuto_Right extends LinearOpMode {
             ParkingZone = "3";
             drive.followTrajectorySequence(goToP3);
         }
+        else{
+            drive.followTrajectorySequence(goToP3);
+        }
 
         telemetry.addData("Parking Zone: ", ParkingZone);
         while(opModeIsActive()){
+//            Servos.Slider.moveSlider(gamepad1.left_trigger);
             telemetry.addData("Parking Zone: ", ParkingZone);
 //            align(drive);
             Sensors.WallSensor.printDistance();
@@ -239,45 +399,45 @@ public class MatchAuto_Right extends LinearOpMode {
         }
     }
 
-    private void align(SampleMecanumDrive drive1){
-        timer1.reset();
-        while(timer1.milliseconds() < 1000) {
-            double power = wallSensorPID(Sensors.WallSensor.getDistanceCM(), 19);
-            Pose2d poseEstimate = drive1.getPoseEstimate();
-            double heading = Math.toDegrees(poseEstimate.getHeading());
-            double headingPower = gyroPID(heading, 180);
-
-            double distance = Sensors.PoleSensor.getDistanceCM();
-            double polePower = 0;
-
-            if (Math.abs(power) < 0.09) {
-                power = 0;
-            }
-
-            if (Math.abs(headingPower) < 0.09) {
-                headingPower = 0;
-            }
-
-            if (Math.abs(headingPower) == 0 && Math.abs(power) == 0) {
-                polePower = polePID(distance, 12.5);
-            } else {
-                polePower = 0;
-            }
-            drive1.setWeightedDrivePower(new Pose2d(power, polePower, -headingPower));
-
-            drive1.update();
-            telemetry.addData("Pole is at: ", distance + "CM");
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
-            telemetry.addData("heading normalized", heading);
+//    private void align(SampleMecanumDrive drive1){
+//        timer1.reset();
+//        while(timer1.milliseconds() < 1000) {
+//            double power = wallSensorPID(Sensors.WallSensor.getDistanceCM(), 19);
+//            Pose2d poseEstimate = drive1.getPoseEstimate();
+//            double heading = Math.toDegrees(poseEstimate.getHeading());
+//            double headingPower = gyroPID(heading, 180);
+//
+//            double distance = Sensors.PoleSensor.getDistanceCM();
+//            double polePower = 0;
+//
+//            if (Math.abs(power) < 0.09) {
+//                power = 0;
+//            }
+//
+//            if (Math.abs(headingPower) < 0.09) {
+//                headingPower = 0;
+//            }
+//
+//            if (Math.abs(headingPower) == 0 && Math.abs(power) == 0) {
+//                polePower = polePID(distance, 12.5);
+//            } else {
+//                polePower = 0;
+//            }
+//            drive1.setWeightedDrivePower(new Pose2d(power, polePower, -headingPower));
+//
+//            drive1.update();
+//            telemetry.addData("Pole is at: ", distance + "CM");
+//            telemetry.addData("x", poseEstimate.getX());
+//            telemetry.addData("y", poseEstimate.getY());
+//            telemetry.addData("heading", poseEstimate.getHeading());
+//            telemetry.addData("heading normalized", heading);
+////            telemetry.update();
+//
+//            Sensors.WallSensor.printDistance();
+////            telemetry.addData("Distance: ", Sensors.WallSensor.getDistanceCM());
 //            telemetry.update();
-
-            Sensors.WallSensor.printDistance();
-//            telemetry.addData("Distance: ", Sensors.WallSensor.getDistanceCM());
-            telemetry.update();
-        }
-    }
+//        }
+//    }
 
     private void setInitialPositions(){
         lift.extendTo(0, 1);
