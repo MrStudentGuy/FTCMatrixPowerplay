@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -11,7 +12,7 @@ public class Turret {
     private DcMotorEx motor;
     private final double GEAR_RATIO = 10.5 * 122.0/18.0;
     private final double CPR = 28;                //counts
-    private final double CountsPerDegree = CPR * GEAR_RATIO/360.0;
+    public final double CountsPerDegree = CPR * GEAR_RATIO/360.0;
 
 
 
@@ -31,7 +32,7 @@ public class Turret {
         motor.setPower(0.3);
     }
     public void set(double power){
-        power = power /100;
+        power = Range.clip(power, -0.5, 0.5);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor.setPower(power);
     }

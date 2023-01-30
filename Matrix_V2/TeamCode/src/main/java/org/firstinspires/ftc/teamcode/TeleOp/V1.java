@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Lift;
+import org.firstinspires.ftc.teamcode.Subsystems.Sensors;
 import org.firstinspires.ftc.teamcode.Subsystems.Servos;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -16,7 +21,20 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import java.util.Objects;
 
 @TeleOp
+@Config
 public class V1 extends LinearOpMode {
+    public static double targetDegree = 0;
+    private final double GEAR_RATIO = 10.5 * 122.0/18.0;
+    private final double CPR = 28;                //counts
+    private final double ticks_in_degree = CPR * GEAR_RATIO/360.0;
+
+    private PIDController controller;
+    public static double Kp = 0.07;
+    public static double Ki = 0;
+    public static double Kd = 0.001;
+    public static double Kf = 0;
+
+
     boolean aFlag = false;
     boolean bFlag = false;
     boolean RBFlag = false;
@@ -27,6 +45,7 @@ public class V1 extends LinearOpMode {
     Lift lift = null;
     Servos servos = null;
     Turret turret = null;
+    Sensors sensors = null;
 
 
     private int liftPos = 0;
@@ -37,6 +56,10 @@ public class V1 extends LinearOpMode {
         lift = new Lift(hardwareMap, telemetry);
         servos = new Servos(hardwareMap, telemetry);
         turret = new Turret(hardwareMap, "turret", telemetry);
+        sensors = new Sensors(hardwareMap, telemetry);
+
+        controller = new PIDController(Kp, Ki, Kd);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, telemetry);
 
@@ -57,7 +80,7 @@ public class V1 extends LinearOpMode {
             }
             lift.extendTo(liftPos, 0.5);
         }
-        turret.setDegree(0);
+        targetDegree = 0;
 
         liftPos = 0;
 
@@ -67,6 +90,24 @@ public class V1 extends LinearOpMode {
 
 
         while(opModeIsActive()){
+            controller.setPID(Kp, Ki, Kd);
+
+
+            double currentTurretValue = turret.getDegree();
+
+            double pid = controller.calculate(currentTurretValue, targetDegree);
+
+            double ff = Math.cos(Math.toRadians(targetDegree/ticks_in_degree)) * Kf;
+
+            double power = pid + Kf;
+
+            turret.set(power);
+
+            telemetry.addData("Current Distance ", currentTurretValue);
+            telemetry.addData("Target Distance ", targetDegree);
+//            telemetry.addData("PIDF: ", Kp + ", " + Ki + ", " + Kd + ", " + Kf);
+            telemetry.update();
+
             double drivePowerThrottle, drivePowerTurn, drivePowerHeading;
 
             if(gamepad1.right_trigger > 0.3){       //Turn on slow mode
@@ -105,8 +146,8 @@ public class V1 extends LinearOpMode {
 
 
 
-            boolean A = gamepad1.a;
-            boolean B = gamepad1.b;
+            boolean A = gamepad1.a;                  //x
+            boolean B = gamepad1.b;                  //o
             boolean UP = gamepad1.dpad_up;
             boolean RIGHT = gamepad1.dpad_right;
             boolean DOWN = gamepad1.dpad_down;
@@ -115,6 +156,8 @@ public class V1 extends LinearOpMode {
             boolean LB = gamepad1.left_bumper;
             boolean R3 = gamepad1.right_stick_button;
             boolean L3 = gamepad1.left_stick_button;
+
+//            gamepad1.
 
             boolean UP2 = gamepad2.dpad_up;
             boolean DOWN2 = gamepad2.dpad_down;
@@ -189,7 +232,7 @@ public class V1 extends LinearOpMode {
 
             if ((A || LEFT2) && !aFlag) {
                 aFlag = true;
-                pos += 45;
+                targetDegree += 45;
                 setTurret();
 
             } else if (!A && !LEFT2) {
@@ -198,10 +241,15 @@ public class V1 extends LinearOpMode {
 
             if ((B || RIGHT2) && !bFlag) {
                 bFlag = true;
-                pos  -=45;
+                targetDegree  -=45;
                 setTurret();
             } else if (!B && !RIGHT2) {
                 bFlag = false;
+            }
+
+
+            if(Sensors.GripperSensor.getDistanceMM()<25 && Sensors.GripperSensor.getDistanceMM() > 10 && Servos.Gripper.gripperState != "CLOSED" && Servos.Wrist.wristState == "GRIPPING"){
+                gamepad1.rumble(0.5, 0.5, 100);
             }
 
 
@@ -211,11 +259,11 @@ public class V1 extends LinearOpMode {
 //            lift.extendTo((int) liftPos);
 
 
-            telemetry.addData("Currents: ", lift.getCurrent()[0] + ", " + lift.getCurrent()[1]);
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
-            telemetry.update();
+//            telemetry.addData("Currents: ", lift.getCurrent()[0] + ", " + lift.getCurrent()[1]);
+//            telemetry.addData("x", poseEstimate.getX());
+//            telemetry.addData("y", poseEstimate.getY());
+//            telemetry.addData("heading", poseEstimate.getHeading());
+//            telemetry.update();
         }
     }
 

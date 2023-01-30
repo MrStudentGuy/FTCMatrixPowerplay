@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -83,6 +84,7 @@ public class MatchAuto_Left extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        PhotonCore.enable();
 
         Pose2d PARKING1 = new Pose2d(-60, -12, Math.toRadians(180));
         Pose2d PARKING2 = new Pose2d(-36, -13, Math.toRadians(180));
@@ -125,13 +127,24 @@ public class MatchAuto_Left extends LinearOpMode {
 
         TrajectorySequence startToCenter  = drive.trajectorySequenceBuilder(new Pose2d(-41.50, -67.75, Math.toRadians(90.00)))
                 .splineTo(new Vector2d(-35.77, -47.41), Math.toRadians(74.26))
-                .splineTo(new Vector2d(-32, -8), Math.toRadians(90))
-                .UNSTABLE_addTemporalMarkerOffset(-1, ()->lift.extendToHighPole())
-                .addTemporalMarker(()->turret.setDegree(-45))
+                .splineTo(new Vector2d(-35, -10), Math.toRadians(90))
+                .UNSTABLE_addTemporalMarkerOffset(-3, ()->{lift.extendToHighPole();turret.setDegree(-40);})
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.05))
                 .waitSeconds(0.5)
+
 //                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.1))
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .waitSeconds(0.4)
+                .waitSeconds(0.1)
+                .addTemporalMarker(()->Servos.Wrist.goTop())
+                .waitSeconds(0.1)
+                .addTemporalMarker(()-> Servos.Wrist.goGripping())
+                .waitSeconds(0.1)
+                .addTemporalMarker(()->Servos.Wrist.goTop())
+                .waitSeconds(0.1)
+                .addTemporalMarker(()-> Servos.Wrist.goGripping())
+                .waitSeconds(0.1)
+                .addTemporalMarker(()->Servos.Wrist.goTop())
+                .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Gripper.openGripper())
                 .waitSeconds(0.05)
                 .addTemporalMarker(()->turret.setDegree(0))
@@ -142,7 +155,9 @@ public class MatchAuto_Left extends LinearOpMode {
                 .addTemporalMarker(()->turret.setDegree(90))
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4], 1))
                 .lineToConstantHeading(new Vector2d(-39.77, -11.08))
-                .lineToConstantHeading(new Vector2d(-55, -11))
+                .lineToConstantHeading(new Vector2d(-50.5, -11))
+                .addTemporalMarker(()-> Servos.Slider.moveOutside())
+                .waitSeconds(1)
 //                .splineTo(new Vector2d(-56.00, -12.00), Math.toRadians(180.00))
                 .build();
 
@@ -154,13 +169,12 @@ public class MatchAuto_Left extends LinearOpMode {
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->lift.extendToLowPole())
                 .waitSeconds(0.3)
-                .addTemporalMarker(()->turret.setDegree(-45))
+                .addTemporalMarker(()->turret.setDegree(-33))
                 .addTemporalMarker(()->lift.extendToHighPole())
                 .addTemporalMarker(()-> Servos.Wrist.goTop())
-                .lineToConstantHeading(new Vector2d(-36, -11.5))
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.8))
-                .waitSeconds(1)
-
+                .lineToConstantHeading(new Vector2d(-36, -11.5))
+                .waitSeconds(0.5)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
                 .waitSeconds(0.5)
                 .addTemporalMarker(()-> Servos.Gripper.openGripper())
@@ -294,30 +308,30 @@ public class MatchAuto_Left extends LinearOpMode {
         sleep(50);
         Servos.Wrist.goTop();
         drive.followTrajectorySequence(startToCenter);
-        drive.followTrajectorySequence(pickCone1);
+//        drive.followTrajectorySequence(pickCone1);
         if(AutoTime.seconds() > 25){
 
         }
         else {
-            double pos = 0.15;
-            ElapsedTime timer = new ElapsedTime();
-            timer.reset();
-            while (timer.milliseconds() < 4000 && opModeIsActive() && AutoTime.seconds() < 25) {
-                telemetry.addData("Distance: ", Sensors.GripperSensor.getDistanceMM());
-                telemetry.update();
-                Servos.Slider.moveSlider(pos);
-                if (Sensors.GripperSensor.getDistanceMM() > 22) {
-                    pos += 0.005;
-
-//            drive.setWeightedDrivePower(-0.1);
-                } else if (Sensors.GripperSensor.getDistanceMM() < 21.6) {
-                    pos -= 0.001;
-                } else {
-                    break;
-                }
-            }
-            Servos.Gripper.closeGripper();
-            drive.followTrajectorySequence(dropCone);
+//            double pos = 0.15;
+//            ElapsedTime timer = new ElapsedTime();
+//            timer.reset();
+//            while (timer.milliseconds() < 4000 && opModeIsActive() && AutoTime.seconds() < 25) {
+//                telemetry.addData("Distance: ", Sensors.GripperSensor.getDistanceMM());
+//                telemetry.update();
+//                Servos.Slider.moveSlider(pos);
+//                if (Sensors.GripperSensor.getDistanceMM() > 22) {
+//                    pos += 0.005;
+//
+////            drive.setWeightedDrivePower(-0.1);
+//                } else if (Sensors.GripperSensor.getDistanceMM() < 21.6) {
+//                    pos -= 0.001;
+//                } else {
+//                    break;
+//                }
+//            }
+//            Servos.Gripper.closeGripper();
+//            drive.followTrajectorySequence(dropCone);
 //
 //            drive.followTrajectorySequence(pickCone2);
 //            pos = 0.15;
@@ -392,7 +406,7 @@ public class MatchAuto_Left extends LinearOpMode {
         telemetry.addData("Parking Zone: ", ParkingZone);
         while(opModeIsActive()){
 //            Servos.Slider.moveSlider(gamepad1.left_trigger);
-            telemetry.addData("Parking Zone: ", ParkingZone);
+//            telemetry.addData("Parking Zone: ", ParkingZone);
 //            align(drive);
             Sensors.WallSensor.printDistance();
             telemetry.update();
