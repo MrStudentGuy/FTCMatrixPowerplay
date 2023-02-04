@@ -26,10 +26,21 @@ public class Turret {
         setPosition((int)counts);
     }
 
+    public void setDegreeHighPower(double degree){
+        double counts = degree * CountsPerDegree;
+        setPositionHighPower((int)counts);
+    }
+
     public void setPosition(int position){
         motor.setTargetPosition(position);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setPower(0.3);
+    }
+
+    public void setPositionHighPower(int position){
+        motor.setTargetPosition(position);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setPower(0.5);
     }
     public void set(double power){
         power = Range.clip(power, -0.5, 0.5);

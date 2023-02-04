@@ -10,6 +10,7 @@ public class Servos {
     static Servo GripperServo;
     static Servo WristServo;
     static Servo SliderServo;
+    static Servo AlignServo;
 
 
 
@@ -20,6 +21,7 @@ public class Servos {
         GripperServo = hardwareMap.get(Servo.class, "Gripper");
         WristServo = hardwareMap.get(Servo.class, "Wrist");
         SliderServo = hardwareMap.get(Servo.class, "Slider");
+        AlignServo = hardwareMap.get(Servo.class, "Align");
     }
 
     public static class Gripper {
@@ -35,6 +37,10 @@ public class Servos {
         public static void closeGripper() {
             gripperState = "CLOSED";
             GripperServo.setPosition(gripperClosePosition);
+        }
+
+        public static void setPosition(double pos){
+            GripperServo.setPosition(pos);
         }
     }
 
@@ -60,6 +66,8 @@ public class Servos {
             wristState = "GRIPPING";
             WristServo.setPosition(GrippingPosition);
         }
+
+
     }
 
     public static class Slider{
@@ -85,6 +93,25 @@ public class Servos {
 
         public static double getPosition(){
             return SliderServo.getPosition();
+        }
+    }
+
+    public static class AlignBar{
+        public static void inside(){
+            AlignServo.setPosition(0);
+        }
+
+        public static void outside(){
+            AlignServo.setPosition(0.9);
+        }
+
+        public static double getPosition(){
+            return AlignServo.getPosition();
+        }
+
+        public static void moveTo(double pos){
+            Range.clip(pos, 0, 1);
+            AlignServo.setPosition(pos);
         }
     }
 }

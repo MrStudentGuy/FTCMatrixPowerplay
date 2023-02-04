@@ -10,6 +10,7 @@ import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Lift;
 import org.firstinspires.ftc.teamcode.Subsystems.Sensors;
@@ -52,6 +53,7 @@ public class V1 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        ElapsedTime teleOpTime = new ElapsedTime();
         PhotonCore.enable();
         lift = new Lift(hardwareMap, telemetry);
         servos = new Servos(hardwareMap, telemetry);
@@ -87,7 +89,7 @@ public class V1 extends LinearOpMode {
 //        lift.reset();
 //        turret.reset();
         setInitialPositions();
-
+        teleOpTime.reset();
 
         while(opModeIsActive()){
             controller.setPID(Kp, Ki, Kd);
@@ -103,14 +105,14 @@ public class V1 extends LinearOpMode {
 
             turret.set(power);
 
-            telemetry.addData("Current Distance ", currentTurretValue);
-            telemetry.addData("Target Distance ", targetDegree);
-//            telemetry.addData("PIDF: ", Kp + ", " + Ki + ", " + Kd + ", " + Kf);
-            telemetry.update();
+//            telemetry.addData("Current Distance ", currentTurretValue);
+//            telemetry.addData("Target Distance ", targetDegree);
+////            telemetry.addData("PIDF: ", Kp + ", " + Ki + ", " + Kd + ", " + Kf);
+//            telemetry.update();
 
             double drivePowerThrottle, drivePowerTurn, drivePowerHeading;
 
-            if(gamepad1.right_trigger > 0.3){       //Turn on slow mode
+            if(gamepad1.right_trigger > 0.3 || gamepad1.left_stick_button || gamepad1.right_stick_button){       //Turn on slow mode
                 drivePowerThrottle = 0.3;
                 drivePowerTurn = 0.3;
                 drivePowerHeading = 0.2;
@@ -118,7 +120,7 @@ public class V1 extends LinearOpMode {
             else{
                 drivePowerThrottle = 0.9;
                 drivePowerTurn = 0.9;
-                drivePowerHeading = 0.5;
+                drivePowerHeading = 0.7;
             }
 
 
@@ -157,6 +159,13 @@ public class V1 extends LinearOpMode {
             boolean R3 = gamepad1.right_stick_button;
             boolean L3 = gamepad1.left_stick_button;
 
+
+//            if(gamepad1.right_stick_button && lift.getPosition()[0] >= lift.POSITIONS[lift.LOW_POLE]){
+//                Servos.Slider.moveOutside();
+//                sleep(1000);
+//                Servos.AlignBar.outside();
+//                sleep(1000);
+//            }
 //            gamepad1.
 
             boolean UP2 = gamepad2.dpad_up;
@@ -206,6 +215,17 @@ public class V1 extends LinearOpMode {
                 }
                 else if(Objects.equals(Servos.Gripper.gripperState, "CLOSED")){
                     Servos.Gripper.openGripper();
+//                    if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]) {
+//                        Servos.AlignBar.moveTo(0.7);
+//                        if (Servos.AlignBar.getPosition() > 0.4) {
+//                            Servos.Slider.moveOutside();
+//                            sleep(1000);
+//                            Servos.AlignBar.inside();
+//                            sleep(500);
+//                            Servos.Slider.moveInside();
+//                            sleep(300);
+//                        }
+//                    }
                 }
             }
 
@@ -252,18 +272,19 @@ public class V1 extends LinearOpMode {
                 gamepad1.rumble(0.5, 0.5, 100);
             }
 
-
+//            if(teleOpTime.seconds())
             Servos.Slider.moveSlider(Math.abs(gamepad1.left_trigger));
 
 
 //            lift.extendTo((int) liftPos);
 
 
-//            telemetry.addData("Currents: ", lift.getCurrent()[0] + ", " + lift.getCurrent()[1]);
-//            telemetry.addData("x", poseEstimate.getX());
-//            telemetry.addData("y", poseEstimate.getY());
-//            telemetry.addData("heading", poseEstimate.getHeading());
-//            telemetry.update();
+            telemetry.addData("Currents: ", lift.getCurrent()[0] + ", " + lift.getCurrent()[1]);
+            telemetry.addData("Positions: ", lift.getPosition()[0] + ", " + lift.getPosition()[1]);
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.update();
         }
     }
 

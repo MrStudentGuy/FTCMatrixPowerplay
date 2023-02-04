@@ -41,6 +41,7 @@ dependencies {
     implementation 'org.openftc:easyopencv:1.5.3'
     implementation 'org.openftc:apriltag:1.1.1'
     implementation 'com.github.Eeshwar-Krishnan:PhotonFTC:v2.0.4'
+//    implementation name: "ThorCore", version: "0.5+", ext: "aar"
 }
 
 repositories {

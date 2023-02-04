@@ -39,8 +39,8 @@ public class Lift {
     DcMotorEx leftMotor, rightMotor;
     public final int GRIPPING_POSITION = 0, LOW_POLE = 1, MID_POLE = 2, HIGH_POLE = 3;
     public final int SAFE_POSITION = 0;
-    public final int[] POSITIONS = {-340, 672, 1510, 2200};
-    public final int[] AUTO_POSITION = {-200, -42, -10, 46, 100};
+    public final int[] POSITIONS = {-448, 672, 1510, 2250};
+    public final int[] AUTO_POSITION = {-340, -250, -100, 30, 80};
 //    {-420, -374, -334, -160, -35};
 
     int liftPosition = 0;
