@@ -36,7 +36,7 @@ public class Sensors {
 
         public static double lastDistance = 0;
         public static double getDistanceCM(){
-            lastDistance = ultrasoundSensor.getVoltage() * 520.00/3.3;
+            lastDistance = ultrasoundSensor.getVoltage() * 520.00/3.3;/// 0 to 5v, values given by sensor data sheet
             return lastDistance;
         }
 
@@ -77,7 +77,7 @@ public class Sensors {
         }
 
         public static boolean checkBlue(){
-            NormalizedRGBA color = gripperSensor.getNormalizedColors();
+            NormalizedRGBA color = gripperSensor.getNormalizedColors(); //red gives good values, here in blue acts randomly, hence for reliability added Normalized colours
             if(gripperSensor.blue() > 150){
                 localTelemetry.addLine("Blue Colour Detected");
                 return true;

@@ -21,7 +21,7 @@ public class Servos {
         GripperServo = hardwareMap.get(Servo.class, "Gripper");
         WristServo = hardwareMap.get(Servo.class, "Wrist");
         SliderServo = hardwareMap.get(Servo.class, "Slider");
-        AlignServo = hardwareMap.get(Servo.class, "Align");
+        AlignServo = hardwareMap.get(Servo.class, "Align"); //auto stop pole shaking, goBilda servo
     }
 
     public static class Gripper {
@@ -40,7 +40,7 @@ public class Servos {
         }
 
         public static void setPosition(double pos){
-            GripperServo.setPosition(pos);
+            GripperServo.setPosition(pos); //auto
         }
     }
 

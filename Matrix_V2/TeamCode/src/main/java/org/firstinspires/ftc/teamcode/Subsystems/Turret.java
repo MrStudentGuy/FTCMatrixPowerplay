@@ -23,7 +23,7 @@ public class Turret {
 
     public void setDegree(double degree){
         double counts = degree * CountsPerDegree;
-        setPosition((int)counts);
+        setPosition((int)counts); //calls set position
     }
 
     public void setDegreeHighPower(double degree){
@@ -57,7 +57,7 @@ public class Turret {
 
     public double getDegree() {
         double degree = getPosition() * 1/CountsPerDegree;
-        return degree;
+        return degree; // 1/countsperdegree = degrees per count and position is no. of counts
     }
 
     public double getCurrent(){

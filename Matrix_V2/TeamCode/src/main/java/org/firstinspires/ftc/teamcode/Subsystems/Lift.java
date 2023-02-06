@@ -40,7 +40,7 @@ public class Lift {
     public final int GRIPPING_POSITION = 0, LOW_POLE = 1, MID_POLE = 2, HIGH_POLE = 3;
     public final int SAFE_POSITION = 0;
     public final int[] POSITIONS = {-448, 672, 1510, 2250};
-    public final int[] AUTO_POSITION = {-340, -250, -100, 30, 80};
+    public final int[] AUTO_POSITION = {-340, -250, -100, 10, 80};
 //    {-420, -374, -334, -160, -35};
 
     int liftPosition = 0;
@@ -124,7 +124,7 @@ extendTousingVelo(POSITIONS[HIGH_POLE], 2000);
     public void extendToMidPole(){
         double velocity = 2000;
         if(liftPosition > 2){
-            velocity = 1000;
+            velocity = 1000; //pulleys cant retract fast enough
         }
         liftPosition = 2;
         extendTousingVelo(POSITIONS[MID_POLE], velocity);
