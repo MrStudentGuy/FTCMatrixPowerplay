@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -14,6 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Lift;
 import org.firstinspires.ftc.teamcode.Subsystems.Sensors;
 import org.firstinspires.ftc.teamcode.Subsystems.Servos;
@@ -28,11 +30,13 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Autonomous(name="Left 4+1 -> HIGH POLE")
 //@Disabled
 public class LEFT4_1HIGH extends LinearOpMode {
+
 
     Lift lift = null;
     Servos servos = null;
@@ -81,6 +85,13 @@ public class LEFT4_1HIGH extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         PhotonCore.enable();
+
+        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+
+        if(allHubs.get(0).getInputVoltage(VoltageUnit.VOLTS) < 12.2){
+            telemetry.addLine("******************WARNING: RELIABLITY ISSUES MAY BE EXPERIENCED IN AUTO DUE TO BATTERY******************");
+            telemetry.update();
+        }
 
         Pose2d PARKING1 = new Pose2d(-60, -12, Math.toRadians(180));
         Pose2d PARKING2 = new Pose2d(-36, -13, Math.toRadians(180));
@@ -288,6 +299,9 @@ public class LEFT4_1HIGH extends LinearOpMode {
 
 //        waitForStart();
         while (!isStarted() && !isStopRequested()) {
+            if(allHubs.get(0).getInputVoltage(VoltageUnit.VOLTS) < 12.2 || allHubs.get(1).getInputVoltage(VoltageUnit.VOLTS) < 12.2){
+                telemetry.addLine("******************WARNING: RELIABLITY ISSUES MAY BE EXPERIENCED IN AUTO DUE TO BATTERY******************\n\n\n");
+            }
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
             if (currentDetections.size() != 0) {
                 boolean tagFound = false;
