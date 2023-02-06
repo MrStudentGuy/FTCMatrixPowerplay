@@ -33,30 +33,19 @@ import java.util.ArrayList;
 @Autonomous(name="Left 4+1 -> HIGH POLE")
 //@Disabled
 public class LEFT4_1HIGH extends LinearOpMode {
+
     Lift lift = null;
     Servos servos = null;
     Turret turret = null;
     Sensors sensors = null;
 
     ElapsedTime AutoTime = new ElapsedTime();
-    ElapsedTime timer1 = new ElapsedTime();
+    private final double totalTime = 30;
+    private double timeLeft = 30;
+
+    private boolean EmergencyParkFlag = false;
+
     final double MAX_SPEED_AUTO = DriveConstants.MAX_VEL;
-
-    double kp_wall = 0.04;
-    double kd_wall = 0.01;
-    double ki_wall = 0;
-    double prevError_wall = 0;
-
-    double kp_gyro = 0.04;
-    double kd_gyro = 0.01;
-    double ki_gyro = 0;
-    double prevError_gyro = 0;
-
-    double kp_pole = 0.04;
-    double kd_pole = 0.01;
-    double ki_pole = 0;
-    double prevError_pole = 0;
-
 
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -334,23 +323,34 @@ public class LEFT4_1HIGH extends LinearOpMode {
             sleep(20);
         }
 
-        AutoTime.reset();
-        lift.reset();
-        turret.reset();
-        turret.setDegree(0);
+        AutoTime.reset();                       //Start Button has been pressed, reset the timer to keep track of the time passed in Autonomous in code
+        lift.reset();                           //Reset the lift to 0, using the current position as the home position   (Usually at the hard stop)
+        turret.reset();                         //Reset the turret to 0, using the current position as the home position
+        turret.setDegree(0);                    //Hold the turret at 0
 
 
         //-------------------------------------- ACTUAL ROBOT TRAJ FOLLOWING TAKES PLACE HERE -----------------------------
+        followTrajectory(startToCenter, drive);
+        followTrajectory(pick1, drive);
+        followTrajectory(dropCone1, drive);
+        followTrajectory(pick2, drive);
+        followTrajectory(dropCone1, drive);
+        followTrajectory(pick3, drive);
+        followTrajectory(dropCone1, drive);
+        followTrajectory(pick4, drive);
+        followTrajectory(dropCone1, drive);
+        followTrajectory(pick5, drive);
+        followTrajectory(dropCone1, drive);
 
-        drive.followTrajectorySequence(startToCenter);
-        drive.followTrajectorySequence(pick1);
-        drive.followTrajectorySequence(dropCone1);
-        drive.followTrajectorySequence(pick2);
-        drive.followTrajectorySequence(dropCone1);
-        drive.followTrajectorySequence(pick3);
-        drive.followTrajectorySequence(dropCone1);
-        drive.followTrajectorySequence(pick4);
-        drive.followTrajectorySequence(dropCone1);
+//        drive.followTrajectorySequence(startToCenter);
+//        drive.followTrajectorySequence(pick1);
+//        drive.followTrajectorySequence(dropCone1);
+//        drive.followTrajectorySequence(pick2);
+//        drive.followTrajectorySequence(dropCone1);
+//        drive.followTrajectorySequence(pick3);
+//        drive.followTrajectorySequence(dropCone1);
+//        drive.followTrajectorySequence(pick4);
+//        drive.followTrajectorySequence(dropCone1);
 
         String ParkingZone = "3";                       //Defaults to Parking Zone 3
 
@@ -381,6 +381,23 @@ public class LEFT4_1HIGH extends LinearOpMode {
         sleep(30);
         Servos.Wrist.goInit();
         turret.setDegree(0);
+    }
+
+    private boolean checkForTime(TrajectorySequence sequence){
+        double sequenceDuration = sequence.duration();
+        if(sequenceDuration > 30){
+            //TODO: Remove after confirming units of time
+            sequenceDuration/=1000;
+        }
+        timeLeft = totalTime - AutoTime.seconds();
+        return !(sequenceDuration > timeLeft);
+    }
+
+    private void followTrajectory(TrajectorySequence sequence, SampleMecanumDrive localdrive){
+        if(checkForTime(sequence) && !EmergencyParkFlag)
+            localdrive.followTrajectorySequence(sequence);
+        else
+            EmergencyParkFlag = true;
     }
 
     void tagToTelemetry(AprilTagDetection detection) {
