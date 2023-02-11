@@ -78,7 +78,7 @@ public class LEFT4_1HIGH extends LinearOpMode {
 
 
     final Pose2d droppingPosition0 = new Pose2d(-38.5, -11.5, Math.toRadians(180));
-    final Pose2d droppingPosition = new Pose2d(-39.3, -12.00, Math.toRadians(180));
+    final Pose2d droppingPosition = new Pose2d(-39.2, -12.00, Math.toRadians(180));
     final Pose2d pickingPosition = new Pose2d(-48.5, -12, Math.toRadians(180));
 
 
@@ -131,14 +131,14 @@ public class LEFT4_1HIGH extends LinearOpMode {
         TrajectorySequence startToCenter = drive.trajectorySequenceBuilder(startPose)
                 .addTemporalMarker(() -> lift.extendToLowPole())
                 .addTemporalMarker(() -> Servos.Wrist.goTop())
-                .addTemporalMarker(() -> turret.setDegree(-140))
+                .addTemporalMarker(() -> turret.setDegree(-145))
                 .addTemporalMarker(() -> lift.extendToHighPole())
                 .addTemporalMarker(() -> Servos.Slider.moveSlider(1))
                 .addTemporalMarker(() -> Servos.AlignBar.outside())
                 .lineToLinearHeading(droppingPosition0)
+                .waitSeconds(0.1)
                 .addTemporalMarker(() -> Servos.Wrist.goGripping())
-                .waitSeconds(0.03)
-                .addTemporalMarker(() -> Servos.Gripper.openGripper())
+                .addTemporalMarker(() -> Servos.Gripper.setPosition(1))
                 .addTemporalMarker(() -> Servos.AlignBar.inside())
                 .waitSeconds(0.5)
                 .build();
@@ -161,7 +161,7 @@ public class LEFT4_1HIGH extends LinearOpMode {
                 .build();
 
         TrajectorySequence dropCone1 = drive.trajectorySequenceBuilder(pick1.end())
-                .addTemporalMarker(() -> turret.setDegree(-145))
+                .addTemporalMarker(() -> turret.setDegree(-147))
 //                .addTemporalMarker(()-> Servos.Slider.moveInside())
                 .addTemporalMarker(() -> Servos.Wrist.goTop())
                 .addTemporalMarker(() -> Servos.Slider.moveSlider(0.8))
