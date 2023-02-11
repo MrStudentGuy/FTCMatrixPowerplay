@@ -353,8 +353,8 @@ public class LEFT4_1HIGH extends LinearOpMode {
         followTrajectory(dropCone1, drive);
         followTrajectory(pick4, drive);
         followTrajectory(dropCone1, drive);
-        followTrajectory(pick5, drive);
-        followTrajectory(dropCone1, drive);
+//        followTrajectory(pick5, drive);
+//        followTrajectory(dropCone1, drive);
 
 //        drive.followTrajectorySequence(startToCenter);
 //        drive.followTrajectorySequence(pick1);

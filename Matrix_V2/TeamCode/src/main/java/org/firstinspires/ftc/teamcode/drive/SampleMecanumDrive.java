@@ -30,6 +30,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.drive.Localizer.ThreeWheelIMU;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -152,7 +153,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 //        setLocalizer(new CustomThreeWheel(hardwareMap));
 //         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
-
+//setLocalizer(new ThreeWheelIMU(hardwareMap, this));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }
 

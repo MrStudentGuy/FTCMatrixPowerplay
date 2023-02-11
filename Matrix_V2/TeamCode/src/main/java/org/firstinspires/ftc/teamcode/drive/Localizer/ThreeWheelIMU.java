@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.drive.Localizer.Localizer;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
-public class ThreeWheelIMU implements Localizer {
+public class ThreeWheelIMU implements Localizer, com.acmerobotics.roadrunner.localization.Localizer {
     //https://gm0.org/en/latest/_images/offsets-and-trackwidth.png
     public static double TICKS_PER_REV = 8192;
     public static double WHEEL_RADIUS = 1.49606 / 2; // in
@@ -52,7 +52,7 @@ public class ThreeWheelIMU implements Localizer {
     }
 
     @Override
-    public void periodic() {
+    public void periodic() throws Exception {
         updateWheelPositions();
         double deltaTheta = DeltaLeftEncoderInches - DeltaRightEncoderInches/LATERAL_DISTANCE;
         double deltaX = DeltaLeftEncoderInches + DeltaRightEncoderInches/2;
@@ -67,7 +67,7 @@ public class ThreeWheelIMU implements Localizer {
         double ABC[][] = matrixMultiplication(AB, 3, 3, C, 1, 3);
 
         pastPoseEstimate = poseEstimate;
-        poseEstimate = new Pose2d(poseEstimate.getX() + ABC[0][0], poseEstimate.getY() + ABC[0][1] + poseEstimate.getHeading() + ABC[0][3]);
+        poseEstimate = new Pose2d(poseEstimate.getX() + ABC[0][0], poseEstimate.getY() + ABC[1][0] + poseEstimate.getHeading() + ABC[3][0]);
 
 
         //https://file.tavsys.net/control/controls-engineering-in-frc.pdf
@@ -120,13 +120,13 @@ public class ThreeWheelIMU implements Localizer {
      */
     public static double[][] matrixMultiplication(
             double[][] matrix1, int rows1, int cols1,
-            double[][] matrix2, int rows2, int cols2)
+            double[][] matrix2, int rows2, int cols2) throws Exception
     {
 
         // Required condition for matrix multiplication
-//        if (cols1 != rows2) {
-//            throw new Exception("Invalid matrix given.");
-//        }
+        if (cols1 != rows2) {
+            throw new Exception("Invalid matrix given.");
+        }
 
         // create a result matrix
         double resultMatrix[][] = new double[rows1][cols2];
@@ -146,5 +146,31 @@ public class ThreeWheelIMU implements Localizer {
             }
         }
         return resultMatrix;
+    }
+
+    @NonNull
+    @Override
+    public Pose2d getPoseEstimate() {
+        return getPose();
+    }
+
+    @Override
+    public void setPoseEstimate(@NonNull Pose2d pose2d) {
+setPose(pose2d);
+    }
+
+    @Nullable
+    @Override
+    public Pose2d getPoseVelocity() {
+        return null;
+    }
+
+    @Override
+    public void update() {
+        try {
+            periodic();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

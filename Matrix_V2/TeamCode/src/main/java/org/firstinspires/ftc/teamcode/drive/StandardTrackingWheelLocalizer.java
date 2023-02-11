@@ -29,20 +29,21 @@ import java.util.List;
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
     public static double WHEEL_RADIUS = 1.49606/2; // in
-    public static double LATERAL_DISTANCE = 10.23690065; // in; distance between the left and right wheels
+    public static double LATERAL_DISTANCE = 9.9102; // in; distance between the left and right wheels
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
     public static double FORWARD_OFFSET = 1.25; // in; offset of the lateral wheel
 
-    public static double X_MULTIPLIER = 0.9969481180061038*(((0.4379808211246198+0.4313151591980525)/2)*(1.001339436133747 + 1.000333444481494 + 1.001223717877406/3)); // Multiplier in the X direction
-    public static double Y_MULTIPLIER = 0.9783938035059111*((1.01633383991929 + 0.9960379822483897 + 0.999000999000999/3)*0.430439522694539); // Multiplier in the Y direction
+
+    public static double X_MULTIPLIER = 1.017656780029573 * 0.975609756097561 * 0.9969481180061038; // Multiplier in the X direction
+    public static double Y_MULTIPLIER = 0.9783938035059111 * 0.9921414538310413; // Multiplier in the Y direction
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
                 new Pose2d(0, LATERAL_DISTANCE / 2, 0), // left
-                new Pose2d(0, -LATERAL_DISTANCE / 2, 0), // right
+                new Pose2d(0, -LATERAL_DISTANCE / 2, Math.toRadians(1)), // right
                 new Pose2d(FORWARD_OFFSET, 0, Math.toRadians(90)) // front
         ));
 

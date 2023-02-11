@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -23,6 +24,11 @@ public class PodTest extends LinearOpMode {
         encoderLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         encoderRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, telemetry);
+
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
         telemetry.setMsTransmissionInterval(20);
 
 
@@ -31,9 +37,20 @@ public class PodTest extends LinearOpMode {
 
 
         while(opModeIsActive()){
-            telemetry.addData("Left: ", encoderLeft.getCurrentPosition());
-            telemetry.addData("Right: ", encoderRight.getCurrentPosition());
-            telemetry.addData("Center: ", encoderCenter.getCurrentPosition());
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
+                    )
+            );
+
+            drive.update();
+
+            Pose2d poseEstimate = drive.getPoseEstimate();
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
 
             telemetry.addData("Left: ", encoderLeft.getCurrentPosition());
             telemetry.addData("Right: ", encoderRight.getCurrentPosition());
