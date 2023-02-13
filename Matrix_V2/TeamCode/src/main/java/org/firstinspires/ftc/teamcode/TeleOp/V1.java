@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
 import static org.firstinspires.ftc.teamcode.TransferClass.poseStorage;
-
-import android.transition.Slide;
+import static org.firstinspires.ftc.teamcode.TransferClass.turretAngle;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -21,7 +20,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.Sensors;
 import org.firstinspires.ftc.teamcode.Subsystems.Servos;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import java.util.Objects;
 
@@ -103,11 +101,14 @@ public class V1 extends LinearOpMode {
 
 //        lift.reset();
 //        turret.reset();
+
+        calibrateTurret();
+
         setInitialPositions();
         teleOpTime.reset();
 
         while (opModeIsActive()) {
-            controller.setPID(Kp, Ki, Kd); //turret cant use default values, too big, nota ccurate, hence custom values
+            controller.setPID(Kp, Ki, Kd); //turret cant use default values, too big, not accurate, hence custom values
 
 
             double currentTurretValue = turret.getDegree();
@@ -120,27 +121,23 @@ public class V1 extends LinearOpMode {
 
             turret.set(power);
 
-//            telemetry.addData("Current Distance ", currentTurretValue);
-//            telemetry.addData("Target Distance ", targetDegree);
-////            telemetry.addData("PIDF: ", Kp + ", " + Ki + ", " + Kd + ", " + Kf);
-//            telemetry.update();
 
-            double drivePowerThrottle, drivePowerTurn, drivePowerHeading;
+            double drivePowerThrottle, drivePowerStrafe, drivePowerHeading;
 
             if (gamepad1.right_trigger > 0.3 || gamepad1.left_stick_button || gamepad1.right_stick_button) {       //Turn on slow mode
                 drivePowerThrottle = 0.3;
-                drivePowerTurn = 0.3;
+                drivePowerStrafe = 0.3;
                 drivePowerHeading = 0.2; //slow down - delicate situation
             } else {
                 drivePowerThrottle = 1;
-                drivePowerTurn = 1; //behaves like strafing (left right)
+                drivePowerStrafe = 1;
                 drivePowerHeading = 0.7; //(turning)
             }
 
 
             //Field Oriented Drive
             Pose2d poseEstimate = drive.getPoseEstimate();
-            Vector2d input = new Vector2d(-gamepad1.left_stick_y * drivePowerThrottle, -gamepad1.left_stick_x * drivePowerTurn).rotated(-poseEstimate.getHeading());
+            Vector2d input = new Vector2d(-gamepad1.left_stick_y * drivePowerThrottle, -gamepad1.left_stick_x * drivePowerStrafe).rotated(-poseEstimate.getHeading());
 
             drive.setWeightedDrivePower(new Pose2d(input.getX(), input.getY(), -gamepad1.right_stick_x * drivePowerHeading));
             drive.update();//drive is sample mecanum drive
@@ -391,5 +388,14 @@ public class V1 extends LinearOpMode {
         } else {
             turret.setDegree((int) (pos));
         }
+    }
+
+    private void calibrateTurret(){
+        double currentDelta = turret.getDegree() - turretAngle;
+        if(Math.abs(currentDelta)>1){
+            turret.setDegree(currentDelta);
+        }
+        sleep(1000);
+        turret.reset();
     }
 }

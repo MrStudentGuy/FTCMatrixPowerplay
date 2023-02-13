@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import static org.firstinspires.ftc.teamcode.TransferClass.poseStorage;
-import static org.firstinspires.ftc.teamcode.TransferClass.turretAngle;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -38,7 +37,7 @@ import java.util.List;
 
 @Autonomous(name="Left 4+1 -> HIGH POLE", group = "Left Autos")
 //@Disabled
-public class Left_High extends LinearOpMode {
+public class Right_High extends LinearOpMode {
 
 
     Lift lift = null;
@@ -80,9 +79,9 @@ public class Left_High extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
 
 
-    final Pose2d droppingPosition0 = new Pose2d(-39.2, -12.8, Math.toRadians(180));
-    final Pose2d droppingPosition = new Pose2d(-39.2, -12.00, Math.toRadians(180));
-    final Pose2d pickingPosition = new Pose2d(-49, -12, Math.toRadians(180));
+    final Pose2d droppingPosition0 = new Pose2d(39.2, -12.8, Math.toRadians(180));
+    final Pose2d droppingPosition = new Pose2d(39.2, -12.00, Math.toRadians(180));
+    final Pose2d pickingPosition = new Pose2d(49, -12, Math.toRadians(180));
 
 
     @Override
@@ -96,9 +95,9 @@ public class Left_High extends LinearOpMode {
             telemetry.update();
         }
 
-        Pose2d PARKING1 = new Pose2d(-60, -12, Math.toRadians(180));
-        Pose2d PARKING2 = new Pose2d(-36, -13, Math.toRadians(180));
-        Pose2d PARKING3 = new Pose2d(-12, -12, Math.toRadians(180));
+        Pose2d PARKING1 = new Pose2d(-60 + 72, -12, Math.toRadians(180));
+        Pose2d PARKING2 = new Pose2d(-36 + 72, -13, Math.toRadians(180));
+        Pose2d PARKING3 = new Pose2d(-12 + 72, -12, Math.toRadians(180));
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -134,7 +133,7 @@ public class Left_High extends LinearOpMode {
         TrajectorySequence startToCenter = drive.trajectorySequenceBuilder(startPose)
                 .addTemporalMarker(() -> lift.extendToLowPole())
                 .addTemporalMarker(() -> Servos.Wrist.goTop())
-                .addTemporalMarker(() -> turret.setDegree(-140))
+                .addTemporalMarker(() -> turret.setDegree(140))
                 .addTemporalMarker(() -> lift.extendToHighPole())
                 .addTemporalMarker(() -> Servos.Slider.moveSlider(1))
 //                .addTemporalMarker(() -> Servos.AlignBar.outside())
@@ -393,7 +392,6 @@ public class Left_High extends LinearOpMode {
         while (opModeIsActive()) {
             Pose2d robotPose = drive.getPoseEstimate();
             poseStorage = robotPose;
-            turretAngle = turret.getDegree();
             Sensors.WallSensor.printDistance();
             telemetry.update();
         }
