@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import static org.firstinspires.ftc.teamcode.TransferClass.poseStorage;
+import static org.firstinspires.ftc.teamcode.TransferClass.turretAngle;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -151,7 +152,7 @@ public class Right_High extends LinearOpMode {
                 .addTemporalMarker(() -> lift.extendTo(lift.AUTO_POSITION[4], 1))
                 .addTemporalMarker(() -> Servos.Slider.moveHalfway())
                 .waitSeconds(0.1)
-                .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
+                .addTemporalMarker(() -> turret.setDegreeHighPower(10))
                 .waitSeconds(0.2)
                 .lineToLinearHeading(pickingPosition)
 //                .waitSeconds(0.5)
@@ -165,7 +166,7 @@ public class Right_High extends LinearOpMode {
                 .build();
 
         TrajectorySequence dropCone1 = drive.trajectorySequenceBuilder(pick1.end())
-                .addTemporalMarker(() -> turret.setDegree(-146))
+                .addTemporalMarker(() -> turret.setDegree(146))
 //                .addTemporalMarker(()-> Servos.Slider.moveInside())
                 .addTemporalMarker(() -> Servos.Wrist.goTop())
                 .addTemporalMarker(() -> Servos.Slider.moveSlider(1))
@@ -188,11 +189,11 @@ public class Right_High extends LinearOpMode {
 
         TrajectorySequence pick2 = drive.trajectorySequenceBuilder(dropCone1.end())
 //                .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
+                .addTemporalMarker(() -> turret.setDegreeHighPower(10))
                 .addTemporalMarker(() -> lift.extendTo(lift.AUTO_POSITION[3], 1))
                 .addTemporalMarker(() -> Servos.Slider.moveHalfway())
                 .waitSeconds(0.1)
-                .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
+                .addTemporalMarker(() -> turret.setDegreeHighPower(10))
                 .waitSeconds(0.2)
                 .lineToLinearHeading(pickingPosition)
 //                .waitSeconds(0.5)
@@ -207,11 +208,11 @@ public class Right_High extends LinearOpMode {
 
         TrajectorySequence pick3 = drive.trajectorySequenceBuilder(dropCone1.end())
 //                .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
+                .addTemporalMarker(() -> turret.setDegreeHighPower(10))
                 .addTemporalMarker(() -> lift.extendTo(lift.AUTO_POSITION[2], 1))
                 .addTemporalMarker(() -> Servos.Slider.moveHalfway())
                 .waitSeconds(0.1)
-                .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
+                .addTemporalMarker(() -> turret.setDegreeHighPower(10))
                 .waitSeconds(0.2)
                 .lineToLinearHeading(pickingPosition)
 //                .waitSeconds(0.5)
@@ -226,11 +227,11 @@ public class Right_High extends LinearOpMode {
 
         TrajectorySequence pick4 = drive.trajectorySequenceBuilder(dropCone1.end())
 //                .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
+                .addTemporalMarker(() -> turret.setDegreeHighPower(10))
                 .addTemporalMarker(() -> lift.extendTo(lift.AUTO_POSITION[1], 1))
                 .addTemporalMarker(() -> Servos.Slider.moveHalfway())
                 .waitSeconds(0.1)
-                .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
+                .addTemporalMarker(() -> turret.setDegreeHighPower(10))
                 .waitSeconds(0.2)
                 .lineToLinearHeading(pickingPosition)
 //                .waitSeconds(0.5)
@@ -245,11 +246,11 @@ public class Right_High extends LinearOpMode {
 
         TrajectorySequence pick5 = drive.trajectorySequenceBuilder(dropCone1.end())
 //                .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
+                .addTemporalMarker(() -> turret.setDegreeHighPower(10))
                 .addTemporalMarker(() -> lift.extendTo(lift.AUTO_POSITION[1], 1))
                 .addTemporalMarker(() -> Servos.Slider.moveHalfway())
                 .waitSeconds(0.1)
-                .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
+                .addTemporalMarker(() -> turret.setDegreeHighPower(10))
                 .waitSeconds(0.2)
                 .lineToLinearHeading(pickingPosition)
 //                .waitSeconds(0.5)
@@ -393,6 +394,7 @@ public class Right_High extends LinearOpMode {
             Pose2d robotPose = drive.getPoseEstimate();
             poseStorage = robotPose;
             Sensors.WallSensor.printDistance();
+            turretAngle = turret.getDegree();
             telemetry.update();
         }
     }
@@ -417,6 +419,7 @@ public class Right_High extends LinearOpMode {
     }
 
     private void followTrajectory(TrajectorySequence sequence, SampleMecanumDrive localdrive){
+        updateTransfer(localdrive);
         if(checkForTime(sequence) && !EmergencyParkFlag)
             localdrive.followTrajectorySequence(sequence);
         else
@@ -431,5 +434,12 @@ public class Right_High extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+    }
+
+
+    void updateTransfer(SampleMecanumDrive driveLocal){
+        Pose2d robotPose = driveLocal.getPoseEstimate();
+        poseStorage = robotPose;
+        turretAngle = turret.getDegree();
     }
 }

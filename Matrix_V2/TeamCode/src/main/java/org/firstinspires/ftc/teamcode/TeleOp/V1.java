@@ -31,6 +31,8 @@ public class V1 extends LinearOpMode {
     private final double CPR = 28;                //counts
     private final double ticks_in_degree = CPR * GEAR_RATIO / 360.0;
 
+    private boolean wristInFlag = false;
+
     private PIDController controller; //meant for the turret
     public static double Kp = 0.07;
     public static double Ki = 0;
@@ -187,12 +189,14 @@ public class V1 extends LinearOpMode {
             boolean Y2 = gamepad2.y;
 
 
-            if(gamepad1.x){
-                if(lift.getPosition()[0] >= 0){
+            if(gamepad1.x || wristInFlag){
+                if(lift.getPosition()[0] >= -5){
+                    wristInFlag = false;
                     Servos.Wrist.goInit();
                 }
                 else{
-                    
+                    wristInFlag = true;
+                    lift.extendTo(0, 1);
                 }
             }
 
@@ -392,10 +396,10 @@ public class V1 extends LinearOpMode {
 
     private void calibrateTurret(){
         double currentDelta = turret.getDegree() - turretAngle;
-        if(Math.abs(currentDelta)>1){
-            turret.setDegree(currentDelta);
+        if(Math.abs(currentDelta)>1){                           //if the current error has an absolute value of greater than 1 degree, rotate the turret in the appropriate direction
+            turret.setDegreeHighPower(currentDelta);
         }
-        sleep(1000);
-        turret.reset();
+        sleep(1000);          //give the turret time to reach it's target
+        turret.reset();                 //reset so that telop has a calibrated turret
     }
 }
