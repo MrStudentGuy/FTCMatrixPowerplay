@@ -34,7 +34,7 @@ public class Turret {
     public void setPosition(int position){
         motor.setTargetPosition(position);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor.setPower(0.35);
+        motor.setPower(0.25);
     }
 
     public void setPositionHighPower(int position){

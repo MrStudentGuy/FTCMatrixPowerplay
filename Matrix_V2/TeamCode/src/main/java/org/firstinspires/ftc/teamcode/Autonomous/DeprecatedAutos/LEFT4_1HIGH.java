@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.Autonomous.DeprecatedAutos;
+
+import static org.firstinspires.ftc.teamcode.TransferClass.poseStorage;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -33,9 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Autonomous(name="Left 4+1 -> HIGH POLE_STRONGOPPONENT")
-//@Disabled
-public class KevalAutoV2 extends LinearOpMode {
+@Autonomous(name="Rod Left 4+1 -> HIGH POLE")
+@Disabled
+public class LEFT4_1HIGH extends LinearOpMode {
 
 
     Lift lift = null;
@@ -78,8 +80,8 @@ public class KevalAutoV2 extends LinearOpMode {
 
 
     final Pose2d droppingPosition0 = new Pose2d(-38.5, -11.5, Math.toRadians(180));
-    final Pose2d droppingPosition = new Pose2d(-39.3, -12.00, Math.toRadians(180));
-    final Pose2d pickingPosition = new Pose2d(-48.5, -12, Math.toRadians(180));
+    final Pose2d droppingPosition = new Pose2d(-39.2, -12.00, Math.toRadians(180));
+    final Pose2d pickingPosition = new Pose2d(-49, -12, Math.toRadians(180));
 
 
     @Override
@@ -131,14 +133,14 @@ public class KevalAutoV2 extends LinearOpMode {
         TrajectorySequence startToCenter = drive.trajectorySequenceBuilder(startPose)
                 .addTemporalMarker(() -> lift.extendToLowPole())
                 .addTemporalMarker(() -> Servos.Wrist.goTop())
-                .addTemporalMarker(() -> turret.setDegree(-140))
+                .addTemporalMarker(() -> turret.setDegree(-145))
                 .addTemporalMarker(() -> lift.extendToHighPole())
                 .addTemporalMarker(() -> Servos.Slider.moveSlider(1))
                 .addTemporalMarker(() -> Servos.AlignBar.outside())
                 .lineToLinearHeading(droppingPosition0)
+                .waitSeconds(0.1)
                 .addTemporalMarker(() -> Servos.Wrist.goGripping())
-                .waitSeconds(0.03)
-                .addTemporalMarker(() -> Servos.Gripper.openGripper())
+                .addTemporalMarker(() -> Servos.Gripper.setPosition(1))
                 .addTemporalMarker(() -> Servos.AlignBar.inside())
                 .waitSeconds(0.5)
                 .build();
@@ -161,9 +163,7 @@ public class KevalAutoV2 extends LinearOpMode {
                 .build();
 
         TrajectorySequence dropCone1 = drive.trajectorySequenceBuilder(pick1.end())
-                .addTemporalMarker(()->turret.setDegreeHighPower(195))
-                .waitSeconds(1)
-                .addTemporalMarker(() -> turret.setDegree(215))
+                .addTemporalMarker(() -> turret.setDegree(-146))
 //                .addTemporalMarker(()-> Servos.Slider.moveInside())
                 .addTemporalMarker(() -> Servos.Wrist.goTop())
                 .addTemporalMarker(() -> Servos.Slider.moveSlider(0.8))
@@ -188,7 +188,7 @@ public class KevalAutoV2 extends LinearOpMode {
                 .addTemporalMarker(() -> Servos.Slider.moveHalfway())
                 .waitSeconds(0.1)
                 .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
-                .waitSeconds(0.8)
+                .waitSeconds(0.2)
                 .lineToLinearHeading(pickingPosition)
 //                .waitSeconds(0.5)
                 .addTemporalMarker(() -> Servos.Slider.moveSlider(1))
@@ -207,7 +207,7 @@ public class KevalAutoV2 extends LinearOpMode {
                 .addTemporalMarker(() -> Servos.Slider.moveHalfway())
                 .waitSeconds(0.1)
                 .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
-                .waitSeconds(0.8)
+                .waitSeconds(0.2)
                 .lineToLinearHeading(pickingPosition)
 //                .waitSeconds(0.5)
                 .addTemporalMarker(() -> Servos.Slider.moveSlider(1))
@@ -226,7 +226,7 @@ public class KevalAutoV2 extends LinearOpMode {
                 .addTemporalMarker(() -> Servos.Slider.moveHalfway())
                 .waitSeconds(0.1)
                 .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
-                .waitSeconds(0.8)
+                .waitSeconds(0.2)
                 .lineToLinearHeading(pickingPosition)
 //                .waitSeconds(0.5)
                 .addTemporalMarker(() -> Servos.Slider.moveSlider(1))
@@ -245,7 +245,7 @@ public class KevalAutoV2 extends LinearOpMode {
                 .addTemporalMarker(() -> Servos.Slider.moveHalfway())
                 .waitSeconds(0.1)
                 .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
-                .waitSeconds(0.8)
+                .waitSeconds(0.2)
                 .lineToLinearHeading(pickingPosition)
 //                .waitSeconds(0.5)
                 .addTemporalMarker(() -> Servos.Slider.moveSlider(0.9))
@@ -355,8 +355,8 @@ public class KevalAutoV2 extends LinearOpMode {
         followTrajectory(dropCone1, drive);
         followTrajectory(pick4, drive);
         followTrajectory(dropCone1, drive);
-        followTrajectory(pick5, drive);
-        followTrajectory(dropCone1, drive);
+//        followTrajectory(pick5, drive);
+//        followTrajectory(dropCone1, drive);
 
 //        drive.followTrajectorySequence(startToCenter);
 //        drive.followTrajectorySequence(pick1);
@@ -385,6 +385,8 @@ public class KevalAutoV2 extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
+            Pose2d robotPose = drive.getPoseEstimate();
+            poseStorage = robotPose;
             Sensors.WallSensor.printDistance();
             telemetry.update();
         }

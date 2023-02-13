@@ -73,7 +73,7 @@ public class Servos {
     public static class Slider{
 
         public static void moveInside(){
-            SliderServo.setPosition(0.15);
+            SliderServo.setPosition(0.08);
         }
 
         public static void moveOutside(){
@@ -87,7 +87,7 @@ public class Servos {
 
         public static void moveSlider(double position){
 
-            position = Range.clip(position, 0.15, 1);
+            position = Range.clip(position, 0.2, 1);
             SliderServo.setPosition(position);
         }
 
@@ -98,11 +98,11 @@ public class Servos {
 
     public static class AlignBar{
         public static void inside(){
-            AlignServo.setPosition(0);
+            AlignServo.setPosition(0.3);
         }
 
         public static void outside(){
-            AlignServo.setPosition(0.9);
+            AlignServo.setPosition(0.95);
         }
 
         public static double getPosition(){
@@ -110,7 +110,7 @@ public class Servos {
         }
 
         public static void moveTo(double pos){
-            Range.clip(pos, 0, 1);
+            Range.clip(pos, 0.3, 0.95);
             AlignServo.setPosition(pos);
         }
     }

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import static org.firstinspires.ftc.teamcode.TransferClass.poseStorage;
+
 import android.transition.Slide;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -81,7 +83,7 @@ public class V1 extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, telemetry);
 
-        Pose2d startPose = new Pose2d(12.00, 60.00, Math.toRadians(180));
+        Pose2d startPose = poseStorage;
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
@@ -186,6 +188,16 @@ public class V1 extends LinearOpMode {
             boolean B2 = gamepad2.b;
             boolean X2 = gamepad2.x;
             boolean Y2 = gamepad2.y;
+
+
+            if(gamepad1.x){
+                if(lift.getPosition()[0] >= 0){
+                    Servos.Wrist.goInit();
+                }
+                else{
+                    
+                }
+            }
 
 
             if (A2) { //incase finished all 18, auto not used, then use auto stack

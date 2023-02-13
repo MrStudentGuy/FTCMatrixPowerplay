@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.Autonomous.DeprecatedAutos;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 
 @Autonomous
-//@Disabled
+@Disabled
 public class MatchAuto_Right extends LinearOpMode {
     Lift lift = null;
     Servos servos = null;
