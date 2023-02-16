@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Autonomous(name="Left 4+1 -> HIGH POLE", group = "Left Autos")
+@Autonomous(name="Right 4+1 -> HIGH", group = "Right Autos")
 //@Disabled
 public class Right_High extends LinearOpMode {
 
@@ -80,9 +80,9 @@ public class Right_High extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
 
 
-    final Pose2d droppingPosition0 = new Pose2d(39.2, -12.8, Math.toRadians(180));
-    final Pose2d droppingPosition = new Pose2d(39.2, -12.00, Math.toRadians(180));
-    final Pose2d pickingPosition = new Pose2d(49, -12, Math.toRadians(180));
+    final Pose2d droppingPosition0 = new Pose2d(40, -12.8, Math.toRadians(0));
+    final Pose2d droppingPosition = new Pose2d(40, -12.00, Math.toRadians(0));
+    final Pose2d pickingPosition = new Pose2d(48.3, -12, Math.toRadians(0));
 
 
     @Override
@@ -128,13 +128,13 @@ public class Right_High extends LinearOpMode {
         setInitialPositions();
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, telemetry);
-        Pose2d startPose = new Pose2d(-32, -63.3, Math.toRadians(180));
+        Pose2d startPose = new Pose2d(32, -63.3, Math.toRadians(0));
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence startToCenter = drive.trajectorySequenceBuilder(startPose)
                 .addTemporalMarker(() -> lift.extendToLowPole())
                 .addTemporalMarker(() -> Servos.Wrist.goTop())
-                .addTemporalMarker(() -> turret.setDegree(140))
+                .addTemporalMarker(() -> turret.setDegree(133))
                 .addTemporalMarker(() -> lift.extendToHighPole())
                 .addTemporalMarker(() -> Servos.Slider.moveSlider(1))
 //                .addTemporalMarker(() -> Servos.AlignBar.outside())
@@ -166,7 +166,7 @@ public class Right_High extends LinearOpMode {
                 .build();
 
         TrajectorySequence dropCone1 = drive.trajectorySequenceBuilder(pick1.end())
-                .addTemporalMarker(() -> turret.setDegree(146))
+                .addTemporalMarker(() -> turret.setDegree(140))
 //                .addTemporalMarker(()-> Servos.Slider.moveInside())
                 .addTemporalMarker(() -> Servos.Wrist.goTop())
                 .addTemporalMarker(() -> Servos.Slider.moveSlider(1))

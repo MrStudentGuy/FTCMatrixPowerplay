@@ -26,9 +26,10 @@ import java.util.Objects;
 @TeleOp(name = "-->TELEOP \uD83D\uDC4C\uD83D\uDC4C\uD83D\uDE0D\uD83C\uDFB6\uD83C\uDFB6\uD83D\uDE0E\uD83D\uDE1C\uD83D\uDE2D\uD83E\uDD70\uD83D\uDE08\uD83D\uDC7A\uD83D\uDC7A\uD83E\uDD23\uD83E\uDD23\uD83D\uDE15\uD83D\uDE1C\uD83D\uDE2D\uD83E\uDD70\uD83E\uDD70\uD83D\uDE18")
 @Config
 public class V1 extends LinearOpMode {
+    ElapsedTime teleOpTime = new ElapsedTime();
     public static double targetDegree = 0;
     private final double GEAR_RATIO = 10.5 * 122.0 / 18.0;
-    private final double CPR = 28;                //counts
+    private final double CPR = 28;             //counts
     private final double ticks_in_degree = CPR * GEAR_RATIO / 360.0;
 
     private boolean wristInFlag = false;
@@ -79,7 +80,7 @@ public class V1 extends LinearOpMode {
         sensors = new Sensors(hardwareMap, telemetry);
 
         controller = new PIDController(Kp, Ki, Kd);
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+//        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, telemetry);
 
@@ -108,7 +109,7 @@ public class V1 extends LinearOpMode {
 
         setInitialPositions();
         teleOpTime.reset();
-
+        teleOpTime.reset();
         while (opModeIsActive()) {
             controller.setPID(Kp, Ki, Kd); //turret cant use default values, too big, not accurate, hence custom values
 
@@ -204,7 +205,7 @@ public class V1 extends LinearOpMode {
             if (A2) { //incase finished all 18, auto not used, then use auto stack
                 Servos.Wrist.goGripping();
                 lift.extendTo(lift.AUTO_POSITION[4], 0.8);
-            } else if (B2) {
+            } else if (B2 || gamepad1.triangle) {
                 Servos.Wrist.goGripping();
                 lift.extendTo(lift.AUTO_POSITION[3], 0.8);
             } else if (Y2) {

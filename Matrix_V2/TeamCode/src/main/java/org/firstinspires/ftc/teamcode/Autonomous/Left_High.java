@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Autonomous(name="Left 4+1 -> HIGH POLE", group = "Left Autos")
+@Autonomous(name="Left 4+1 -> HIGH", group = "Left Autos")
 //@Disabled
 public class Left_High extends LinearOpMode {
 
@@ -107,7 +107,7 @@ public class Left_High extends LinearOpMode {
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override

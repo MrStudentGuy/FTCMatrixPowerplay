@@ -18,7 +18,7 @@ public class Turret {
 
     public Turret(HardwareMap hardwareMap, String deviceName, Telemetry telemetry){
         motor = hardwareMap.get(DcMotorEx.class, deviceName);
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void setDegree(double degree){
