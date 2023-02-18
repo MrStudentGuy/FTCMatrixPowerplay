@@ -89,7 +89,7 @@ public class Left_High extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         PhotonCore.enable();
 
-        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class); //access battery volages
 
         if(allHubs.get(0).getInputVoltage(VoltageUnit.VOLTS) < 12.2){
             telemetry.addLine("******************WARNING: RELIABLITY ISSUES MAY BE EXPERIENCED IN AUTO DUE TO BATTERY******************");
@@ -99,7 +99,7 @@ public class Left_High extends LinearOpMode {
         Pose2d PARKING1 = new Pose2d(-60, -12, Math.toRadians(180));
         Pose2d PARKING2 = new Pose2d(-36, -13, Math.toRadians(180));
         Pose2d PARKING3 = new Pose2d(-12, -12, Math.toRadians(180));
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()); 
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
@@ -132,7 +132,7 @@ public class Left_High extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence startToCenter = drive.trajectorySequenceBuilder(startPose)
-                .addTemporalMarker(() -> lift.extendToLowPole())
+                .addTemporalMarker(() -> lift.extendToLowPole()) //markers where u yell them to do something at an instance 
                 .addTemporalMarker(() -> Servos.Wrist.goTop())
                 .addTemporalMarker(() -> turret.setDegree(-140))
                 .addTemporalMarker(() -> lift.extendToHighPole())
@@ -308,20 +308,20 @@ public class Left_High extends LinearOpMode {
 //        waitForStart();
         while (!isStarted() && !isStopRequested()) {
             if(allHubs.get(0).getInputVoltage(VoltageUnit.VOLTS) < 12.2 || allHubs.get(1).getInputVoltage(VoltageUnit.VOLTS) < 12.2){
-                telemetry.addLine("******************WARNING: RELIABLITY ISSUES MAY BE EXPERIENCED IN AUTO DUE TO BATTERY******************\n\n\n");
+                telemetry.addLine("******************WARNING: RELIABLITY ISSUES MAY BE EXPERIENCED IN AUTO DUE TO BATTERY******************\n\n\n"); // to warn the drivers
             }
-            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();// for the qr code
             if (currentDetections.size() != 0) {
                 boolean tagFound = false;
                 for (AprilTagDetection tag : currentDetections) {
                     if (tag.id == MATRIX_IDS[PARKING_ZONE1] || tag.id == MATRIX_IDS[PARKING_ZONE2] || tag.id == MATRIX_IDS[PARKING_ZONE3]) {
                         tagOfInterest = tag;
                         tagFound = true;
-                        break;
+                        break;//if tag matches with any of the ids
                     }
                 }
                 if (tagFound) {
-                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
+                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:"); // tell the driver
                     tagToTelemetry(tagOfInterest);
                 } else {
                     telemetry.addLine("Don't see tag of interest :(");
@@ -338,7 +338,7 @@ public class Left_High extends LinearOpMode {
                     telemetry.addLine("(The tag has never been seen)");
                 } else {
                     telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                    tagToTelemetry(tagOfInterest);
+                    tagToTelemetry(tagOfInterest);                                
                 }
             }
             telemetry.update();
@@ -396,7 +396,7 @@ public class Left_High extends LinearOpMode {
             turretAngle = turret.getDegree();
             Sensors.WallSensor.printDistance();
             telemetry.update();
-        }
+        }// putting dataans storing data for telop
     }
 
 
@@ -405,9 +405,9 @@ public class Left_High extends LinearOpMode {
         Servos.Gripper.closeGripper();
         sleep(30);
         Servos.Wrist.goInit();
-        turret.setDegree(0);
+        turret.setDegree(0);// so that the gripper doesnt die
     }
-
+                                     //class           //object
     private boolean checkForTime(TrajectorySequence sequence){
         double sequenceDuration = sequence.duration();
         if(sequenceDuration > 30){
@@ -432,6 +432,6 @@ public class Left_High extends LinearOpMode {
         telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z * FEET_PER_METER));
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll))); // tell u where the april flag is it is just good yo have
     }
 }
