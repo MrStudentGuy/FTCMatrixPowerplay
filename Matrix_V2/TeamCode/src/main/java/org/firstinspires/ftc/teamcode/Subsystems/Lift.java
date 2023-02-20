@@ -1,15 +1,12 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.profile.MotionProfile;
-import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -21,23 +18,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 @Config
 public class Lift {
 
-    ElapsedTime timer = new ElapsedTime();
+//    ElapsedTime timer = new ElapsedTime();
 
     ElevatorFeedforward feedforward = new ElevatorFeedforward(0, 2.26, 0.34, 0.01);
 
-////    MotionProfile profile = MotionProfileGenerator.generateSimpleMotionProfile()
-//    public static double left_integralSum = 0;
-//    public static double leftMotorP = 0;
-//    public static double leftMotorI = 0;
-//    public static double leftMotorD = 0;
-//    public static double leftMotorF = 0;
-//    public static double left_prevError = 0;
-//
-//    public static double rightMotorP = 0;
-//    public static double rightMotorI = 0;
-//    public static double rightMotorD = 0;
-//    public static double rightMotorF = 0;
-//    public static double right_prevError = 0;
+
 
     DcMotorEx leftMotor, rightMotor;
     public final int GRIPPING_POSITION = 0, LOW_POLE = 1, MID_POLE = 2, HIGH_POLE = 3;
@@ -62,8 +47,6 @@ public class Lift {
         rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         leftMotor.setTargetPositionTolerance(10);
         rightMotor.setTargetPositionTolerance(10);
-        PIDFCoefficients leftCoeff = leftMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
-        PIDFCoefficients rightCoeff = rightMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
 //        leftMotorP = leftCoeff.p;
 //        leftMotorI = leftCoeff.i;
 //        leftMotorD = leftCoeff.d;
@@ -75,6 +58,8 @@ public class Lift {
 //        rightMotorF = rightCoeff.f;
     }
 
+
+    @Deprecated
     public void applyFeedforward(int position, int vel, int acc){
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -189,7 +174,7 @@ extendTousingVelo(POSITIONS[HIGH_POLE], 2000);
 
     /**
      * Get the position of the motors as an array
-     * @return The positions of the motors as an array of two elements. 0->Left Motor, 1->Right Motor
+     * @return The positions of the motors as an array of two elements. 0-Left Motor, 1-Right Motor
      */
 
     public double[] getPosition(){
@@ -221,7 +206,7 @@ extendTousingVelo(POSITIONS[HIGH_POLE], 2000);
 
     /**
      * Get the current being consumed by each motor as an array
-     * @return The current consumption in Milliamperes of the motors as an array of two elements. 0->Left Motor, 1->Right Motor
+     * @return The current consumption in Milliamperes of the motors as an array of two elements. 0-Left Motor, 1-Right Motor
      */
 
     public double[] getCurrent(){
