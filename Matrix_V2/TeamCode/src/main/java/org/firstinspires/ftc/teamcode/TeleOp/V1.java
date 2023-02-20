@@ -110,6 +110,9 @@ public class V1 extends LinearOpMode {
         setInitialPositions();
         teleOpTime.reset();
         teleOpTime.reset();
+        Servos.AlignBar.inside();
+
+
         while (opModeIsActive()) {
             controller.setPID(Kp, Ki, Kd); //turret cant use default values, too big, not accurate, hence custom values
 

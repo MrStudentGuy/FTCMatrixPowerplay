@@ -102,7 +102,7 @@ public class Servos {
         }
 
         public static void outside(){
-            AlignServo.setPosition(0.95);
+            AlignServo.setPosition(1);
         }
 
         public static double getPosition(){
@@ -110,7 +110,7 @@ public class Servos {
         }
 
         public static void moveTo(double pos){
-            Range.clip(pos, 0.3, 0.95);
+            Range.clip(pos, 0.3, 1);
             AlignServo.setPosition(pos);
         }
     }

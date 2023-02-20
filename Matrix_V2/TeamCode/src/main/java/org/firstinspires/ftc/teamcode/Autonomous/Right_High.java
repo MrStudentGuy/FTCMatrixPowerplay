@@ -81,7 +81,7 @@ public class Right_High extends LinearOpMode {
 
 
     final Pose2d droppingPosition0 = new Pose2d(40, -12.8, Math.toRadians(0));
-    final Pose2d droppingPosition = new Pose2d(40, -12.00, Math.toRadians(0));
+    final Pose2d droppingPosition = new Pose2d(39.65, -11.65, Math.toRadians(0));
     final Pose2d pickingPosition = new Pose2d(48.3, -12, Math.toRadians(0));
 
 
@@ -100,7 +100,7 @@ public class Right_High extends LinearOpMode {
         Pose2d PARKING2 = new Pose2d(-36 + 72, -13, Math.toRadians(180));
         Pose2d PARKING3 = new Pose2d(-12 + 72, -12, Math.toRadians(180));
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);

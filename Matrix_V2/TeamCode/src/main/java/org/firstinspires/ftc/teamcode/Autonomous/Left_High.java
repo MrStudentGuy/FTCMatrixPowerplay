@@ -134,7 +134,7 @@ public class Left_High extends LinearOpMode {
         TrajectorySequence startToCenter = drive.trajectorySequenceBuilder(startPose)
                 .addTemporalMarker(() -> lift.extendToLowPole())
                 .addTemporalMarker(() -> Servos.Wrist.goTop())
-                .addTemporalMarker(() -> turret.setDegree(-140))
+                .addTemporalMarker(() -> turret.setDegree(-144))
                 .addTemporalMarker(() -> lift.extendToHighPole())
                 .addTemporalMarker(() -> Servos.Slider.moveSlider(1))
 //                .addTemporalMarker(() -> Servos.AlignBar.outside())
@@ -344,6 +344,8 @@ public class Left_High extends LinearOpMode {
             telemetry.update();
             sleep(20);
         }
+
+        Servos.AlignBar.inside();
 
         AutoTime.reset();                       //Start Button has been pressed, reset the timer to keep track of the time passed in Autonomous in code
         lift.reset();                           //Reset the lift to 0, using the current position as the home position   (Usually at the hard stop)

@@ -15,6 +15,9 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
+/**
+ * Subsystem class containing lift functions and hardware mappings.
+ */
 @Config
 public class Lift {
 
@@ -45,6 +48,11 @@ public class Lift {
 
     int liftPosition = 0;
 
+    /**
+     * Creates a new Lift subsystem, setting the directions of the motors in accordance with the physical mechanism. A Tolerance of 10 counts is added in case of uneven extension.
+     * @param hardwareMap The hardware map being used by the current opMode
+     * @param telemetry Telemetry needs to be passed in to display currents and positions when required.
+     */
     public Lift(HardwareMap hardwareMap, Telemetry telemetry){
         leftMotor = hardwareMap.get(DcMotorEx.class, "leftMotor");
         rightMotor = hardwareMap.get(DcMotorEx.class, "rightMotor");
@@ -73,6 +81,12 @@ public class Lift {
         leftMotor.setPower(feedforward.calculate(vel, acc));
     }
 
+    /**
+     * Extend to a given position while limiting to a certain amount of power.
+     * @param position The position the lift should extend to (in encoder counts)
+     * @param power The maximum power the lift can use to reach the required position
+     */
+
     public void extendTo(int position, double power){
 //        PIDFCoefficients left_coeffs = new PIDFCoefficients( leftMotorP, leftMotorI, leftMotorD, leftMotorF);
 //        PIDFCoefficients right_coeffs = new PIDFCoefficients(rightMotorP, rightMotorI, rightMotorD, rightMotorF);
@@ -90,6 +104,11 @@ public class Lift {
 
     //MAX is 2799 eps
 
+    /**
+     * Extend to a given position while limiting to a certain velocity(in encoder counts per second).
+     * @param position The position the lift should extend to (in encoder counts)
+     * @param velocity The maximum velocity the lift can use to reach the required position (in encoder counts/second).
+     */
     public void extendTousingVelo(int position, double velocity){
         leftMotor.setTargetPosition(position);
         leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -100,12 +119,18 @@ public class Lift {
         rightMotor.setVelocity(velocity);
     }
 
+    /**
+     * Quick method of setting the lift to the Highest Junction
+     */
     public void extendToHighPole(){
         liftPosition = 3;
 //        extendTo(POSITIONS[HIGH_POLE], 1);
 extendTousingVelo(POSITIONS[HIGH_POLE], 2000);
     }
 
+    /**
+     * Quick method of setting the lift to the Low Junction
+     */
     public void extendToLowPole(){
         double velocity = 2000;
         if(liftPosition > 1){
@@ -120,6 +145,10 @@ extendTousingVelo(POSITIONS[HIGH_POLE], 2000);
 //        liftPosition = 1;
 //        extendTo(POSITIONS[LOW_POLE], power);
     }
+
+    /**
+     * Quick method of setting the lift to the Mid Junction
+     */
 
     public void extendToMidPole(){
         double velocity = 2000;
@@ -137,6 +166,9 @@ extendTousingVelo(POSITIONS[HIGH_POLE], 2000);
     }
 
 
+    /**
+     * Quick method of setting the lift to the Gripping position
+     */
     public void extendToGrippingPosition(){
         liftPosition = 0;
         extendTo(POSITIONS[GRIPPING_POSITION], 1000);
@@ -155,14 +187,29 @@ extendTousingVelo(POSITIONS[HIGH_POLE], 2000);
 //        return pError * leftMotorP + dError * leftMotorI + Ierror * leftMotorD + leftMotorF * ;
 //    }
 
+    /**
+     * Get the position of the motors as an array
+     * @return The positions of the motors as an array of two elements. 0->Left Motor, 1->Right Motor
+     */
+
     public double[] getPosition(){
         return new double[]{leftMotor.getCurrentPosition(), rightMotor.getCurrentPosition()};
     }
+
+    /**
+     * Reset encoder counts for both motors
+     */
 
     public void reset(){
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
+
+
+    /**
+     * Use raw power to control the lift.
+     * @param power Power to drive the lifts at (-1 to 1)
+     */
 
     public void setPower(double power){
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -171,6 +218,11 @@ extendTousingVelo(POSITIONS[HIGH_POLE], 2000);
         leftMotor.setPower(power);
         rightMotor.setPower(power);
     }
+
+    /**
+     * Get the current being consumed by each motor as an array
+     * @return The current consumption in Milliamperes of the motors as an array of two elements. 0->Left Motor, 1->Right Motor
+     */
 
     public double[] getCurrent(){
         return new double[]{leftMotor.getCurrent(CurrentUnit.MILLIAMPS), rightMotor.getCurrent(CurrentUnit.MILLIAMPS)};
