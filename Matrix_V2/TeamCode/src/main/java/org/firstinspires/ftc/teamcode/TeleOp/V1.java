@@ -384,6 +384,7 @@ public class V1 extends LinearOpMode {
 
 //    TODO         if(goSafeAfterReleaseFlag){
 //                if(safetyTimer.milliseconds() >= 400 && safetyTimer.milliseconds() < 500){
+//                    turret.setDegree(0);
 //                    Servos.Wrist.goInit();
 //                }
 //                if(safetyTimer.milliseconds() >= 500  && safetyTimer.milliseconds() < 700){
