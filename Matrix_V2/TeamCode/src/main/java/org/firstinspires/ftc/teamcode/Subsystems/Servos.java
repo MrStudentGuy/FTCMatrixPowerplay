@@ -28,6 +28,7 @@ public class Servos {
         public static String gripperState = "OPEN";
         private static final double gripperOpenPosition = 0.5;
         private static final double gripperClosePosition = 0;
+        private static final double gripperBeaconPosition = 0.26;
 
         public static void openGripper() {
             gripperState = "OPEN";
@@ -37,6 +38,11 @@ public class Servos {
         public static void closeGripper() {
             gripperState = "CLOSED";
             GripperServo.setPosition(gripperClosePosition);
+        }
+
+        public static void gripBeacon(){
+            gripperState = "OPEN";
+            GripperServo.setPosition(gripperBeaconPosition);
         }
 
         public static void setPosition(double pos){

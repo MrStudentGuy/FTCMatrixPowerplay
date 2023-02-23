@@ -194,13 +194,13 @@ public class V1 extends LinearOpMode {
 
 
             if(gamepad1.x || wristInFlag){
-                if(lift.getPosition()[0] >= -5){
+                if(lift.getPosition()[0] >= 90 ){
                     wristInFlag = false;
                     Servos.Wrist.goInit();
                 }
                 else{
                     wristInFlag = true;
-                    lift.extendTo(0, 1);
+                    lift.extendTo(100, 1);
                 }
             }
 
@@ -304,6 +304,11 @@ public class V1 extends LinearOpMode {
             }
 
 
+            if(gamepad2.start || gamepad1.start){
+                Servos.Gripper.gripperState = "BEACON";
+            }
+
+
             if (RB && !RBFlag) {
                 RBFlag = true; //only once
                 if (Objects.equals(Servos.Gripper.gripperState, "OPEN")) {
@@ -321,6 +326,9 @@ public class V1 extends LinearOpMode {
 //                            sleep(300);
 //                        }
 //                    }
+                }
+                else if(Objects.equals(Servos.Gripper.gripperState, "BEACON")){
+                    Servos.Gripper.gripBeacon();
                 }
             }
 

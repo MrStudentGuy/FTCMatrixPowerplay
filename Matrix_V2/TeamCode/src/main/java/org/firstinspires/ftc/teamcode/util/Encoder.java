@@ -100,7 +100,7 @@ public class Encoder {
 
     /**
      * Gets the velocity directly from the underlying motor and compensates for the direction
-     * See {@link #getCorrectedVelocity} for high (>2^15) counts per second velocities (such as on REV Through Bore)
+     * See {@link #getCorrectedVelocity} for high (2^15) counts per second velocities (such as on REV Through Bore)
      *
      * @return raw velocity
      */

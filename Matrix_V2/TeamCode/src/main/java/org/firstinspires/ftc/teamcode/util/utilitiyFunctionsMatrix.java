@@ -20,8 +20,8 @@ public class utilitiyFunctionsMatrix {
 
         /**
          * Creates a new SlewRateLimiter with the given positive and negative rate limits and initial value
-         * @param positiveRateLimit The rate of change limit in the positive direction, in units per millisecond. This is expected to be positive.
-         * @param negativeRateLimit The rate of change limit in the negative direction, in units per millisecond. This is expected to be negative.
+         * @param positiveRateLimit The rate of change limit in the positive direction, in units per second. This is expected to be positive.
+         * @param negativeRateLimit The rate of change limit in the negative direction, in units per second. This is expected to be negative.
          * @param initialValue The initial value of the input
          */
         public SlewRateLimiter(double positiveRateLimit, double negativeRateLimit, double initialValue){
@@ -29,7 +29,7 @@ public class utilitiyFunctionsMatrix {
             m_positiveRateLimit = positiveRateLimit;
             m_negativeRateLimit = negativeRateLimit;
             m_prevVal = initialValue;
-            m_prevTime = timer.milliseconds();
+            m_prevTime = timer.seconds();
         }
 
         /**
@@ -46,7 +46,7 @@ public class utilitiyFunctionsMatrix {
          * @return The filtered Value, which will not change faster than the slew rate.
          */
         public double calculate(double input){
-            double currentTime = timer.milliseconds();
+            double currentTime = timer.seconds();
             double elapsedTime = currentTime - m_prevTime;
 
             m_prevVal += Range.clip(
@@ -64,7 +64,7 @@ public class utilitiyFunctionsMatrix {
 
         public void reset(double value){
             m_prevVal = value;
-            m_prevTime = timer.milliseconds();
+            m_prevTime = timer.seconds();
         }
     }
 

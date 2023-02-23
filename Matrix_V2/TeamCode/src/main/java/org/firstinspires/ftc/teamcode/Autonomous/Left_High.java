@@ -35,7 +35,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Autonomous class for Left 4+1 on the Left Center High Pole
+ */
 @Autonomous(name="Left 4+1 -> HIGH", group = "Left Autos")
 //@Disabled
 public class Left_High extends LinearOpMode {
@@ -46,6 +48,9 @@ public class Left_High extends LinearOpMode {
     Turret turret = null;
     Sensors sensors = null;
 
+    /**
+     * The time spent in Autonomous
+     */
     ElapsedTime AutoTime = new ElapsedTime();
     private final double totalTime = 30;
     private double timeLeft = 30;
@@ -84,7 +89,10 @@ public class Left_High extends LinearOpMode {
     final Pose2d droppingPosition = new Pose2d(-39.2, -12.00, Math.toRadians(180));
     final Pose2d pickingPosition = new Pose2d(-49, -12, Math.toRadians(180));
 
-
+    /**
+     * {@inheritDoc}
+     * @throws InterruptedException
+     */
     @Override
     public void runOpMode() throws InterruptedException {
         PhotonCore.enable();
@@ -105,11 +113,18 @@ public class Left_High extends LinearOpMode {
 
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void onOpened() {
                 camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
             }
 
+            /**
+             * {@inheritDoc}
+             * @param errorCode
+             */
             @Override
             public void onError(int errorCode) {
 
@@ -131,7 +146,11 @@ public class Left_High extends LinearOpMode {
         Pose2d startPose = new Pose2d(-32, -63.3, Math.toRadians(180));
         drive.setPoseEstimate(startPose);
 
+        /**
+         * TrajectorySequence for moving from starting position to dropping preload cone on high pole
+         */
         TrajectorySequence startToCenter = drive.trajectorySequenceBuilder(startPose)
+
                 .addTemporalMarker(() -> lift.extendToLowPole())
                 .addTemporalMarker(() -> Servos.Wrist.goTop())
                 .addTemporalMarker(() -> turret.setDegree(-144))
@@ -148,6 +167,10 @@ public class Left_High extends LinearOpMode {
                 .waitSeconds(0.5)
                 .build();
 
+
+        /**
+         * TrajectorySequence for picking up the topmost cone
+         */
         TrajectorySequence pick1 = drive.trajectorySequenceBuilder(startToCenter.end())
                 .addTemporalMarker(() -> lift.extendTo(lift.AUTO_POSITION[4], 1))
                 .addTemporalMarker(() -> Servos.Slider.moveHalfway())
@@ -165,6 +188,9 @@ public class Left_High extends LinearOpMode {
                 .waitSeconds(0.2)
                 .build();
 
+        /**
+         * General dropping sequence
+         */
         TrajectorySequence dropCone1 = drive.trajectorySequenceBuilder(pick1.end())
                 .addTemporalMarker(() -> turret.setDegree(-146))
 //                .addTemporalMarker(()-> Servos.Slider.moveInside())
@@ -181,12 +207,15 @@ public class Left_High extends LinearOpMode {
                 .waitSeconds(1)
                 .addTemporalMarker(() -> Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
-                .addTemporalMarker(() -> Servos.Gripper.setPosition(1))
+                .addTemporalMarker(() -> Servos.Gripper.setPosition(0.3))
                 .addTemporalMarker(() -> Servos.AlignBar.inside())
                 .addTemporalMarker(()->Servos.Slider.moveOutside())
                 .waitSeconds(0.1)
                 .build();
 
+        /**
+         * TrajectorySequence for picking up the second cone
+         */
         TrajectorySequence pick2 = drive.trajectorySequenceBuilder(dropCone1.end())
 //                .addTemporalMarker(()-> Servos.Wrist.goGripping())
                 .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
@@ -206,6 +235,9 @@ public class Left_High extends LinearOpMode {
                 .waitSeconds(0.2)
                 .build();
 
+        /**
+         * TrajectorySequence for picking up the third cone
+         */
         TrajectorySequence pick3 = drive.trajectorySequenceBuilder(dropCone1.end())
 //                .addTemporalMarker(()-> Servos.Wrist.goGripping())
                 .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
@@ -225,6 +257,10 @@ public class Left_High extends LinearOpMode {
                 .waitSeconds(0.2)
                 .build();
 
+
+        /**
+         * TrajectorySequence for picking up the fourth cone
+         */
         TrajectorySequence pick4 = drive.trajectorySequenceBuilder(dropCone1.end())
 //                .addTemporalMarker(()-> Servos.Wrist.goGripping())
                 .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
@@ -243,6 +279,11 @@ public class Left_High extends LinearOpMode {
                 .addTemporalMarker(() -> lift.extendToLowPole())
                 .waitSeconds(0.2)
                 .build();
+
+        @Deprecated
+        /**
+         * TrajectorySequence for picking up the fifth cone
+         */
 
         TrajectorySequence pick5 = drive.trajectorySequenceBuilder(dropCone1.end())
 //                .addTemporalMarker(()-> Servos.Wrist.goGripping())
@@ -270,6 +311,9 @@ public class Left_High extends LinearOpMode {
                 .build();
 
 
+        /**
+         * Sequence for going and parking at parking zone 1
+         */
         TrajectorySequence goToP1 = drive.trajectorySequenceBuilder((dropCone1.end()))
                 .addTemporalMarker(() -> Servos.Wrist.goInit())
                 .addTemporalMarker(() -> Servos.Gripper.closeGripper())
@@ -281,6 +325,10 @@ public class Left_High extends LinearOpMode {
                 .addTemporalMarker(() -> lift.extendTo(0, 0.5))
 //                .lineToLinearHeading(new Pose2d(PARKING1.getX(), PARKING1.getY()-24, Math.toRadians(90)))
                 .build();
+
+        /**
+         * Sequence for going and parking at parking zone 2
+         */
         TrajectorySequence goToP2 = drive.trajectorySequenceBuilder((dropCone1.end()))
                 .addTemporalMarker(() -> turret.setDegree(0))
                 .addTemporalMarker(() -> Servos.Wrist.goInit())
@@ -292,6 +340,10 @@ public class Left_High extends LinearOpMode {
 //                .lineToLinearHeading(new Pose2d(PARKING2.getX(), PARKING2.getY()-24, Math.toRadians(90)))
                 .addTemporalMarker(() -> Servos.Slider.moveInside())
                 .build();
+
+        /**
+         * Sequence for going and parking at parking zone 3
+         */
         TrajectorySequence goToP3 = drive.trajectorySequenceBuilder((dropCone1.end()))
                 .addTemporalMarker(() -> turret.setDegree(0))
                 .addTemporalMarker(() -> Servos.Wrist.goInit())
@@ -396,7 +448,6 @@ public class Left_High extends LinearOpMode {
             Pose2d robotPose = drive.getPoseEstimate();
             poseStorage = robotPose;
             turretAngle = turret.getDegree();
-            Sensors.WallSensor.printDistance();
             telemetry.update();
         }
     }
@@ -410,6 +461,12 @@ public class Left_High extends LinearOpMode {
         turret.setDegree(0);
     }
 
+
+    /**
+     * Check whether the sequence can be executed safely within time
+     * @param sequence The sequence to be checked
+     * @return True if the sequence is safe to be executed
+     */
     private boolean checkForTime(TrajectorySequence sequence){
         double sequenceDuration = sequence.duration();
         if(sequenceDuration > 30){
@@ -420,6 +477,12 @@ public class Left_High extends LinearOpMode {
         return !(sequenceDuration > timeLeft);
     }
 
+    /**
+     * Follow a sequence, using {@link #checkForTime(TrajectorySequence) CheckforTime} to get the legality of the sequence
+     * @param sequence The sequence to follow
+     * @param localdrive A reference of the drive class being used for trajectory following
+     */
+
     private void followTrajectory(TrajectorySequence sequence, SampleMecanumDrive localdrive){
         if(checkForTime(sequence) && !EmergencyParkFlag)
             localdrive.followTrajectorySequence(sequence);
@@ -427,6 +490,10 @@ public class Left_High extends LinearOpMode {
             EmergencyParkFlag = true;
     }
 
+    /**
+     * Get the information about the tag being detected and display it
+     * @param detection The tag detection currently active
+     */
     void tagToTelemetry(AprilTagDetection detection) {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
         telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x * FEET_PER_METER));
