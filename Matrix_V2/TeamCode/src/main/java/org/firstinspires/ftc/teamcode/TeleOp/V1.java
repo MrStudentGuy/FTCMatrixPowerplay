@@ -27,6 +27,7 @@ import java.util.Objects;
 @Config
 public class V1 extends LinearOpMode {
     ElapsedTime teleOpTime = new ElapsedTime();
+    ElapsedTime safetyTimer = new ElapsedTime();
     public static double targetDegree = 0;
     private final double GEAR_RATIO = 10.5 * 122.0 / 18.0;
     private final double CPR = 28;             //counts
@@ -47,6 +48,9 @@ public class V1 extends LinearOpMode {
     boolean LBFlag = false;
     boolean AutoCycleFlag = false;
     boolean AutoCycleProceed = false;
+
+
+    boolean goSafeAfterReleaseFlag = false;
 
 
     ElapsedTime AutoCycleTimer = new ElapsedTime();
@@ -105,7 +109,7 @@ public class V1 extends LinearOpMode {
 //        lift.reset();
 //        turret.reset();
 
-        calibrateTurret();
+//        calibrateTurret();
 
         setInitialPositions();
         teleOpTime.reset();
@@ -315,6 +319,11 @@ public class V1 extends LinearOpMode {
                     Servos.Gripper.closeGripper();
                 } else if (Objects.equals(Servos.Gripper.gripperState, "CLOSED")) {
                     Servos.Gripper.openGripper();
+//TODO                    if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]){
+//                        goSafeAfterReleaseFlag = true;
+//                        safetyTimer.reset();
+//                    }
+
 //                    if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]) {
 //                        Servos.AlignBar.moveTo(0.7);
 //                        if (Servos.AlignBar.getPosition() > 0.4) {
@@ -373,6 +382,19 @@ public class V1 extends LinearOpMode {
                 gamepad1.rumble(0.5, 0.5, 100);
             }
 
+//    TODO         if(goSafeAfterReleaseFlag){
+//                if(safetyTimer.milliseconds() >= 400 && safetyTimer.milliseconds() < 500){
+//                    Servos.Wrist.goInit();
+//                }
+//                if(safetyTimer.milliseconds() >= 500  && safetyTimer.milliseconds() < 700){
+//                    Servos.Gripper.closeGripper();
+//                }
+//                if(safetyTimer.milliseconds() >= 700){
+//                    lift.extendTo(0, 1);
+//                    goSafeAfterReleaseFlag = false;
+//                }
+//            }
+
 //            if(teleOpTime.seconds())
 
 
@@ -406,6 +428,7 @@ public class V1 extends LinearOpMode {
         }
     }
 
+    @Deprecated
     private void calibrateTurret(){
         double currentDelta = turret.getDegree() - turretAngle;
         if(Math.abs(currentDelta)>1){                           //if the current error has an absolute value of greater than 1 degree, rotate the turret in the appropriate direction
