@@ -296,7 +296,7 @@ public class V1 extends LinearOpMode {
             if (UP) {
                 Servos.Wrist.goTop();
                 lift.extendToHighPole();
-            } else if (RIGHT) {
+            } else if (RIGHT && lift.getPosition()[0] >= lift.POSITIONS[lift.LOW_POLE]-100) {
                 Servos.Wrist.goGripping();
                 lift.extendToGrippingPosition();
             } else if (DOWN) {
