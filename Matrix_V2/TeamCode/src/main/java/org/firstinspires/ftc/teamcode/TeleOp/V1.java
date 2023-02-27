@@ -135,9 +135,9 @@ public class V1 extends LinearOpMode {
             double drivePowerThrottle, drivePowerStrafe, drivePowerHeading;
 
             if (gamepad1.right_trigger > 0.3 || gamepad1.left_stick_button || gamepad1.right_stick_button) {       //Turn on slow mode
-                drivePowerThrottle = 0.3;
-                drivePowerStrafe = 0.3;
-                drivePowerHeading = 0.2; //slow down - delicate situation
+                drivePowerThrottle = 0.4;
+                drivePowerStrafe = 0.4;
+                drivePowerHeading = 0.4; //slow down - delicate situation
             } else {
                 drivePowerThrottle = 1;
                 drivePowerStrafe = 1;
@@ -197,14 +197,15 @@ public class V1 extends LinearOpMode {
             boolean Y2 = gamepad2.y;
 
 
-            if(gamepad1.x || wristInFlag){
-                if(lift.getPosition()[0] >= 90 ){
+            if(gamepad1.a || wristInFlag){
+                if(lift.getPosition()[0] >= 59 ){
                     wristInFlag = false;
                     Servos.Wrist.goInit();
+                    Servos.Gripper.closeGripper();
                 }
                 else{
                     wristInFlag = true;
-                    lift.extendTo(100, 1);
+                    lift.extendTo(60, 1);
                 }
             }
 
@@ -296,7 +297,7 @@ public class V1 extends LinearOpMode {
             if (UP) {
                 Servos.Wrist.goTop();
                 lift.extendToHighPole();
-            } else if (RIGHT && lift.getPosition()[0] >= lift.POSITIONS[lift.LOW_POLE]-100) {
+            } else if ((RIGHT || gamepad2.dpad_down) && Servos.Wrist.wristState != "INIT") {
                 Servos.Wrist.goGripping();
                 lift.extendToGrippingPosition();
             } else if (DOWN) {
@@ -319,10 +320,10 @@ public class V1 extends LinearOpMode {
                     Servos.Gripper.closeGripper();
                 } else if (Objects.equals(Servos.Gripper.gripperState, "CLOSED")) {
                     Servos.Gripper.openGripper();
-//TODO                    if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]){
-//                        goSafeAfterReleaseFlag = true;
-//                        safetyTimer.reset();
-//                    }
+                    if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]){
+                        goSafeAfterReleaseFlag = true;
+                        safetyTimer.reset();
+                    }
 
 //                    if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]) {
 //                        Servos.AlignBar.moveTo(0.7);
@@ -360,21 +361,25 @@ public class V1 extends LinearOpMode {
                 LBFlag = false;
             }
 
-            if ((A || LEFT2) && !aFlag) {
+            if ((gamepad1.square || LEFT2) && !aFlag) {
                 aFlag = true;
-                targetDegree += 45;
+                targetDegree += 90;
                 setTurret();
 
-            } else if (!A && !LEFT2) {
+            } else if (!gamepad1.square && !LEFT2) {
                 aFlag = false;
             }
 
             if ((B || RIGHT2) && !bFlag) {
                 bFlag = true;
-                targetDegree -= 45;
+                targetDegree -= 90;
                 setTurret();
             } else if (!B && !RIGHT2) {
                 bFlag = false;
+            }
+
+            if(gamepad1.touchpad && lift.getPosition()[0] >= lift.POSITIONS[lift.MID_POLE]){
+                targetDegree= 0;
             }
 
 
@@ -382,19 +387,20 @@ public class V1 extends LinearOpMode {
                 gamepad1.rumble(0.5, 0.5, 100);
             }
 
-//    TODO         if(goSafeAfterReleaseFlag){
-//                if(safetyTimer.milliseconds() >= 400 && safetyTimer.milliseconds() < 500){
-//                    turret.setDegree(0);
-//                    Servos.Wrist.goInit();
-//                }
-//                if(safetyTimer.milliseconds() >= 500  && safetyTimer.milliseconds() < 700){
-//                    Servos.Gripper.closeGripper();
-//                }
-//                if(safetyTimer.milliseconds() >= 700){
-//                    lift.extendTo(0, 1);
-//                    goSafeAfterReleaseFlag = false;
-//                }
-//            }
+             if(goSafeAfterReleaseFlag){
+                if(safetyTimer.milliseconds() >= 400 && safetyTimer.milliseconds() < 700){
+                    if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE])
+                    targetDegree = 0;
+                    Servos.Wrist.goInit();
+                }
+                if(safetyTimer.milliseconds() >= 700  && safetyTimer.milliseconds() < 700){
+                    Servos.Gripper.closeGripper();
+                }
+                if(safetyTimer.milliseconds() >= 900){
+                    lift.extendTo(lift.LOW_POLE, 1);
+                    goSafeAfterReleaseFlag = false;
+                }
+            }
 
 //            if(teleOpTime.seconds())
 

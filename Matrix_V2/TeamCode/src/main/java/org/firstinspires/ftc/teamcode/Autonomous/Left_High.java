@@ -207,7 +207,7 @@ public class Left_High extends LinearOpMode {
                 .waitSeconds(1)
                 .addTemporalMarker(() -> Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
-                .addTemporalMarker(() -> Servos.Gripper.setPosition(0.3))
+                .addTemporalMarker(() -> Servos.Gripper.setPosition(1))
                 .addTemporalMarker(() -> Servos.AlignBar.inside())
                 .addTemporalMarker(()->Servos.Slider.moveOutside())
                 .waitSeconds(0.1)
