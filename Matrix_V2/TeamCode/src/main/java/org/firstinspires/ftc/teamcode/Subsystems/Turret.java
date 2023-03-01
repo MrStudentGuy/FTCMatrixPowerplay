@@ -10,14 +10,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class Turret {
     private DcMotorEx motor;
-    private final double GEAR_RATIO = 10.5 * 122.0/18.0;
-    private final double CPR = 28;                //counts
+    private final double GEAR_RATIO = 122.0/44.0 ;
+    private final double CPR = 8192;                //counts
     public final double CountsPerDegree = CPR * GEAR_RATIO/360.0;
 
 
 
     public Turret(HardwareMap hardwareMap, String deviceName, Telemetry telemetry){
         motor = hardwareMap.get(DcMotorEx.class, deviceName);
+
 //        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
@@ -42,8 +43,9 @@ public class Turret {
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setPower(0.5);
     }
+
     public void set(double power){
-        power = Range.clip(power, -0.5, 0.5);
+        power = Range.clip(power, -0.6, 0.6);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor.setPower(power);
     }

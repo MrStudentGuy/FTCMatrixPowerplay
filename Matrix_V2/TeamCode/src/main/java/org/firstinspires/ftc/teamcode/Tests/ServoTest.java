@@ -18,7 +18,7 @@ public class ServoTest extends LinearOpMode {
 
 
         while(opModeIsActive()){
-            testServo.setPosition(Range.clip(gamepad1.left_stick_y, 0.18, 0.8));
+            testServo.setPosition(Range.clip(gamepad1.left_stick_y, 0.45, 1));
         }
     }
 }

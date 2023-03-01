@@ -30,8 +30,8 @@ public class Sensors {
     public Sensors(HardwareMap hardwareMap, Telemetry telemetry){
         localTelemetry = telemetry;
         ultrasoundSensor = hardwareMap.get(AnalogInput.class, "ultrasound1");
-        gripperSensor = hardwareMap.get(RevColorSensorV3.class, "gripperSensor");
-        poleSensor = hardwareMap.get(Rev2mDistanceSensor.class, "poleSensor");
+//        gripperSensor = hardwareMap.get(RevColorSensorV3.class, "gripperSensor");
+//        poleSensor = hardwareMap.get(Rev2mDistanceSensor.class, "poleSensor");
 
     }
 

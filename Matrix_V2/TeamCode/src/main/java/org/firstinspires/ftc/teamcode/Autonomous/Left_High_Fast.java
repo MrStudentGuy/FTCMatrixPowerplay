@@ -38,9 +38,9 @@ import java.util.List;
 /**
  * Autonomous class for Left 4+1 on the Left Center High Pole
  */
-@Autonomous(name="Left 4+1 -> HIGH", group = "Left Autos")
+@Autonomous(name="Left 4+1 -> HIGHFAST", group = "Left Autos")
 //@Disabled
-public class Left_High extends LinearOpMode {
+public class Left_High_Fast extends LinearOpMode {
 
 
     Lift lift = null;
@@ -158,7 +158,7 @@ public class Left_High extends LinearOpMode {
                 .addTemporalMarker(() -> Servos.Slider.moveOutside())
 //                .addTemporalMarker(() -> Servos.AlignBar.outside())
                 .lineToLinearHeading(droppingPosition0)
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.55))
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.9))
                 .waitSeconds(0.5)
                 .addTemporalMarker(() -> Servos.Wrist.goGripping())
                 .addTemporalMarker(() -> Servos.Gripper.setPosition(1))
@@ -285,7 +285,7 @@ public class Left_High extends LinearOpMode {
          * TrajectorySequence for picking up the fifth cone
          */
 
-        TrajectorySequence pick5 = drive.trajectorySequenceBuilder(dropCone1.end())
+                TrajectorySequence pick5 = drive.trajectorySequenceBuilder(dropCone1.end())
 //                .addTemporalMarker(()-> Servos.Wrist.goGripping())
                 .addTemporalMarker(() -> turret.setDegreeHighPower(-10))
                 .addTemporalMarker(() -> lift.extendTo(lift.AUTO_POSITION[1], 1))
@@ -407,14 +407,14 @@ public class Left_High extends LinearOpMode {
 
         //-------------------------------------- ACTUAL ROBOT TRAJ FOLLOWING TAKES PLACE HERE -----------------------------
         followTrajectory(startToCenter, drive);
-//        followTrajectory(pick1, drive);
-//        followTrajectory(dropCone1, drive);
-//        followTrajectory(pick2, drive);
-//        followTrajectory(dropCone1, drive);
-//        followTrajectory(pick3, drive);
-//        followTrajectory(dropCone1, drive);
-//        followTrajectory(pick4, drive);
-//        followTrajectory(dropCone1, drive);
+        followTrajectory(pick1, drive);
+        followTrajectory(dropCone1, drive);
+        followTrajectory(pick2, drive);
+        followTrajectory(dropCone1, drive);
+        followTrajectory(pick3, drive);
+        followTrajectory(dropCone1, drive);
+        followTrajectory(pick4, drive);
+        followTrajectory(dropCone1, drive);
 //        followTrajectory(pick5, drive);
 //        followTrajectory(dropCone1, drive);
 

@@ -218,7 +218,8 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void update() {
         updatePoseEstimate();
-        localTelem.addData("Currents: ", leftFront.getCurrent(CurrentUnit.MILLIAMPS) + "," + leftRear.getCurrent(CurrentUnit.MILLIAMPS) + ", " + rightRear.getCurrent(CurrentUnit.MILLIAMPS) + ", " + rightFront.getCurrent(CurrentUnit.MILLIAMPS));
+//        localTelem.addData("Currents: ", leftFront.getCurrent(CurrentUnit.MILLIAMPS) + "," + leftRear.getCurrent(CurrentUnit.MILLIAMPS) + ", " + rightRear.getCurrent(CurrentUnit.MILLIAMPS) + ", " + rightFront.getCurrent(CurrentUnit.MILLIAMPS));
+//        localTelem.update();
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
         if (signal != null) setDriveSignal(signal);
     }

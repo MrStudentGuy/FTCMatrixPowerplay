@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class Servos {
+public class    Servos {
     static Servo GripperServo;
     static Servo WristServo;
     static Servo SliderServo;
@@ -26,7 +26,7 @@ public class Servos {
 
     public static class Gripper {
         public static String gripperState = "OPEN";
-        private static final double gripperOpenPosition = 0.5;
+        private static final double gripperOpenPosition = 0.4;
         private static final double gripperClosePosition = 0;
         private static final double gripperBeaconPosition = 0.26;
 
@@ -79,21 +79,21 @@ public class Servos {
     public static class Slider{
 
         public static void moveInside(){
-            SliderServo.setPosition(0.08);
-        }
-
-        public static void moveOutside(){
             SliderServo.setPosition(1);
         }
 
+        public static void moveOutside(){
+            SliderServo.setPosition(0.45);
+        }
+
         public static void moveHalfway(){
-            SliderServo.setPosition(0.425);
+            SliderServo.setPosition(0.7);
         }
 
 
         public static void moveSlider(double position){
 
-            position = Range.clip(position, 0.2, 1);
+            position = Range.clip(position, 0.45, 1);
             SliderServo.setPosition(position);
         }
 

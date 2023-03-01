@@ -291,7 +291,7 @@ public class V1 extends LinearOpMode {
                 }
 
             } else {
-                Servos.Slider.moveSlider(Math.abs(gamepad1.left_trigger));
+                Servos.Slider.moveSlider(Math.abs(1-gamepad1.left_trigger));
             }
 
             if (UP) {
@@ -363,7 +363,7 @@ public class V1 extends LinearOpMode {
 
             if ((gamepad1.square || LEFT2) && !aFlag) {
                 aFlag = true;
-                targetDegree += 90;
+//                targetDegree += 90;
                 setTurret();
 
             } else if (!gamepad1.square && !LEFT2) {
@@ -372,7 +372,7 @@ public class V1 extends LinearOpMode {
 
             if ((B || RIGHT2) && !bFlag) {
                 bFlag = true;
-                targetDegree -= 90;
+//                targetDegree -= 90;
                 setTurret();
             } else if (!B && !RIGHT2) {
                 bFlag = false;
@@ -383,9 +383,9 @@ public class V1 extends LinearOpMode {
             }
 
 
-            if (Sensors.GripperSensor.getDistanceMM() < 25 && Sensors.GripperSensor.getDistanceMM() > 10 && Servos.Gripper.gripperState != "CLOSED" && Servos.Wrist.wristState == "GRIPPING") {
-                gamepad1.rumble(0.5, 0.5, 100);
-            }
+//            if (Sensors.GripperSensor.getDistanceMM() < 25 && Sensors.GripperSensor.getDistanceMM() > 10 && Servos.Gripper.gripperState != "CLOSED" && Servos.Wrist.wristState == "GRIPPING") {
+//                gamepad1.rumble(0.5, 0.5, 100);
+//            }
 
              if(goSafeAfterReleaseFlag){
                 if(safetyTimer.milliseconds() >= 400 && safetyTimer.milliseconds() < 700){
@@ -393,7 +393,7 @@ public class V1 extends LinearOpMode {
                     targetDegree = 0;
                     Servos.Wrist.goInit();
                 }
-                if(safetyTimer.milliseconds() >= 700  && safetyTimer.milliseconds() < 700){
+                if(safetyTimer.milliseconds() >= 700  && safetyTimer.milliseconds() < 900){
                     Servos.Gripper.closeGripper();
                 }
                 if(safetyTimer.milliseconds() >= 900){
@@ -431,7 +431,7 @@ public class V1 extends LinearOpMode {
         if (lift.getPosition()[0] < lift.SAFE_POSITION) {
 //do nothing
         } else {
-            turret.setDegree((int) (pos));
+//            turret.setDegree((int) (pos));
         }
     }
 

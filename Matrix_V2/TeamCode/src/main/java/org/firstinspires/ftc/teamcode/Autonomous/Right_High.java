@@ -80,8 +80,8 @@ public class Right_High extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
 
 
-    final Pose2d droppingPosition0 = new Pose2d(39, -12, Math.toRadians(0));
-    final Pose2d droppingPosition = new Pose2d(39, -11.65, Math.toRadians(0));
+    final Pose2d droppingPosition0 = new Pose2d(40, -12.8, Math.toRadians(0));
+    final Pose2d droppingPosition = new Pose2d(39.65, -11.65, Math.toRadians(0));
     final Pose2d pickingPosition = new Pose2d(48.3, -12, Math.toRadians(0));
 
 
