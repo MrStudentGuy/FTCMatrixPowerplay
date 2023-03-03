@@ -360,21 +360,23 @@ public class V1 extends LinearOpMode {
             if (!LB) {
                 LBFlag = false;
             }
-
-            if ((gamepad1.square || LEFT2) && !aFlag) {
+            if ((LEFT2) && !aFlag) {
+//            if ((gamepad1.square || LEFT2) && !aFlag) {
                 aFlag = true;
-//                targetDegree += 90;
+                targetDegree += 90;
                 setTurret();
 
-            } else if (!gamepad1.square && !LEFT2) {
+            }else if(!LEFT2){
+//            } else if (!gamepad1.square && !LEFT2) {
                 aFlag = false;
             }
-
-            if ((B || RIGHT2) && !bFlag) {
-                bFlag = true;
-//                targetDegree -= 90;
-                setTurret();
-            } else if (!B && !RIGHT2) {
+    if(RIGHT2 && !bFlag) {
+//            if ((B || RIGHT2) && !bFlag) {
+        bFlag = true;
+        targetDegree -= 90;
+        setTurret();
+    }else if(!RIGHT2){
+//            } else if (!B && !RIGHT2) {
                 bFlag = false;
             }
 

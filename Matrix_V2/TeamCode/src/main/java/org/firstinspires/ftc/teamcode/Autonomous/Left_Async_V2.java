@@ -14,18 +14,56 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.Lift;
 import org.firstinspires.ftc.teamcode.Subsystems.Sensors;
 import org.firstinspires.ftc.teamcode.Subsystems.Servos;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Vision.Pipelines.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+
+import java.util.ArrayList;
 
 @Config
 @Autonomous
 public class Left_Async_V2 extends OpMode {
 
+
+    OpenCvCamera camera;
+    AprilTagDetectionPipeline aprilTagDetectionPipeline;
+
+    static final double FEET_PER_METER = 3.28084;
+
+    Pose2d PARKING1 = new Pose2d(-60, -12, Math.toRadians(180));
+    Pose2d PARKING2 = new Pose2d(-36, -13, Math.toRadians(180));
+    Pose2d PARKING3 = new Pose2d(-12, -12, Math.toRadians(180));
+
+    // Lens intrinsics
+    // UNITS ARE PIXELS
+    // NOTE: this calibration is for the C920 webcam at 800x448.
+    // You will need to do your own calibration for other configurations!
+    double fx = 578.272;
+    double fy = 578.272;
+    double cx = 402.145;
+    double cy = 221.506;
+
+    // UNITS ARE METERS
+    double tagsize = 0.166;
+
+    int ID_TAG_OF_INTEREST = 18; // Tag ID 18 from the 36h11 family
+
+    int PARKING_ZONE1 = 0, PARKING_ZONE2 = 1, PARKING_ZONE3 = 2;
+
+    int[] MATRIX_IDS = {3, 7, 9};
+
+    AprilTagDetection tagOfInterest = null;
 
     final Pose2d droppingPosition0 = new Pose2d(-37.4, -12, Math.toRadians(180));
     final Pose2d droppingPosition = new Pose2d(-37.4, -12.00, Math.toRadians(180));
@@ -51,7 +89,7 @@ public class Left_Async_V2 extends OpMode {
 
     int counter = 4;
     TrajectorySequence startToCenter;
-    Trajectory pick0;
+    TrajectorySequence pick0, goToP1, goToP2, goToP3;
     Trajectory pick;
     Trajectory drop;
     @Override
@@ -76,19 +114,25 @@ public class Left_Async_V2 extends OpMode {
         Pose2d startPose = new Pose2d(-32, -63.3, Math.toRadians(180));
         robot.setPoseEstimate(startPose);
 
+
+
         startToCenter = robot.trajectorySequenceBuilder(startPose)
                 .addTemporalMarker(()->lift.extendToHighPole())
                 .addTemporalMarker(()->{Robot.targetDegree = -140;})
                 .lineToLinearHeading(droppingPosition0)
-                .UNSTABLE_addTemporalMarkerOffset(-0.5, ()-> Servos.Slider.moveSlider(0.55))
-                .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .waitSeconds(0.05)
+                .UNSTABLE_addTemporalMarkerOffset(-0.5, ()-> Servos.Slider.moveSlider(0.575))
+                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->Servos.Wrist.goGripping())
+//                .addTemporalMarker(()-> Servos.Wrist.goGripping())
+//                .waitSeconds(0.05)
                 .addTemporalMarker(()->Servos.Gripper.openGripper())
                 .addTemporalMarker(()->Servos.Slider.moveInside())
                 .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[4], 1);})
+//                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;})
+
                 .lineToLinearHeading(pickingPosition)
+//                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4], 1))
 //                .addTemporalMarker(()->)
-                .waitSeconds(0.5)                                      //TODO: POSSIBLE TO REDUCE THIS TIME MAYBE?
+//                .waitSeconds(10)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Gripper.closeGripper())
@@ -97,10 +141,10 @@ public class Left_Async_V2 extends OpMode {
                 .addTemporalMarker(()-> Servos.Slider.moveInside())
                 .UNSTABLE_addTemporalMarkerOffset(0.01, ()->{lift.extendToHighPole();})
                 .lineToLinearHeading(droppingPosition0)
-                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->Robot.targetDegree = -140)
+                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->Robot.targetDegree = -141)
                 .waitSeconds(1)
                 .addTemporalMarker(()-> Servos.Wrist.goTop())
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.5))
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.575))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
@@ -111,7 +155,7 @@ public class Left_Async_V2 extends OpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.05,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[3], 1);})
                 .lineToLinearHeading(pickingPosition)
 //                .addTemporalMarker(()->)
-                .waitSeconds(0.5)
+                .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Gripper.closeGripper())
@@ -120,10 +164,10 @@ public class Left_Async_V2 extends OpMode {
                 .addTemporalMarker(()-> Servos.Slider.moveInside())
                 .UNSTABLE_addTemporalMarkerOffset(0.01, ()->{lift.extendToHighPole();})
                 .lineToLinearHeading(droppingPosition0)
-                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->Robot.targetDegree = -140)
+                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->Robot.targetDegree = -141)
                 .waitSeconds(1)
                 .addTemporalMarker(()-> Servos.Wrist.goTop())
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.5))
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.575))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
@@ -134,7 +178,7 @@ public class Left_Async_V2 extends OpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.05,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[2], 1);})
                 .lineToLinearHeading(pickingPosition)
 //                .addTemporalMarker(()->)
-                .waitSeconds(0.5)
+                .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Gripper.closeGripper())
@@ -143,10 +187,10 @@ public class Left_Async_V2 extends OpMode {
                 .addTemporalMarker(()-> Servos.Slider.moveInside())
                 .UNSTABLE_addTemporalMarkerOffset(0.01, ()->{lift.extendToHighPole();})
                 .lineToLinearHeading(droppingPosition0)
-                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->Robot.targetDegree = -140)
+                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->Robot.targetDegree = -141)
                 .waitSeconds(1)
                 .addTemporalMarker(()-> Servos.Wrist.goTop())
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.5))
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.575))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
@@ -156,7 +200,7 @@ public class Left_Async_V2 extends OpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.05,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[1], 1);})
                 .lineToLinearHeading(pickingPosition)
 //                .addTemporalMarker(()->)
-                .waitSeconds(0.5)
+                .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Gripper.closeGripper())
@@ -165,10 +209,10 @@ public class Left_Async_V2 extends OpMode {
                 .addTemporalMarker(()-> Servos.Slider.moveInside())
                 .UNSTABLE_addTemporalMarkerOffset(0.01, ()->{lift.extendToHighPole();})
                 .lineToLinearHeading(droppingPosition0)
-                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->Robot.targetDegree = -140)
+                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->Robot.targetDegree = -141)
                 .waitSeconds(1)
                 .addTemporalMarker(()-> Servos.Wrist.goTop())
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.5))
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.575))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
@@ -178,7 +222,7 @@ public class Left_Async_V2 extends OpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.05,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[0], 1);})
                 .lineToLinearHeading(pickingPosition)
 //                .addTemporalMarker(()->)
-                .waitSeconds(0.5)
+                .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Gripper.closeGripper())
@@ -187,20 +231,77 @@ public class Left_Async_V2 extends OpMode {
                 .addTemporalMarker(()-> Servos.Slider.moveInside())
                 .UNSTABLE_addTemporalMarkerOffset(0.01, ()->{lift.extendToHighPole();})
                 .lineToLinearHeading(droppingPosition0)
-                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->Robot.targetDegree = -140)
+                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->Robot.targetDegree = -141)
                 .waitSeconds(1)
                 .addTemporalMarker(()-> Servos.Wrist.goTop())
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.5))
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.575))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Gripper.openGripper())
+                .addTemporalMarker(()->Servos.Slider.moveInside())
+                .waitSeconds(0.1)
+                .addTemporalMarker(()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[0], 1);})
 //                .addTemporalMarker(()-> )
+//                .lineToLinearHeading(pickingPosition)
                 .build();
 
-        pick0 = robot.trajectoryBuilder(droppingPosition0)
-                .lineToLinearHeading(pickingPosition)
+        /**
+         * Sequence for going and parking at parking zone 1
+         */
+        goToP1 = robot.trajectorySequenceBuilder((startToCenter.end()))
+//                .addTemporalMarker(() -> turret.setDegree(0))
+                .addTemporalMarker(() -> Servos.Wrist.goInit())
+                .addTemporalMarker(() -> lift.extendTo(0, 1))
+                .addTemporalMarker(() -> Servos.Gripper.closeGripper())
+                .lineToLinearHeading(new Pose2d(PARKING1.getX(), PARKING1.getY(), Math.toRadians(180)))
+//                .addTemporalMarker(() -> turret.setDegree(0))
+
+//                .turn(Math.toRadians(-90))
+//                .lineToLinearHeading(new Pose2d(PARKING3.getX(), PARKING3.getY()-24, Math.toRadians(90)))
+                .addTemporalMarker(() -> Servos.Slider.moveInside())
                 .build();
+
+        /**
+         * Sequence for going and parking at parking zone 2
+         */
+        goToP2 = robot.trajectorySequenceBuilder((startToCenter.end()))
+//                .addTemporalMarker(() -> turret.setDegree(0))
+                .addTemporalMarker(() -> Servos.Wrist.goInit())
+                .addTemporalMarker(() -> lift.extendTo(0, 1))
+                .addTemporalMarker(() -> Servos.Gripper.closeGripper())
+                .lineToLinearHeading(new Pose2d(PARKING1.getX(), PARKING1.getY(), Math.toRadians(180)))
+//                .addTemporalMarker(() -> turret.setDegree(0))
+
+//                .turn(Math.toRadians(-90))
+//                .lineToLinearHeading(new Pose2d(PARKING3.getX(), PARKING3.getY()-24, Math.toRadians(90)))
+                .addTemporalMarker(() -> Servos.Slider.moveInside())
+                .build();
+
+        /**
+         * Sequence for going and parking at parking zone 3
+         */
+        goToP3 = robot.trajectorySequenceBuilder((startToCenter.end()))
+//                .addTemporalMarker(() -> turret.setDegree(0))
+                .addTemporalMarker(() -> Servos.Wrist.goInit())
+                .addTemporalMarker(() -> lift.extendTo(0, 1))
+                .addTemporalMarker(() -> Servos.Gripper.closeGripper())
+                .lineToLinearHeading(new Pose2d(PARKING3.getX(), PARKING3.getY(), Math.toRadians(180)))
+//                .addTemporalMarker(() -> turret.setDegree(0))
+
+//                .turn(Math.toRadians(-90))
+//                .lineToLinearHeading(new Pose2d(PARKING3.getX(), PARKING3.getY()-24, Math.toRadians(90)))
+                .addTemporalMarker(() -> Servos.Slider.moveInside())
+                .build();
+
+
+//        pick0 = robot.trajectorySequenceBuilder(droppingPosition0)
+//                .forward(10)
+//                .UNSTABLE_addTemporalMarkerOffset(-0.5, ()->lift.extendToHighPole())
+//                .waitSeconds(5)
+//                .
+//                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4]))
+//                .build();
 
 
         pick = robot.trajectoryBuilder(droppingPosition)
@@ -211,6 +312,69 @@ public class Left_Async_V2 extends OpMode {
                 .lineToLinearHeading(droppingPosition)
                 .build();
 
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+
+        camera.setPipeline(aprilTagDetectionPipeline);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public void onOpened() {
+                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            /**
+             * {@inheritDoc}
+             * @param errorCode
+             */
+            @Override
+            public void onError(int errorCode) {
+
+            }
+        });
+        telemetry.setMsTransmissionInterval(50);
+
+    }
+
+    @Override
+    public void init_loop() {
+        super.init_loop();
+        ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+        if (currentDetections.size() != 0) {
+            boolean tagFound = false;
+            for (AprilTagDetection tag : currentDetections) {
+                if (tag.id == MATRIX_IDS[PARKING_ZONE1] || tag.id == MATRIX_IDS[PARKING_ZONE2] || tag.id == MATRIX_IDS[PARKING_ZONE3]) {
+                    tagOfInterest = tag;
+                    tagFound = true;
+                    break;
+                }
+            }
+            if (tagFound) {
+                telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
+                tagToTelemetry(tagOfInterest);
+            } else {
+                telemetry.addLine("Don't see tag of interest :(");
+                if (tagOfInterest == null) {
+                    telemetry.addLine("(The tag has never been seen)");
+                } else {
+                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+                    tagToTelemetry(tagOfInterest);
+                }
+            }
+        } else {
+            telemetry.addLine("Don't see tag of interest :(");
+            if (tagOfInterest == null) {
+                telemetry.addLine("(The tag has never been seen)");
+            } else {
+                telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+                tagToTelemetry(tagOfInterest);
+            }
+        }
+        telemetry.update();
+        sleep(20);
     }
 
     @Override
@@ -225,7 +389,21 @@ public class Left_Async_V2 extends OpMode {
         Servos.Wrist.goTop();
 //        Robot.targetHeight = lift.POSITIONS[lift.LOW_POLE];
         robot.followTrajectorySequence(startToCenter);
+        String ParkingZone = "3";                       //Defaults to Parking Zone 3
 
+        if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE1]) {
+            ParkingZone = "1";
+            robot.followTrajectorySequence(goToP1);
+
+        } else if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE2]) {
+            ParkingZone = "2";
+            robot.followTrajectorySequence(goToP2);
+        } else if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE3]) {
+            ParkingZone = "3";
+            robot.followTrajectorySequence(goToP3);
+        } else {
+            robot.followTrajectorySequence(goToP3);
+        }
 
     }
 
@@ -240,6 +418,20 @@ public class Left_Async_V2 extends OpMode {
 
 
 
+    }
+
+    /**
+     * Get the information about the tag being detected and display it
+     * @param detection The tag detection currently active
+     */
+    void tagToTelemetry(AprilTagDetection detection) {
+        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x * FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y * FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z * FEET_PER_METER));
+        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
+        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
+        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 
 

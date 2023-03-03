@@ -22,6 +22,7 @@ public class Turret {
 //        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+
     public void setDegree(double degree){
         double counts = degree * CountsPerDegree;
         setPosition((int)counts); //calls set position

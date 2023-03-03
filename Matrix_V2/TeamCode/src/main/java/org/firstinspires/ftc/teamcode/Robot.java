@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -9,6 +12,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.Servos;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
+
+@Config
 public class Robot extends SampleMecanumDrive {
 
     Lift robotLift = null;
@@ -19,9 +24,9 @@ public class Robot extends SampleMecanumDrive {
     private PIDController turretController; //meant for the turret
     private PIDController liftController;
 
-    public static double Kp_turret = 0.1;
-    public static double Ki_turret = 0.1;
-    public static double Kd_turret = 0.001;
+    public static double Kp_turret = 0.06;
+    public static double Ki_turret = 0;
+    public static double Kd_turret = 0.002;
     public static double Kf_turret = 0; //feedforward, turret no gravity so 0
 
     public static double Kp_lift = 0.1;
@@ -46,6 +51,7 @@ public class Robot extends SampleMecanumDrive {
         turretController = new PIDController(Kp_turret, Ki_turret, Kd_turret);
 //        liftController = new PIDController(Kp_lift, Ki_lift, Kd_lift);
         telemetry = localtelemetry;
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
 
     @Override
@@ -72,8 +78,10 @@ public class Robot extends SampleMecanumDrive {
 
 
 //        telemetry.addData("Counter: ", counter);
-//        telemetry.addData("Lift Current Position: ", currentLiftHeight);
+        telemetry.addData("Lift Current Positions: ", robotLift.getPosition()[0] + "::::" + robotLift.getPosition()[1]);
+        telemetry.addData("Lift Target Positions: ", robotLift.getTarget()[0] + "::::" + robotLift.getTarget()[1]);
 //        telemetry.addData("Lift Target Position: ", targetHeight);
+
         telemetry.addData("Turret Current Position: ", currentTurretDegree);
         telemetry.addData("Turret Target Position: ", targetDegree);
 

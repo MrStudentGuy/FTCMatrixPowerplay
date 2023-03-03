@@ -216,4 +216,9 @@ extendTousingVelo(POSITIONS[HIGH_POLE], 2000);
     public double[] getCurrent(){
         return new double[]{leftMotor.getCurrent(CurrentUnit.MILLIAMPS), rightMotor.getCurrent(CurrentUnit.MILLIAMPS)};
     }
+
+
+    public double[] getTarget(){
+        return new double[]{leftMotor.getTargetPosition(), rightMotor.getTargetPosition()};
+    }
 }
