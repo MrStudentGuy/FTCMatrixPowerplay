@@ -28,7 +28,7 @@ public class    Servos {
         public static String gripperState = "OPEN";
         private static final double gripperOpenPosition = 0.6;
         private static final double gripperClosePosition = 0;
-        private static final double gripperBeaconPosition = 0.3;
+        private static final double gripperBeaconPosition = 0.42;
 
         public static void openGripper() {
             gripperState = "OPEN";
@@ -57,6 +57,7 @@ public class    Servos {
         private static final double TopPosition = 0.59;
         private static final double InitPosition = 0;
         private static final double GrippingPosition = 0.5;
+        private static final double TopAutoPosition = 1;
 
         public static void goTop(){
             wristState = "TOP";
@@ -71,6 +72,11 @@ public class    Servos {
         public static void goGripping(){
             wristState = "GRIPPING";
             WristServo.setPosition(GrippingPosition);
+        }
+
+        public static void goAutoTop(){
+            wristState = "TOP";
+            WristServo.setPosition(TopAutoPosition);
         }
 
 

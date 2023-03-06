@@ -41,7 +41,7 @@ public class TurretPIDTuning extends LinearOpMode {
 
         Servos.Slider.moveInside();
         Servos.AlignBar.inside();
-        lift.extendToHighPole();
+        lift.extendToLowPole();
         Servos.Wrist.goGripping();
         while(opModeIsActive()){
             robot.update();
