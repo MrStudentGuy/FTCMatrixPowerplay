@@ -39,7 +39,7 @@ import java.util.List;
  * Autonomous class for Left 4+1 on the Left Center High Pole
  */
 @Autonomous(name="Left 4+1 -> HIGH", group = "Left Autos")
-//@Disabled
+@Disabled
 public class Left_High extends LinearOpMode {
 
 

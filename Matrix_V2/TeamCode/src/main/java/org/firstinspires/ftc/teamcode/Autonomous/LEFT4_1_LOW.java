@@ -34,7 +34,7 @@ import java.util.List;
 
 
 @Autonomous(name="Left 4+1 -> LOW", group = "Left Autos")
-//@Disabled
+@Disabled
 public class LEFT4_1_LOW extends LinearOpMode {
 
 
