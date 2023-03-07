@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.TransferClass.poseStorage;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -57,6 +60,9 @@ public class Robot extends SampleMecanumDrive {
     @Override
     public void update() {
         super.update();
+        Pose2d pose = super.getPoseEstimate();
+        poseStorage = pose;
+
         turretController.setPID(Kp_turret, Ki_turret, Kd_turret);
 //        liftController.setPID(Kp_lift, Ki_lift, Kd_lift);
 

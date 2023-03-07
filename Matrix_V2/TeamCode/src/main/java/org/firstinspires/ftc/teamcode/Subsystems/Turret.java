@@ -46,7 +46,7 @@ public class Turret {
     }
 
     public void set(double power){
-        power = Range.clip(power, -0.65, 0.65);
+        power = Range.clip(power, -0.5, 0.5);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor.setPower(power);
     }
