@@ -25,9 +25,9 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.Objects;
 
-@TeleOp(name = "-->TELEOP \uD83D\uDC4C\uD83D\uDC4C\uD83D\uDE0D\uD83C\uDFB6\uD83C\uDFB6\uD83D\uDE0E\uD83D\uDE1C\uD83D\uDE2D\uD83E\uDD70\uD83D\uDE08\uD83D\uDC7A\uD83D\uDC7A\uD83E\uDD23\uD83E\uDD23\uD83D\uDE15\uD83D\uDE1C\uD83D\uDE2D\uD83E\uDD70\uD83E\uDD70\uD83D\uDE18")
+@TeleOp(name = "-->BACKUP TELEOP")
 @Config
-public class V1 extends LinearOpMode {
+public class TeleopBackup extends LinearOpMode {
     ElapsedTime teleOpTime = new ElapsedTime();
     ElapsedTime safetyTimer = new ElapsedTime();
     public static double targetDegree = 0;
@@ -91,7 +91,7 @@ public class V1 extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, telemetry);
 
 //        Pose2d startPose = new Pose2d(0, 0, Math.toRadians(90));
-        drive.setPoseEstimate(new Pose2d(poseStorage.getX(), poseStorage.getY(), poseStorage.getHeading()+offsetpose));
+//        drive.setPoseEstimate(new Pose2d(poseStorage.getX(), poseStorage.getY(), poseStorage.getHeading()+offsetpose));
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
@@ -373,12 +373,12 @@ public class V1 extends LinearOpMode {
 //            } else if (!gamepad1.square && !LEFT2) {
                 aFlag = false;
             }
-    if(RIGHT2 && !bFlag) {
+            if(RIGHT2 && !bFlag) {
 //            if ((B || RIGHT2) && !bFlag) {
-        bFlag = true;
-        targetDegree -= 90;
-        setTurret();
-    }else if(!RIGHT2){
+                bFlag = true;
+                targetDegree -= 90;
+                setTurret();
+            }else if(!RIGHT2){
 //            } else if (!B && !RIGHT2) {
                 bFlag = false;
             }
@@ -392,10 +392,10 @@ public class V1 extends LinearOpMode {
 //                gamepad1.rumble(0.5, 0.5, 100);
 //            }
 
-             if(goSafeAfterReleaseFlag){
+            if(goSafeAfterReleaseFlag){
                 if(safetyTimer.milliseconds() >= 400 && safetyTimer.milliseconds() < 700){
                     if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE])
-                    targetDegree = 0;
+                        targetDegree = 0;
                     Servos.Wrist.goInit();
                 }
                 if(safetyTimer.milliseconds() >= 700  && safetyTimer.milliseconds() < 900){

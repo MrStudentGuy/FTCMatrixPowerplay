@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Lift;
 import org.firstinspires.ftc.teamcode.Subsystems.Sensors;
 import org.firstinspires.ftc.teamcode.Subsystems.Servos;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.TransferClass;
 import org.firstinspires.ftc.teamcode.Vision.Pipelines.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -114,7 +115,7 @@ public class Left_Mid_Async extends OpMode {
         Pose2d startPose = new Pose2d(-31.8, -63.3, Math.toRadians(180));
         robot.setPoseEstimate(startPose);
 
-
+        TransferClass.offsetpose = 90;
 
         startToCenter = robot.trajectorySequenceBuilder(startPose)
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS_AUTO[lift.HIGH_POLE], 1))

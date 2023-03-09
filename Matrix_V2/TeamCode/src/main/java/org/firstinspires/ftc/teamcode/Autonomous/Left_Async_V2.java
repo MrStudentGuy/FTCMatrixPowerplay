@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Lift;
 import org.firstinspires.ftc.teamcode.Subsystems.Sensors;
 import org.firstinspires.ftc.teamcode.Subsystems.Servos;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.TransferClass;
 import org.firstinspires.ftc.teamcode.Vision.Pipelines.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -99,6 +100,7 @@ public class Left_Async_V2 extends OpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
 
+        TransferClass.offsetpose = 90;
         lift = new Lift(hardwareMap, telemetry);
         servos = new Servos(hardwareMap, telemetry);
         turret = new Turret(hardwareMap, "turret", telemetry);
