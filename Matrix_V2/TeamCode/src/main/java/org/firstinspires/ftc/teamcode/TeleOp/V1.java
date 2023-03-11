@@ -90,8 +90,9 @@ public class V1 extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, telemetry);
 
-//        Pose2d startPose = new Pose2d(0, 0, Math.toRadians(90));
-        drive.setPoseEstimate(new Pose2d(poseStorage.getX(), poseStorage.getY(), poseStorage.getHeading()+offsetpose));
+        Pose2d startPose = new Pose2d(0, 0, Math.toRadians(180));
+        drive.setPoseEstimate(startPose);
+//        drive.setPoseEstimate(new Pose2d(poseStorage.getX(), poseStorage.getY(), poseStorage.getHeading()+offsetpose));
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
