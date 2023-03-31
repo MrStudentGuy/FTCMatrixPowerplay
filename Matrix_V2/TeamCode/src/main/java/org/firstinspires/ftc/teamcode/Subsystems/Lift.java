@@ -30,7 +30,7 @@ public class Lift {
     public final int[] POSITIONS = {-380, 672, 1510, 2250};  //-390
     public final int[] AUTO_POSITION = {-320, -250, -115, -20, 75};
 
-    public final int[] POSITIONS_AUTO = {-380, 672, 1150, 1950};
+    public final int[] POSITIONS_AUTO = {-380, 672, 1150, 1850};
 //    {-420, -374, -334, -160, -35};
 
     int liftPosition = 0;
