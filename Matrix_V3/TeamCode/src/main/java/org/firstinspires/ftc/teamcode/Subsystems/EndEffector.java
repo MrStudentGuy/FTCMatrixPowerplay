@@ -1,0 +1,90 @@
+package org.firstinspires.ftc.teamcode.Subsystems;
+
+import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.hardware.ServoEx;
+import com.arcrobotics.ftclib.hardware.SimpleServo;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.GlobalVars;
+
+public class EndEffector extends SubsystemBase {
+
+    HardwareMap hardwareMap;
+    Telemetry telemetry;
+
+    ServoEx WristServo, ClawServo;
+
+    public static String gripperState = "OPEN";
+    private static final double gripperOpenPosition = 0.6;
+    private static final double gripperClosePosition = 0;
+    private static final double gripperBeaconPosition = 0.42;
+
+    public static String wristState = "INIT";
+    private static final double TopPosition = 0.6;
+    private static final double InitPosition = 0;
+    private static final double GrippingPosition = 0.45;
+    private static final double TopAutoPosition = 1;
+
+
+    public EndEffector(HardwareMap hardwareMap, Telemetry telemetry){
+        this.hardwareMap = hardwareMap;
+        this.telemetry = telemetry;
+        WristServo = new SimpleServo(hardwareMap, "Wrist", 0, 180);
+        ClawServo = new SimpleServo(hardwareMap, "Gripper", 0, 180);
+    }
+
+    @Override
+    public void periodic() {
+        super.periodic();
+
+        if(GlobalVars.endEffectorTelemetry){
+            telemetry.addData("Claw Position: ", ClawServo.getPosition());
+            telemetry.addData("Claw Degrees: ", ClawServo.getAngle(AngleUnit.DEGREES));
+            telemetry.addData("Wrist Position: ", WristServo.getPosition());
+            telemetry.addData("Wrist Degrees: ", WristServo.getAngle(AngleUnit.DEGREES));
+        }
+    }
+
+    public void openGripper() {
+        gripperState = "OPEN";
+        ClawServo.setPosition(gripperOpenPosition);
+    }
+
+    public void closeGripper() {
+        gripperState = "CLOSED";
+        ClawServo.setPosition(gripperClosePosition);
+    }
+
+    public void gripBeacon(){
+        gripperState = "OPEN";
+        ClawServo.setPosition(gripperBeaconPosition);
+    }
+
+    public void goTop(){
+        wristState = "TOP";
+        WristServo.setPosition(TopPosition);
+    }
+
+    public void goInit(){
+        wristState = "INIT";
+        WristServo.setPosition(InitPosition);
+    }
+
+    public void goGripping(){
+        wristState = "GRIPPING";
+        WristServo.setPosition(GrippingPosition);
+    }
+
+    public void goAutoTop(){
+        wristState = "TOP";
+        WristServo.setPosition(TopAutoPosition);
+    }
+
+    public void setPosition(double pos){
+        ClawServo.setPosition(pos); //auto
+    }
+
+
+}
