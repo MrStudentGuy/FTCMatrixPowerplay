@@ -9,6 +9,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.GlobalVars;
 
+import java.util.function.IntSupplier;
+
 public class EndEffector extends SubsystemBase {
 
     HardwareMap hardwareMap;
@@ -16,17 +18,30 @@ public class EndEffector extends SubsystemBase {
 
     ServoEx WristServo, ClawServo;
 
-    public static String gripperState = "OPEN";
+    public static String gripperState = "CLOSED";
+    public static int gripperStateID = 0;
     private static final double gripperOpenPosition = 0.6;
     private static final double gripperClosePosition = 0;
     private static final double gripperBeaconPosition = 0.42;
+    IntSupplier gripperStateSupplier = new IntSupplier() {
+        @Override
+        public int getAsInt() {
+            return gripperStateID;
+        }
+    };
 
     public static String wristState = "INIT";
+    public static int wristStateID = 0;
     private static final double TopPosition = 0.6;
     private static final double InitPosition = 0;
     private static final double GrippingPosition = 0.45;
     private static final double TopAutoPosition = 1;
-
+    IntSupplier wristStateSupplier = new IntSupplier() {
+        @Override
+        public int getAsInt() {
+            return wristStateID;
+        }
+    };
 
     public EndEffector(HardwareMap hardwareMap, Telemetry telemetry){
         this.hardwareMap = hardwareMap;
@@ -49,35 +64,42 @@ public class EndEffector extends SubsystemBase {
 
     public void openGripper() {
         gripperState = "OPEN";
+        gripperStateID = 1;
         ClawServo.setPosition(gripperOpenPosition);
     }
 
     public void closeGripper() {
         gripperState = "CLOSED";
+        gripperStateID = 0;
         ClawServo.setPosition(gripperClosePosition);
     }
 
     public void gripBeacon(){
+        gripperStateID = 1;
         gripperState = "OPEN";
         ClawServo.setPosition(gripperBeaconPosition);
     }
 
     public void goTop(){
+        wristStateID = 2;
         wristState = "TOP";
         WristServo.setPosition(TopPosition);
     }
 
     public void goInit(){
+        wristStateID = 0;
         wristState = "INIT";
         WristServo.setPosition(InitPosition);
     }
 
     public void goGripping(){
+        wristStateID = 1;
         wristState = "GRIPPING";
         WristServo.setPosition(GrippingPosition);
     }
 
     public void goAutoTop(){
+        wristStateID = 1;
         wristState = "TOP";
         WristServo.setPosition(TopAutoPosition);
     }
