@@ -156,7 +156,7 @@ public class Teleop extends CommandOpMode {
         }
         OpModeLoopTime = timer.milliseconds() - previousTime;
         previousTime = OpModeLoopTime;
-        telemetry.addData("OpMode Loop Time: ", OpModeLoopTime);
+        telemetry.addData("OpMode Loop Time: ", OpModeLoopTime + "ms");
         telemetry.update();
     }
 }

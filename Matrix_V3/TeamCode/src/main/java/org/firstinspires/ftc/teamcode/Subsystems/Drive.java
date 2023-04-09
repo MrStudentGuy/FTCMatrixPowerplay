@@ -30,6 +30,7 @@ public class Drive extends SubsystemBase {
 
     private BNO055IMU imu;
     double heading;
+    public static double  headingVel;
     Thread imuThread;
 
     public DoubleSupplier RobotHeadingSupplier = new DoubleSupplier() {
@@ -48,6 +49,7 @@ public class Drive extends SubsystemBase {
         imuThread = new Thread(()->{
             synchronized (imuLock){
                 heading = imu.getAngularOrientation().firstAngle;
+                headingVel = imu.getAngularVelocity().zRotationRate;
             }
         });
         synchronized (imuLock) {
