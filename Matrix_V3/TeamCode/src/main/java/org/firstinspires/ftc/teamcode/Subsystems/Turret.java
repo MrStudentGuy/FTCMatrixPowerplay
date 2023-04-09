@@ -70,7 +70,6 @@ public class Turret extends SubsystemBase {
             telemetry.addData("Turret Degrees: ", getDegree());
             telemetry.addData("Turret Motor Counts: ", getPosition());
             telemetry.addData("Ticks in degree: ", ticks_in_degree);
-            telemetry.update();
         }
     }
 

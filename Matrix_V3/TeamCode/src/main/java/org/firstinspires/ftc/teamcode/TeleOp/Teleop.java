@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import static org.firstinspires.ftc.teamcode.GlobalVars.OpModeLoopTime;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
@@ -13,10 +15,12 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Commands.Teleop.BasicCommands.CloseGripper;
 import org.firstinspires.ftc.teamcode.Commands.Teleop.BasicCommands.ElevatorGripping;
 import org.firstinspires.ftc.teamcode.Commands.Teleop.BasicCommands.ElevatorHigh;
@@ -34,20 +38,24 @@ import org.firstinspires.ftc.teamcode.Subsystems.Elevator;
 import org.firstinspires.ftc.teamcode.Subsystems.EndEffector;
 import org.firstinspires.ftc.teamcode.Subsystems.Slider;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 
 import java.util.function.BooleanSupplier;
 
 @TeleOp
 public class Teleop extends CommandOpMode {
 
+    OpenCvCamera camera;
+    private double previousTime = 0;
     Gamepad.RumbleEffect resetHeadingEffect = new Gamepad.RumbleEffect.Builder()
             .addStep(1.00, 0.00, 100)
             .addStep(0.0, 0.0, 50)
-            .addStep(0.00, 1.00, 50)
+            .addStep(0.00, 1.00, 100)
             .addStep(0.0, 0.0, 50)
             .addStep(1.00, 0.00, 100)
             .addStep(0.0, 0.0, 50)
-            .addStep(0.00, 1.00, 50)
+            .addStep(0.00, 1.00, 100)
             .addStep(0.0, 0.0, 50)
             .build();
     ElapsedTime timer;
@@ -84,7 +92,7 @@ public class Teleop extends CommandOpMode {
         //Subsystem Declaration
         this.endEffector = new EndEffector(hardwareMap, telemetry);
         this.turret = new Turret(hardwareMap, "turret", telemetry);
-        this.elevator = new Elevator(hardwareMap, telemetry, turret.turretDegreesSupplier);
+        this.elevator = new Elevator(hardwareMap, telemetry, turret.turretDegreesSupplier, endEffector.wristStateSupplier);
         this.slider = new Slider(hardwareMap, telemetry, this);
         this.drive = new Drive(hardwareMap, telemetry, this);
 
@@ -131,19 +139,24 @@ public class Teleop extends CommandOpMode {
     @Override
     public void run() {
         super.run();
+        if(camera == null) {
+            int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+            camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+            FtcDashboard.getInstance().startCameraStream(camera, 0);
+        }
+
         if(timer == null){
             drive.startIMUThread();
             timer = new ElapsedTime();
         }
-
         boolean touchpadPressed = gamepad1.touchpad;
         if(touchpadPressed){
             drive.resetHeading();
             gamepad1.runRumbleEffect(resetHeadingEffect);
         }
-
-//        if(timer.seconds() > )
-
-
+        OpModeLoopTime = timer.milliseconds() - previousTime;
+        previousTime = OpModeLoopTime;
+        telemetry.addData("OpMode Loop Time: ", OpModeLoopTime);
+        telemetry.update();
     }
 }

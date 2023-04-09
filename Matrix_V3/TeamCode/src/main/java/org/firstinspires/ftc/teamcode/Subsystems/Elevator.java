@@ -95,6 +95,13 @@ public class Elevator extends SubsystemBase {
                 rightPower = ff;                                                                        //         DAMAGE
             }
         }
+
+        if(getPosition()[0] > POSITIONS[MID_POLE]+20 || getPosition()[1] > POSITIONS[MID_POLE]+20){
+            GlobalVars.slowDriveFlag = true;
+        }
+        else{
+            GlobalVars.slowDriveFlag = false;
+        }
         //-------------------------------------------------------------------------------------------------------
         write();
 

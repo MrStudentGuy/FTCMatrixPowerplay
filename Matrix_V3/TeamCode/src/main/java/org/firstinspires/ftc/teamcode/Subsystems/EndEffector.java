@@ -23,7 +23,7 @@ public class EndEffector extends SubsystemBase {
     private static final double gripperOpenPosition = 0.6;
     private static final double gripperClosePosition = 0;
     private static final double gripperBeaconPosition = 0.42;
-    IntSupplier gripperStateSupplier = new IntSupplier() {
+    public IntSupplier gripperStateSupplier = new IntSupplier() {
         @Override
         public int getAsInt() {
             return gripperStateID;
@@ -36,7 +36,7 @@ public class EndEffector extends SubsystemBase {
     private static final double InitPosition = 0;
     private static final double GrippingPosition = 0.45;
     private static final double TopAutoPosition = 1;
-    IntSupplier wristStateSupplier = new IntSupplier() {
+    public IntSupplier wristStateSupplier = new IntSupplier() {
         @Override
         public int getAsInt() {
             return wristStateID;
