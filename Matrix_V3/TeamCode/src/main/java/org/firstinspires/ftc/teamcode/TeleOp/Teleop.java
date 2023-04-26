@@ -48,16 +48,7 @@ public class Teleop extends CommandOpMode {
 
     OpenCvCamera camera;
     private double previousTime = 0;
-    Gamepad.RumbleEffect resetHeadingEffect = new Gamepad.RumbleEffect.Builder()
-            .addStep(1.00, 0.00, 100)
-            .addStep(0.0, 0.0, 50)
-            .addStep(0.00, 1.00, 100)
-            .addStep(0.0, 0.0, 50)
-            .addStep(1.00, 0.00, 100)
-            .addStep(0.0, 0.0, 50)
-            .addStep(0.00, 1.00, 100)
-            .addStep(0.0, 0.0, 50)
-            .build();
+
     ElapsedTime timer;
     BooleanSupplier traditionalFlagSupplier = new BooleanSupplier() {
         @Override
@@ -109,8 +100,6 @@ public class Teleop extends CommandOpMode {
         grippingButton = new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER);
         wristButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
         safeButton = new GamepadButton(driver, GamepadKeys.Button.A);
-//        turret180Button = new GamepadButton(operator, GamepadKeys.Button.DPAD_UP);
-//        turret0Button = new GamepadButton(operator, GamepadKeys.Button.DPAD_DOWN);
         turretToggleButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_STICK_BUTTON);
         traditionalButton = new GamepadButton(driver, GamepadKeys.Button.BACK);
 
@@ -122,8 +111,6 @@ public class Teleop extends CommandOpMode {
         liftLowButton.whenPressed(new ParallelCommandGroup(new ElevatorLow(elevator), new WristUp(endEffector)));
         liftGrippingButton.whenPressed(new ParallelCommandGroup(new ElevatorGripping(elevator, turret), new WristGripping(endEffector)));
         safeButton.whenPressed(new SequentialCommandGroup(new CloseGripper(endEffector), new WaitCommand(50), new WristSafe(endEffector), new WaitCommand(100), new InstantCommand(()->elevator.extendTo(0))));
-//        turret180Button.whenPressed(new Turret180(turret));
-//        turret0Button.whenPressed(new Turret0(turret));
         turretToggleButton.toggleWhenPressed(new Turret180(turret), new Turret0(turret));
         grippingButton.toggleWhenPressed(
                 new ConditionalCommand(new OpenGripper(endEffector), new SequentialCommandGroup(new OpenGripper(endEffector), new WaitCommand(100), new ParallelCommandGroup(new ElevatorGripping(elevator, turret), new WristGripping(endEffector))), traditionalFlagSupplier),
@@ -152,7 +139,7 @@ public class Teleop extends CommandOpMode {
         boolean touchpadPressed = gamepad1.touchpad;
         if(touchpadPressed){
             drive.resetHeading();
-            gamepad1.runRumbleEffect(resetHeadingEffect);
+            gamepad1.rumble(1, 0, 500);
         }
         OpModeLoopTime = timer.milliseconds() - previousTime;
         previousTime = OpModeLoopTime;

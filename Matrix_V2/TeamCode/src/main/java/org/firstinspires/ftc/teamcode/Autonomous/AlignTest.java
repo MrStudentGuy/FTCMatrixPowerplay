@@ -5,6 +5,7 @@ import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
 @Autonomous
+@Disabled
 public class AlignTest extends LinearOpMode {
 
     RevColorSensorV3 sensor = null;

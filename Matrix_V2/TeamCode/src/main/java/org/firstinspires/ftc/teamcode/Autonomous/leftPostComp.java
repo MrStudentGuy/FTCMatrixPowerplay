@@ -69,7 +69,7 @@ public class leftPostComp extends OpMode {
 
     final Pose2d droppingPosition0 = new Pose2d(-36.4, -11.5, Math.toRadians(180));       // Positions on the field to drop cone into pole
     final Pose2d droppingPosition = new Pose2d(-36.4, -11.5001, Math.toRadians(180));
-    final Pose2d pickingPosition = new Pose2d(-49, -12, Math.toRadians(180));
+    final Pose2d pickingPosition = new Pose2d(-52.5, -12, Math.toRadians(180));
     final Pose2d preloadDropPosition = new Pose2d(-30, -11.5, Math.toRadians(180));
     final Pose2d preloadDropPosition0 = new Pose2d(-30, -11.5001, Math.toRadians(180));
 
@@ -121,13 +121,13 @@ public class leftPostComp extends OpMode {
 
         startToCenter = robot.trajectorySequenceBuilder(startPose)
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS_AUTO[lift.HIGH_POLE], 1))
-                .addTemporalMarker(0.3, ()->{Robot.targetDegree = -127;})
+                .addTemporalMarker(0.3, ()->{Robot.targetDegree = -130;})
                 .lineToLinearHeading(preloadDropPosition)
                 .UNSTABLE_addTemporalMarkerOffset(-1, ()->Servos.Wrist.goAutoTop())
                 .lineToLinearHeading(preloadDropPosition0)
                 .UNSTABLE_addTemporalMarkerOffset(-0.2, ()-> {Servos.Slider.moveSlider(0.7);})
                 .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> { Servos.Wrist.goGripping();})
-                .UNSTABLE_addTemporalMarkerOffset(-0.01, ()-> { Servos.Gripper.setPosition(0.8);Servos.Slider.moveInside();})
+                .UNSTABLE_addTemporalMarkerOffset(-0.01, ()-> { Servos.Gripper.openGripper();Servos.Slider.moveInside();})
                 .UNSTABLE_addTemporalMarkerOffset(-0.0001, ()->{Robot.targetDegree = 0;})
 //                .waitSeconds(0.05)
 //                .addTemporalMarker(()->)
@@ -159,7 +159,7 @@ public class leftPostComp extends OpMode {
                 .waitSeconds(0.4)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
-                .addTemporalMarker(()-> Servos.Gripper.setPosition(0.8))
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
 
 
                 .addTemporalMarker(()->Servos.Slider.moveInside())
@@ -188,7 +188,7 @@ public class leftPostComp extends OpMode {
                 .waitSeconds(0.4)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
-                .addTemporalMarker(()-> Servos.Gripper.setPosition(0.8))
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
 
 
                 .addTemporalMarker(()->Servos.Slider.moveInside())
@@ -217,7 +217,7 @@ public class leftPostComp extends OpMode {
                 .waitSeconds(0.4)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
-                .addTemporalMarker(()-> Servos.Gripper.setPosition(0.8))
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
 
 
 
@@ -249,7 +249,7 @@ public class leftPostComp extends OpMode {
                 .waitSeconds(0.4)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
-                .addTemporalMarker(()-> Servos.Gripper.setPosition(0.8))
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
 
 
 
@@ -280,7 +280,7 @@ public class leftPostComp extends OpMode {
                 .waitSeconds(0.4)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
-                .addTemporalMarker(()-> Servos.Gripper.setPosition(0.8))
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
 
 
 

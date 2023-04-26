@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Config
 public class    Servos {
     static Servo GripperServo;
     static Servo WristServo;
@@ -26,8 +28,8 @@ public class    Servos {
 
     public static class Gripper {
         public static String gripperState = "OPEN";
-        private static final double gripperOpenPosition = 0.6;
-        private static final double gripperClosePosition = 0;
+        private static final double gripperOpenPosition = 0;
+        private static final double gripperClosePosition = 1;
         private static final double gripperBeaconPosition = 0.42;
 
         public static void openGripper() {
@@ -54,10 +56,10 @@ public class    Servos {
 
         public static String wristState = "INIT";
 
-        private static final double TopPosition = 0.6;
-        private static final double InitPosition = 0;
-        private static final double GrippingPosition = 0.45;
-        private static final double TopAutoPosition = 1;
+        private static final double TopPosition = 0.27;
+        private static final double InitPosition = 0.05;
+        private static final double GrippingPosition = 0.05;
+        private static final double TopAutoPosition = 0.4;
 
         public static void goTop(){
             wristState = "TOP";
@@ -89,7 +91,7 @@ public class    Servos {
         }
 
         public static void moveOutside(){
-            SliderServo.setPosition(0.45);
+            SliderServo.setPosition(0.2);
         }
 
         public static void moveHalfway(){
@@ -99,7 +101,7 @@ public class    Servos {
 
         public static void moveSlider(double position){
 
-            position = Range.clip(position, 0.45, 1);
+            position = Range.clip(position, 0.2, 1);
             SliderServo.setPosition(position);
         }
 
@@ -109,17 +111,25 @@ public class    Servos {
     }
 
     public static class AlignBar{
+
+        public static double  outPos = 0.2;
         public static void inside(){
-            AlignServo.setPosition(0.3);
+            AlignServo.setPosition(1);
+        }
+
+        public static void interMediate(){
+            AlignServo.setPosition(0.9);
         }
 
         public static void outside(){
-            AlignServo.setPosition(1);
+            AlignServo.setPosition(outPos);
         }
 
         public static double getPosition(){
             return AlignServo.getPosition();
         }
+
+        public static void dropPosition(){AlignServo.setPosition(0);}
 
         public static void moveTo(double pos){
             Range.clip(pos, 0.3, 1);

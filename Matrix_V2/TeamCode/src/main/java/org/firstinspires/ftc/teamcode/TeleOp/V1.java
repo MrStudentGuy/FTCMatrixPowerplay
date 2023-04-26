@@ -201,13 +201,12 @@ public class V1 extends LinearOpMode {
             boolean Y2 = gamepad2.y;
 
 
-            if(gamepad1.a || wristInFlag){
-                if(lift.getPosition()[0] >= 59 ){
+            if (gamepad1.a || wristInFlag) {
+                if (lift.getPosition()[0] >= 59) {
                     wristInFlag = false;
                     Servos.Wrist.goInit();
                     Servos.Gripper.closeGripper();
-                }
-                else{
+                } else {
                     wristInFlag = true;
                     lift.extendTo(60, 1);
                 }
@@ -295,25 +294,29 @@ public class V1 extends LinearOpMode {
                 }
 
             } else {
-                Servos.Slider.moveSlider(Math.abs(1-gamepad1.left_trigger));
+                Servos.Slider.moveSlider(Math.abs(1 - gamepad1.left_trigger));
             }
 
             if (UP) {
                 Servos.Wrist.goTop();
                 lift.extendToHighPole();
-            } else if ((RIGHT || gamepad2.dpad_down) && Servos.Wrist.wristState != "INIT") {
+                Servos.AlignBar.outside();
+            } else if ((RIGHT || gamepad2.dpad_down)) {
                 Servos.Wrist.goGripping();
                 lift.extendToGrippingPosition();
+                Servos.AlignBar.inside();
             } else if (DOWN) {
                 Servos.Wrist.goTop();
                 lift.extendToLowPole();
+                Servos.AlignBar.interMediate();
             } else if (LEFT) {
                 Servos.Wrist.goTop();
                 lift.extendToMidPole();
+                Servos.AlignBar.outside();
             }
 
 
-            if(gamepad2.start || gamepad1.start){
+            if (gamepad2.start || gamepad1.start) {
                 Servos.Gripper.gripperState = "BEACON";
             }
 
@@ -321,12 +324,21 @@ public class V1 extends LinearOpMode {
             if (RB && !RBFlag) {
                 RBFlag = true; //only once
                 if (Objects.equals(Servos.Gripper.gripperState, "OPEN")) {
+                    Servos.Wrist.goGripping();
                     Servos.Gripper.closeGripper();
                 } else if (Objects.equals(Servos.Gripper.gripperState, "CLOSED")) {
-                    Servos.Gripper.openGripper();
-                    if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]){
+
+
+                    if (lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE] - 30) {
+//                        Servos.Slider.moveSlider(0.5);
+//                        sleep(300);
+                        Servos.Wrist.goGripping();
+
+
                         goSafeAfterReleaseFlag = true;
                         safetyTimer.reset();
+                    } else {
+                        Servos.Gripper.openGripper();
                     }
 
 //                    if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]) {
@@ -340,8 +352,7 @@ public class V1 extends LinearOpMode {
 //                            sleep(300);
 //                        }
 //                    }
-                }
-                else if(Objects.equals(Servos.Gripper.gripperState, "BEACON")){
+                } else if (Objects.equals(Servos.Gripper.gripperState, "BEACON")) {
                     Servos.Gripper.gripBeacon();
                 }
             }
@@ -350,7 +361,14 @@ public class V1 extends LinearOpMode {
                 LBFlag = true;
                 if (Objects.equals(Servos.Wrist.wristState, "GRIPPING")) {
                     Servos.Wrist.goTop();
+                    if (lift.getPosition()[0] < lift.POSITIONS[lift.LOW_POLE]) {
+                        Servos.AlignBar.interMediate();
+                    }
+                    else{
+                        Servos.AlignBar.outside();
+                    }
                 } else if (Objects.equals(Servos.Wrist.wristState, "TOP")) {
+                    Servos.AlignBar.inside();
                     Servos.Wrist.goGripping();
                 } else {
                     Servos.Wrist.goGripping();
@@ -370,22 +388,22 @@ public class V1 extends LinearOpMode {
                 targetDegree += 90;
                 setTurret();
 
-            }else if(!LEFT2){
+            } else if (!LEFT2) {
 //            } else if (!gamepad1.square && !LEFT2) {
                 aFlag = false;
             }
-    if(RIGHT2 && !bFlag) {
+            if (RIGHT2 && !bFlag) {
 //            if ((B || RIGHT2) && !bFlag) {
-        bFlag = true;
-        targetDegree -= 90;
-        setTurret();
-    }else if(!RIGHT2){
+                bFlag = true;
+                targetDegree -= 90;
+                setTurret();
+            } else if (!RIGHT2) {
 //            } else if (!B && !RIGHT2) {
                 bFlag = false;
             }
 
-            if(gamepad1.touchpad && lift.getPosition()[0] >= lift.POSITIONS[lift.MID_POLE]){
-                targetDegree= 0;
+            if (gamepad1.touchpad && lift.getPosition()[0] >= lift.POSITIONS[lift.MID_POLE]) {
+                targetDegree = 0;
             }
 
 
@@ -393,18 +411,23 @@ public class V1 extends LinearOpMode {
 //                gamepad1.rumble(0.5, 0.5, 100);
 //            }
 
-             if(goSafeAfterReleaseFlag){
-                if(safetyTimer.milliseconds() >= 400 && safetyTimer.milliseconds() < 700){
-                    if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE])
-                    targetDegree = 0;
-                    Servos.Wrist.goInit();
+            if (goSafeAfterReleaseFlag) {
+                if(safetyTimer.milliseconds() >= 400 && safetyTimer.milliseconds() < 600){
+                    Servos.Gripper.openGripper();
                 }
-                if(safetyTimer.milliseconds() >= 700  && safetyTimer.milliseconds() < 900){
-                    Servos.Gripper.closeGripper();
-                }
-                if(safetyTimer.milliseconds() >= 900){
-                    lift.extendTo(lift.LOW_POLE, 1);
-                    goSafeAfterReleaseFlag = false;
+
+                if (safetyTimer.milliseconds() >= 400 && safetyTimer.milliseconds() < 1200) {
+                    if (lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]) {
+                        targetDegree = 0;
+                    }
+                    if (safetyTimer.milliseconds() >= 800 && safetyTimer.milliseconds() < 1000) {
+                        Servos.Gripper.closeGripper();
+                        Servos.AlignBar.inside();
+                    }
+                    if (safetyTimer.milliseconds() >= 1000) {
+                        lift.extendTo(lift.LOW_POLE, 1);
+                        goSafeAfterReleaseFlag = false;
+                    }
                 }
             }
 
@@ -414,14 +437,15 @@ public class V1 extends LinearOpMode {
 //            lift.extendTo((int) liftPos);
 
 
-            telemetry.addData("Currents: ", lift.getCurrent()[0] + ", " + lift.getCurrent()[1]);
-            telemetry.addData("Positions: ", lift.getPosition()[0] + ", " + lift.getPosition()[1]);
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
-            telemetry.update();
+                telemetry.addData("Currents: ", lift.getCurrent()[0] + ", " + lift.getCurrent()[1]);
+                telemetry.addData("Positions: ", lift.getPosition()[0] + ", " + lift.getPosition()[1]);
+                telemetry.addData("x", poseEstimate.getX());
+                telemetry.addData("y", poseEstimate.getY());
+                telemetry.addData("heading", poseEstimate.getHeading());
+                telemetry.addData("Turret Angle: ", turret.getDegree());
+                telemetry.update();
+            }
         }
-    }
 
 
     private void setInitialPositions() {
