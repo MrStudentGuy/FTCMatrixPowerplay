@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -8,17 +8,15 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Sticks extends SubsystemBase {
 
+    public static double stickOutPosition = 1;
+    public static double stickInPosition = 0;
+    public static double prevStickPosition = 0;
     HardwareMap hardwareMap;
     Telemetry telemetry;
     Servo leftStick, rightStick;
-
-    public static double stickOutPosition = 1;
-    public static double stickInPosition = 0;
-
     private double currentStickPosition = stickInPosition;
 
-    public static double prevStickPosition = 0;
-    public Sticks(HardwareMap hardwareMap, Telemetry telemetry){
+    public Sticks(HardwareMap hardwareMap, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         leftStick = hardwareMap.get(Servo.class, "leftStick");
@@ -28,16 +26,16 @@ public class Sticks extends SubsystemBase {
     @Override
     public void periodic() {
         super.periodic();
-        if(currentStickPosition != prevStickPosition){
+        if (currentStickPosition != prevStickPosition) {
             leftStick.setPosition(currentStickPosition);
         }
     }
 
-    public void stickIn(){
+    public void stickIn() {
         currentStickPosition = stickInPosition;
     }
 
-    public void stickOut(){
+    public void stickOut() {
         currentStickPosition = stickOutPosition;
     }
 }

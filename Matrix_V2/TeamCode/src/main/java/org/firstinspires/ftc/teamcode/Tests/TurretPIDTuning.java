@@ -4,6 +4,7 @@ import androidx.lifecycle.Lifecycle;
 
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 
 @Autonomous
+@Disabled
 public class TurretPIDTuning extends LinearOpMode {
 
     Lift lift;

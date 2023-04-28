@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -34,6 +35,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Config
+@Disabled
 @Autonomous(preselectTeleOp = "-->TELEOP \\uD83D\\uDC4C\\uD83D\\uDC4C\\uD83D\\uDE0D\\uD83C\\uDFB6\\uD83C\\uDFB6\\uD83D\\uDE0E\\uD83D\\uDE1C\\uD83D\\uDE2D\\uD83E\\uDD70\\uD83D\\uDE08\\uD83D\\uDC7A\\uD83D\\uDC7A\\uD83E\\uDD23\\uD83E\\uDD23\\uD83D\\uDE15\\uD83D\\uDE1C\\uD83D\\uDE2D\\uD83E\\uDD70\\uD83E\\uDD70\\uD83D\\uDE18")
 public class leftPostComp extends OpMode {
 
