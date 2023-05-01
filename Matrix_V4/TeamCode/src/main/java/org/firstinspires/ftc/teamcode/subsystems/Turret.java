@@ -38,7 +38,7 @@ public class Turret extends SubsystemBase {
     ElapsedTime turretProfileTimer;
     HardwareMap hardwareMap;
     Telemetry telemetry;
-    private MotionProfile turretProfile;
+    MotionProfile turretProfile;
     private double turretPower = 0;
 
 
@@ -47,6 +47,9 @@ public class Turret extends SubsystemBase {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         turretController = new PIDController(Kp_turret, Ki_turret, Kd_turret);
+        turretProfileTimer = new ElapsedTime();
+//        turretProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(getDegree(), 0, 0), new MotionState(targetDegree, 0, 0), 0,0,0);
+        turretProfileTimer.reset();
     }
 
 
@@ -55,15 +58,20 @@ public class Turret extends SubsystemBase {
         super.periodic();
         turretController.setPID(Kp_turret, Ki_turret, Kd_turret);
         double currentTurretDegree = getDegree();
-        MotionState profileState = turretProfile.get(turretProfileTimer.seconds());
-        double turret_pid = turretController.calculate(currentTurretDegree, profileState.getX());
-        double ff_turret = 1 * Kf_turret;
-        turretPower = ff_turret + turret_pid;
-        if (turretController.getPositionError() > 10) {
-            if (motor.getVelocity() == 0) {
-                setDegree(getNearest90(), 1000, 1000, 1000);
-            }
+        if(turretProfile !=null) {
+            MotionState profileState = turretProfile.get(turretProfileTimer.seconds());
+            double turret_pid = turretController.calculate(currentTurretDegree, profileState.getX());
+            double ff_turret = 1 * Kf_turret;
+            turretPower = ff_turret + turret_pid;
         }
+        else{
+            turretPower = 0;
+        }
+//        if (turretController.getPositionError() > 10) {
+//            if (motor.getVelocity() == 0) {
+//                setDegree(getNearest90(), 1000, 1000, 1000);
+//            }
+//        }
         write();
         if (GlobalVars.turretTelemetry) {
             telemetry.addData("Turret Target: ", targetDegree);

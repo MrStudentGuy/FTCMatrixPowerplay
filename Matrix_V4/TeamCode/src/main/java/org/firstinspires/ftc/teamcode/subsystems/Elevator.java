@@ -5,15 +5,18 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.GlobalVars;
 
 @Config
 public class Elevator extends SubsystemBase {
 
     MotorEx leftMotor, rightMotor;
+    DcMotorEx leftMotorEx, rightMotorEx;
     HardwareMap hardwareMap;
     Telemetry telemetry;
 
@@ -41,6 +44,8 @@ public class Elevator extends SubsystemBase {
         rightController = new PIDController(Kp, Ki, Kd);
         leftMotor = new MotorEx(hardwareMap, "leftMotor");
         rightMotor = new MotorEx(hardwareMap, "rightMotor");
+        leftMotorEx = hardwareMap.get(DcMotorEx.class, "leftMotor");
+        rightMotorEx = hardwareMap.get(DcMotorEx.class, "rightMotor");
 
         leftMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         rightMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -72,13 +77,13 @@ public class Elevator extends SubsystemBase {
         leftPower = leftPid + ff;
         rightPower = rightPid + ff;
 
-        if(Math.abs(leftController.getPositionError()) > 50){
-            if(leftMotor.getVelocity() < 100){
-                //stall detected somewhere, stop the controller from acting further
-                leftPower = ff;
-                rightPower = ff;
-            }
-        }
+//        if(Math.abs(leftController.getPositionError()) > 50){
+//            if(leftMotor.getVelocity() < 100){
+//                //stall detected somewhere, stop the controller from acting further
+//                leftPower = ff;
+//                rightPower = ff;
+//            }
+//        }
 
         //-------------------------------------------------------------------------------------------------------
         write();
@@ -134,9 +139,9 @@ public class Elevator extends SubsystemBase {
         rightMotor.resetEncoder();
     }
 
-//    public double[] getCurrent(){
-//        return new double[] {leftMotor.motor}
-//    }
+    public double[] getCurrent(){
+        return new double[] {leftMotorEx.getCurrent(CurrentUnit.AMPS), rightMotorEx.getCurrent(CurrentUnit.AMPS)};
+    }
 
 
 }

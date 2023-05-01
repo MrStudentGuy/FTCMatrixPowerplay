@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
@@ -13,11 +14,12 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.GlobalVars;
 
+@Config
 public class Slider extends SubsystemBase {
-    public static double sliderVelocity = 1;
-    public static double sliderAcceleration = 1000;
-    public static double sliderJerk = 2000;
-    private final double outPos = 0.25;
+    public static double sliderVelocity = 1000;
+    public static double sliderAcceleration = 100;
+    public static double sliderJerk = 0;
+    public static double outPos = 0.275;
     private final double inPos = 1;
     public double targetSliderPosition = inPos;
     HardwareMap hardwareMap;
@@ -30,14 +32,17 @@ public class Slider extends SubsystemBase {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = opMode.telemetry;
         sliderServo = hardwareMap.get(Servo.class, "Slider");
+        profileTimer = new ElapsedTime();
     }
 
 
     @Override
     public void periodic() {
         super.periodic();
-        MotionState sliderProfileState = axonProfile.get(profileTimer.seconds());
-        setPosition(sliderProfileState.getX());
+        if(axonProfile != null) {
+            MotionState sliderProfileState = axonProfile.get(profileTimer.seconds());
+            setPosition(sliderProfileState.getX());
+        }
         if (GlobalVars.sliderTelemetry) {
             telemetry.addData("Slider Servo Position: ", getPosition());
         }

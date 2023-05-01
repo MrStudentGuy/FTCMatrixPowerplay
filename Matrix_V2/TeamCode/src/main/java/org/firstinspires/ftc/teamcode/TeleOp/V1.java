@@ -1,12 +1,8 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import static org.firstinspires.ftc.teamcode.TransferClass.offsetpose;
-import static org.firstinspires.ftc.teamcode.TransferClass.poseStorage;
 import static org.firstinspires.ftc.teamcode.TransferClass.turretAngle;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.controller.PIDController;
@@ -20,7 +16,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.Lift;
 import org.firstinspires.ftc.teamcode.Subsystems.Sensors;
 import org.firstinspires.ftc.teamcode.Subsystems.Servos;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
-import org.firstinspires.ftc.teamcode.TransferClass;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.Objects;
@@ -28,52 +23,27 @@ import java.util.Objects;
 @TeleOp(name = "-->TELEOP \uD83D\uDC4C\uD83D\uDC4C\uD83D\uDE0D\uD83C\uDFB6\uD83C\uDFB6\uD83D\uDE0E\uD83D\uDE1C\uD83D\uDE2D\uD83E\uDD70\uD83D\uDE08\uD83D\uDC7A\uD83D\uDC7A\uD83E\uDD23\uD83E\uDD23\uD83D\uDE15\uD83D\uDE1C\uD83D\uDE2D\uD83E\uDD70\uD83E\uDD70\uD83D\uDE18")
 @Config
 public class V1 extends LinearOpMode {
-    ElapsedTime teleOpTime = new ElapsedTime();
-    ElapsedTime safetyTimer = new ElapsedTime();
+    public static final double Kp = 0.07;
+    public static final double Ki = 0;
+    public static final double Kd = 0.001;
+    public static final double Kf = 0; //feedforward, turret no gravity so 0
     public static double targetDegree = 0;
-    private final double GEAR_RATIO = 10.5 * 122.0 / 18.0;
-    private final double CPR = 28;             //counts
-    private final double ticks_in_degree = CPR * GEAR_RATIO / 360.0;
-
-    private boolean wristInFlag = false;
-
-    private PIDController controller; //meant for the turret
-    public static double Kp = 0.07;
-    public static double Ki = 0;
-    public static double Kd = 0.001;
-    public static double Kf = 0; //feedforward, turret no gravity so 0
-
-
+    final ElapsedTime safetyTimer = new ElapsedTime();
+    final ElapsedTime AutoCycleTimer = new ElapsedTime();
     boolean aFlag = false;
     boolean bFlag = false;
     boolean RBFlag = false;
     boolean LBFlag = false;
     boolean AutoCycleFlag = false;
     boolean AutoCycleProceed = false;
-
-
     boolean goSafeAfterReleaseFlag = false;
-
-
-    ElapsedTime AutoCycleTimer = new ElapsedTime();
-
     double pos = 0;
-
     Lift lift = null;
     Servos servos = null;
     Turret turret = null;
     Sensors sensors = null;
-
-    enum AutoCycleCenterStates {
-        IDLE,
-        GOGRIPPING,
-        RETRACT,
-        DROPANTICLOCKWISE,
-        DROPCLOCKWISE,
-        RETURN
-    }
-
     AutoCycleCenterStates autoCycleCenterStates = AutoCycleCenterStates.IDLE;
+    private boolean wristInFlag = false;
     private int liftPos = 0;
 
     @Override
@@ -85,7 +55,8 @@ public class V1 extends LinearOpMode {
         turret = new Turret(hardwareMap, "turret", telemetry);
         sensors = new Sensors(hardwareMap, telemetry);
 
-        controller = new PIDController(Kp, Ki, Kd);
+        //meant for the turret
+        PIDController controller = new PIDController(Kp, Ki, Kd);
 //        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, telemetry);
@@ -102,18 +73,13 @@ public class V1 extends LinearOpMode {
             if (gamepad1.dpad_up) {
                 liftPos += 2;
             } else if (gamepad1.dpad_down) {
-                liftPos -= 2; ///point of fakiure
+                liftPos -= 2; ///point of failure
             }
             lift.extendTo(liftPos, 0.5);
         }
         targetDegree = 0;
 
         liftPos = 0;
-
-//        lift.reset();
-//        turret.reset();
-
-//        calibrateTurret();
 
         setInitialPositions();
         teleOpTime.reset();
@@ -129,6 +95,10 @@ public class V1 extends LinearOpMode {
 
             double pid = controller.calculate(currentTurretValue, targetDegree); //output power for motor
 
+            double GEAR_RATIO = 10.5 * 122.0 / 18.0;
+            //counts
+            double CPR = 28;
+            double ticks_in_degree = CPR * GEAR_RATIO / 360.0;
             double ff = Math.cos(Math.toRadians(targetDegree / ticks_in_degree)) * Kf; //feedforward calculation
 
             double power = pid + ff; //in future in case
@@ -158,40 +128,16 @@ public class V1 extends LinearOpMode {
 
 
             //UNCOMMENT FOLLOWING FOR ROBOT ORIENTED DRIVE
-//            drive.setWeightedDrivePower(
-//                    new Pose2d(
-//                            -gamepad1.left_stick_y * 0.4,
-//                            -gamepad1.left_stick_x * 0.4,
-//                            -gamepad1.right_stick_x * 0.6
-//                    )
-//            );
-//
-//            drive.update();
-//
-//            Pose2d poseEstimate = drive.getPoseEstimate();
 
 
-            boolean A = gamepad1.a;                  //x
-            boolean B = gamepad1.b;                  //o
             boolean UP = gamepad1.dpad_up;
             boolean RIGHT = gamepad1.dpad_right;
             boolean DOWN = gamepad1.dpad_down;
             boolean LEFT = gamepad1.dpad_left;
             boolean RB = gamepad1.right_bumper;
             boolean LB = gamepad1.left_bumper;
-            boolean R3 = gamepad1.right_stick_button;
-            boolean L3 = gamepad1.left_stick_button;
 
 
-//            if(gamepad1.right_stick_button && lift.getPosition()[0] >= lift.POSITIONS[lift.LOW_POLE]){
-//                Servos.Slider.moveOutside();
-//                sleep(1000);
-//                Servos.AlignBar.outside();
-//                sleep(1000);
-//            }
-
-            boolean UP2 = gamepad2.dpad_up;
-            boolean DOWN2 = gamepad2.dpad_down;
             boolean LEFT2 = gamepad2.dpad_left;
             boolean RIGHT2 = gamepad2.dpad_right;
 
@@ -330,8 +276,6 @@ public class V1 extends LinearOpMode {
 
 
                     if (lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE] - 30) {
-//                        Servos.Slider.moveSlider(0.5);
-//                        sleep(300);
                         Servos.Wrist.goGripping();
 
 
@@ -341,17 +285,6 @@ public class V1 extends LinearOpMode {
                         Servos.Gripper.openGripper();
                     }
 
-//                    if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]) {
-//                        Servos.AlignBar.moveTo(0.7);
-//                        if (Servos.AlignBar.getPosition() > 0.4) {
-//                            Servos.Slider.moveOutside();
-//                            sleep(1000);
-//                            Servos.AlignBar.inside();
-//                            sleep(500);
-//                            Servos.Slider.moveInside();
-//                            sleep(300);
-//                        }
-//                    }
                 } else if (Objects.equals(Servos.Gripper.gripperState, "BEACON")) {
                     Servos.Gripper.gripBeacon();
                 }
@@ -363,8 +296,7 @@ public class V1 extends LinearOpMode {
                     Servos.Wrist.goTop();
                     if (lift.getPosition()[0] < lift.POSITIONS[lift.LOW_POLE]) {
                         Servos.AlignBar.interMediate();
-                    }
-                    else{
+                    } else {
                         Servos.AlignBar.outside();
                     }
                 } else if (Objects.equals(Servos.Wrist.wristState, "TOP")) {
@@ -386,7 +318,6 @@ public class V1 extends LinearOpMode {
 //            if ((gamepad1.square || LEFT2) && !aFlag) {
                 aFlag = true;
                 targetDegree += 90;
-                setTurret();
 
             } else if (!LEFT2) {
 //            } else if (!gamepad1.square && !LEFT2) {
@@ -396,7 +327,6 @@ public class V1 extends LinearOpMode {
 //            if ((B || RIGHT2) && !bFlag) {
                 bFlag = true;
                 targetDegree -= 90;
-                setTurret();
             } else if (!RIGHT2) {
 //            } else if (!B && !RIGHT2) {
                 bFlag = false;
@@ -407,12 +337,8 @@ public class V1 extends LinearOpMode {
             }
 
 
-//            if (Sensors.GripperSensor.getDistanceMM() < 25 && Sensors.GripperSensor.getDistanceMM() > 10 && Servos.Gripper.gripperState != "CLOSED" && Servos.Wrist.wristState == "GRIPPING") {
-//                gamepad1.rumble(0.5, 0.5, 100);
-//            }
-
             if (goSafeAfterReleaseFlag) {
-                if(safetyTimer.milliseconds() >= 400 && safetyTimer.milliseconds() < 600){
+                if (safetyTimer.milliseconds() >= 400 && safetyTimer.milliseconds() < 600) {
                     Servos.Gripper.openGripper();
                 }
 
@@ -431,22 +357,16 @@ public class V1 extends LinearOpMode {
                 }
             }
 
-//            if(teleOpTime.seconds())
 
-
-//            lift.extendTo((int) liftPos);
-
-
-                telemetry.addData("Currents: ", lift.getCurrent()[0] + ", " + lift.getCurrent()[1]);
-                telemetry.addData("Positions: ", lift.getPosition()[0] + ", " + lift.getPosition()[1]);
-                telemetry.addData("x", poseEstimate.getX());
-                telemetry.addData("y", poseEstimate.getY());
-                telemetry.addData("heading", poseEstimate.getHeading());
-                telemetry.addData("Turret Angle: ", turret.getDegree());
-                telemetry.update();
-            }
+            telemetry.addData("Currents: ", lift.getCurrent()[0] + ", " + lift.getCurrent()[1]);
+            telemetry.addData("Positions: ", lift.getPosition()[0] + ", " + lift.getPosition()[1]);
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("Turret Angle: ", turret.getDegree());
+            telemetry.update();
         }
-
+    }
 
     private void setInitialPositions() {
         lift.extendTo(0, 0.5);
@@ -457,21 +377,18 @@ public class V1 extends LinearOpMode {
         turret.setDegree(0);
     }
 
-    private void setTurret() {
-        if (lift.getPosition()[0] < lift.SAFE_POSITION) {
-//do nothing
-        } else {
-//            turret.setDegree((int) (pos));
-        }
-    }
 
     @Deprecated
-    private void calibrateTurret(){
+    private void calibrateTurret() {
         double currentDelta = turret.getDegree() - turretAngle;
-        if(Math.abs(currentDelta)>1){                           //if the current error has an absolute value of greater than 1 degree, rotate the turret in the appropriate direction
+        if (Math.abs(currentDelta) > 1) {                           //if the current error has an absolute value of greater than 1 degree, rotate the turret in the appropriate direction
             turret.setDegreeHighPower(currentDelta);
         }
         sleep(1000);          //give the turret time to reach it's target
         turret.reset();                 //reset so that telop has a calibrated turret
+    }
+
+    enum AutoCycleCenterStates {
+        IDLE, GOGRIPPING, RETRACT, DROPANTICLOCKWISE, DROPCLOCKWISE, RETURN
     }
 }

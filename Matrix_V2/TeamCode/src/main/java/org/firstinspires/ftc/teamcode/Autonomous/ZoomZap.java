@@ -47,6 +47,8 @@ public class ZoomZap extends LinearOpMode {
     // You will need to do your own calibration for other configurations!
     double fx = 578.272;
     double fy = 578.272;
+
+
     double cx = 402.145;
     double cy = 221.506;
 

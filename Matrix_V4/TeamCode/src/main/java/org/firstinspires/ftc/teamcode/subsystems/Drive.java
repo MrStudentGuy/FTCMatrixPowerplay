@@ -16,12 +16,12 @@ import java.util.function.DoubleSupplier;
 
 public class Drive extends SubsystemBase {
     public static double headingVel;
-    final SampleMecanumDrive drive;
+    public final SampleMecanumDrive drive;
     final Telemetry telemetry;
     final Pose2d startPose = new Pose2d(0, 0, 0);
     final Thread imuThread;
     private final Object imuSemaphore = new Object();
-    double drivePowerThrottle, drivePowerStrafe, drivePowerHeading;
+    double drivePowerThrottle=1, drivePowerStrafe=1, drivePowerHeading=1;
     @GuardedBy("imuSemaphore")
     private BNO055IMU imu;
     private double heading;
