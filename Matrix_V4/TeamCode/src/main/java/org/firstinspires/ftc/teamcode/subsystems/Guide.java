@@ -35,6 +35,8 @@ public class Guide extends SubsystemBase {
         guideServo.setPosition(guideOutPosition);
     }
 
+    public void dropPosition(){guideServo.setPosition(0);}
+
     public void intermediate() {
         guideServo.setPosition(guideIntermediatePosition);
     }

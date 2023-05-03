@@ -53,7 +53,7 @@ public class Drive extends SubsystemBase {
     @Override
     public void periodic() {
         super.periodic();
-
+        drive.update();
         if (GlobalVars.driveTelemetry) {
             telemetry.addData("Heading: ", heading);
         }

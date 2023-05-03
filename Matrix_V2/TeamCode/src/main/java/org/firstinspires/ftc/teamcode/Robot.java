@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.profile.MotionState;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -44,7 +45,7 @@ public class Robot extends SampleMecanumDrive {
     private final double CPR_turret = 28;             //counts
     private final double ticks_in_degree_turret = CPR_turret * GEAR_RATIO_turret / 360.0;
     private final double ticks_in_degree_lift = (10.5 * 28)/360;
-
+    double turretPower = 0, currentTurretDegree = 0;
 
     public Robot(HardwareMap hardwareMap, Telemetry localtelemetry, Lift lift, Turret turret, Servos servos) {
         super(hardwareMap, localtelemetry);
@@ -63,16 +64,17 @@ public class Robot extends SampleMecanumDrive {
         Pose2d pose = super.getPoseEstimate();
         poseStorage = pose;
 
+
         turretController.setPID(Kp_turret, Ki_turret, Kd_turret);
 //        liftController.setPID(Kp_lift, Ki_lift, Kd_lift);
 
-
-        double currentTurretDegree = robotTurret.getDegree();
-        double turret_pid = turretController.calculate(currentTurretDegree, targetDegree);
-        double ff_turret = Math.cos(Math.toRadians(targetDegree / ticks_in_degree_turret)) * Kf_turret;
-        double turretPower = ff_turret + turret_pid;
-
-
+        if(robotTurret.turretProfile != null) {
+            MotionState profileState = robotTurret.turretProfile.get(robotTurret.turretProfileTimer.seconds());
+            currentTurretDegree = robotTurret.getDegree();
+            double turret_pid = turretController.calculate(currentTurretDegree, profileState.getX());
+            double ff_turret = 1 * Kf_turret;
+            turretPower = ff_turret + turret_pid;
+        }
 //        double currentLiftHeight = robotLift.getPosition()[0];
 //        double lift_pid = liftController.calculate(currentLiftHeight, targetHeight);
 //        double ff_lift = Math.cos(Math.toRadians(targetHeight / ticks_in_degree_lift)) * Kf_lift;
@@ -90,6 +92,7 @@ public class Robot extends SampleMecanumDrive {
 
         telemetry.addData("Turret Current Position: ", currentTurretDegree);
         telemetry.addData("Turret Target Position: ", targetDegree);
+        telemetry.addData("Turret Power: ", turretPower);
 
         telemetry.update();
     }

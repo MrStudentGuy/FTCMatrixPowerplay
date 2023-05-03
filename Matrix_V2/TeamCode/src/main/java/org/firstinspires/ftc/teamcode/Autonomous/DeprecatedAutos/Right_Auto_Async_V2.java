@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.Autonomous.DeprecatedAutos;
 
 import static android.os.SystemClock.sleep;
 
@@ -24,7 +24,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.Servos;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.TransferClass;
 import org.firstinspires.ftc.teamcode.Vision.Pipelines.AprilTagDetectionPipeline;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
@@ -37,15 +36,17 @@ import java.util.ArrayList;
 @Config
 @Autonomous
 @Disabled
-public class RightFinalPakka extends OpMode {
+public class Right_Auto_Async_V2 extends OpMode {
+
+
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
 
-    Pose2d PARKING1 = new Pose2d(58, -12, Math.toRadians(90));
-    Pose2d PARKING2 = new Pose2d(36, -13, Math.toRadians(90));
-    Pose2d PARKING3 = new Pose2d(10, -12, Math.toRadians(90));
+    Pose2d PARKING1 = new Pose2d(-60+72, -12, Math.toRadians(0));
+    Pose2d PARKING2 = new Pose2d(-36+72, -13, Math.toRadians(0));
+    Pose2d PARKING3 = new Pose2d(-12+72, -12, Math.toRadians(0));
 
     // Lens intrinsics
     // UNITS ARE PIXELS
@@ -67,11 +68,9 @@ public class RightFinalPakka extends OpMode {
 
     AprilTagDetection tagOfInterest = null;
 
-    final Pose2d droppingPosition0 = new Pose2d(36.4, -11.5, Math.toRadians(0));       // Positions on the field to drop cone into pole
-    final Pose2d droppingPosition = new Pose2d(36.4, -11.5001, Math.toRadians(0));
+    final Pose2d droppingPosition0 = new Pose2d(37.4, -12, Math.toRadians(0));       // Positions on the field to drop cone into pole
+    final Pose2d droppingPosition = new Pose2d(37.4, -12.00, Math.toRadians(0));
     final Pose2d pickingPosition = new Pose2d(49, -12, Math.toRadians(0));
-    final Pose2d preloadDroppingPosition = new Pose2d(36.4, -11.5, Math.toRadians(90));
-    final Pose2d preloadDroppingPosition0 = new Pose2d(36.4, -11.5001, Math.toRadians(90));
 
 
     Lift lift = null;
@@ -102,7 +101,7 @@ public class RightFinalPakka extends OpMode {
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-
+        TransferClass.offsetpose = -90;
         lift = new Lift(hardwareMap, telemetry);
         servos = new Servos(hardwareMap, telemetry);
         turret = new Turret(hardwareMap, "turret", telemetry);
@@ -115,37 +114,31 @@ public class RightFinalPakka extends OpMode {
 
 
 
-        Pose2d startPose = new Pose2d(30.8, -63.3, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(31.8, -63.3, Math.toRadians(0));
         robot.setPoseEstimate(startPose);
 
-        TransferClass.offsetpose = 90;
+
 
         startToCenter = robot.trajectorySequenceBuilder(startPose)
-                .addTemporalMarker(()->lift.extendTo(30, 1))
-//                .addTemporalMarker(2, ()->{Robot.targetDegree = -144+90;})
-                .lineToLinearHeading(preloadDroppingPosition)
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS_AUTO[lift.HIGH_POLE], 1))
-                .UNSTABLE_addTemporalMarkerOffset(-0.001, ()->Servos.Wrist.goAutoTop())
-                .lineToLinearHeading(preloadDroppingPosition0)
-                .addTemporalMarker(()->Robot.targetDegree = 146-90)
-                .UNSTABLE_addTemporalMarkerOffset(-0.0001, ()-> {Servos.Slider.moveSlider(0.75);})
-                .waitSeconds(1)
-                .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .waitSeconds(0.01)
-//                .UNSTABLE_addTemporalMarkerOffset(0.3, ()->Servos.Wrist.goGripping())
+                .addTemporalMarker(0.3, ()->{Robot.targetDegree = 138;})
+                .lineToLinearHeading(droppingPosition0)
+                .UNSTABLE_addTemporalMarkerOffset(-1, ()->Servos.Wrist.goAutoTop())
+                .UNSTABLE_addTemporalMarkerOffset(-0.5, ()-> {Servos.Slider.moveSlider(0.6);})
+                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->Servos.Wrist.goGripping())
 //                .addTemporalMarker(()-> Servos.Wrist.goGripping())
 //                .waitSeconds(0.05)
                 .addTemporalMarker(()->Servos.Gripper.openGripper())
                 .addTemporalMarker(()->Servos.Slider.moveInside())
-                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[3], 1);})
+                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[4], 1);})
 //                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;})
 
-                .lineToLinearHeading(pickingPosition, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
+                .lineToLinearHeading(pickingPosition)
 //                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4], 1))
 //                .addTemporalMarker(()->)
 //                .waitSeconds(10)
-                .waitSeconds(0.3)
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.58))
+                .waitSeconds(0.5)
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.45))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Gripper.closeGripper())
                 .waitSeconds(0.2)
@@ -153,11 +146,38 @@ public class RightFinalPakka extends OpMode {
                 .addTemporalMarker(()-> Servos.Slider.moveInside())
                 .addTemporalMarker(()-> Servos.Wrist.goAutoTop())
                 .UNSTABLE_addTemporalMarkerOffset(0.01, ()->{lift.extendTo(lift.POSITIONS_AUTO[lift.HIGH_POLE], 1);})
-                .lineToLinearHeading(droppingPosition0, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
-                .UNSTABLE_addTemporalMarkerOffset(-0.8, ()->Robot.targetDegree = 146)
+                .lineToLinearHeading(droppingPosition)
+                .UNSTABLE_addTemporalMarkerOffset(-0.8, ()->Robot.targetDegree = 138)
                 .waitSeconds(0.4)
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
+                .waitSeconds(0.5)
+                .addTemporalMarker(()->Servos.Wrist.goGripping())
+                .waitSeconds(0.1)
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
+
+
+                .addTemporalMarker(()->Servos.Slider.moveInside())
+                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[3], 1);})
+//                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;})
+
+                .lineToLinearHeading(pickingPosition)
+//                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4], 1))
+//                .addTemporalMarker(()->)
+//                .waitSeconds(10)
+                .waitSeconds(0.5)
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.45))
+                .waitSeconds(0.5)
+                .addTemporalMarker(()->Servos.Gripper.closeGripper())
+                .waitSeconds(0.2)
+                .addTemporalMarker(()->lift.extendToLowPole())
+                .addTemporalMarker(()-> Servos.Slider.moveInside())
+                .addTemporalMarker(()-> Servos.Wrist.goAutoTop())
+                .UNSTABLE_addTemporalMarkerOffset(0.01, ()->{lift.extendTo(lift.POSITIONS_AUTO[lift.HIGH_POLE], 1);})
+                .lineToLinearHeading(droppingPosition)
+                .UNSTABLE_addTemporalMarkerOffset(-0.8, ()->Robot.targetDegree = 138)
                 .waitSeconds(0.4)
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
+                .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Gripper.openGripper())
@@ -167,12 +187,12 @@ public class RightFinalPakka extends OpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[2], 1);})
 //                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;})
 
-                .lineToLinearHeading(pickingPosition, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
+                .lineToLinearHeading(pickingPosition)
 //                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4], 1))
 //                .addTemporalMarker(()->)
 //                .waitSeconds(10)
-                .waitSeconds(0.3)
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.58))
+                .waitSeconds(0.5)
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.45))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Gripper.closeGripper())
                 .waitSeconds(0.2)
@@ -180,26 +200,25 @@ public class RightFinalPakka extends OpMode {
                 .addTemporalMarker(()-> Servos.Slider.moveInside())
                 .addTemporalMarker(()-> Servos.Wrist.goAutoTop())
                 .UNSTABLE_addTemporalMarkerOffset(0.01, ()->{lift.extendTo(lift.POSITIONS_AUTO[lift.HIGH_POLE], 1);})
-                .lineToLinearHeading(droppingPosition0, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
-                .UNSTABLE_addTemporalMarkerOffset(-0.8, ()->Robot.targetDegree = 146)
+                .lineToLinearHeading(droppingPosition)
+                .UNSTABLE_addTemporalMarkerOffset(-0.8, ()->Robot.targetDegree = 138)
                 .waitSeconds(0.4)
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
-                .waitSeconds(0.4)
+                .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Gripper.openGripper())
-
 
                 .addTemporalMarker(()->Servos.Slider.moveInside())
                 .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[1], 1);})
 //                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;})
 
-                .lineToLinearHeading(pickingPosition, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
+                .lineToLinearHeading(pickingPosition)
 //                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4], 1))
 //                .addTemporalMarker(()->)
 //                .waitSeconds(10)
-                .waitSeconds(0.3)
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.58))
+                .waitSeconds(0.5)
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.45))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Gripper.closeGripper())
                 .waitSeconds(0.2)
@@ -207,81 +226,42 @@ public class RightFinalPakka extends OpMode {
                 .addTemporalMarker(()-> Servos.Slider.moveInside())
                 .addTemporalMarker(()-> Servos.Wrist.goAutoTop())
                 .UNSTABLE_addTemporalMarkerOffset(0.01, ()->{lift.extendTo(lift.POSITIONS_AUTO[lift.HIGH_POLE], 1);})
-                .lineToLinearHeading(droppingPosition0, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
-                .UNSTABLE_addTemporalMarkerOffset(-0.8, ()->Robot.targetDegree = 146)
+                .lineToLinearHeading(droppingPosition)
+                .UNSTABLE_addTemporalMarkerOffset(-0.8, ()->Robot.targetDegree = 138)
                 .waitSeconds(0.4)
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
-                .waitSeconds(0.4)
+                .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Gripper.openGripper())
-
-
 
                 .addTemporalMarker(()->Servos.Slider.moveInside())
                 .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[0], 1);})
 //                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;})
 
-                .lineToLinearHeading(pickingPosition, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
+                .lineToLinearHeading(pickingPosition)
 //                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4], 1))
 //                .addTemporalMarker(()->)
 //                .waitSeconds(10)
-                .waitSeconds(0.3)
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.58))
+                .waitSeconds(0.5)
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.45))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Gripper.closeGripper())
                 .waitSeconds(0.2)
                 .addTemporalMarker(()->lift.extendToLowPole())
-                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Slider.moveInside())
                 .addTemporalMarker(()-> Servos.Wrist.goAutoTop())
-//                .waitSeconds(0.4)
                 .UNSTABLE_addTemporalMarkerOffset(0.01, ()->{lift.extendTo(lift.POSITIONS_AUTO[lift.HIGH_POLE], 1);})
-                .lineToLinearHeading(droppingPosition0, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
-                .UNSTABLE_addTemporalMarkerOffset(-0.8, ()->{Robot.targetDegree = 146;Servos.Slider.moveInside();})
+                .lineToLinearHeading(droppingPosition)
+                .UNSTABLE_addTemporalMarkerOffset(-0.8, ()->Robot.targetDegree = 138)
                 .waitSeconds(0.4)
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
-                .waitSeconds(0.4)
+                .waitSeconds(0.5)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Gripper.openGripper())
-
-
-
-//                .addTemporalMarker(()->Servos.Slider.moveInside())
-//                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[0], 1);})
-////                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;})
-//
-//                .lineToLinearHeading(pickingPosition, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
-////                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4], 1))
-////                .addTemporalMarker(()->)
-////                .waitSeconds(10)
-//                .waitSeconds(0.3)
-//                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.5))
-//                .waitSeconds(0.5)
-//                .addTemporalMarker(()->Servos.Gripper.closeGripper())
-//                .waitSeconds(0.2)
-//                .addTemporalMarker(()->lift.extendToLowPole())
-//                .addTemporalMarker(()-> Servos.Slider.moveInside())
-//                .addTemporalMarker(()-> Servos.Wrist.goAutoTop())
-////                .waitSeconds(0.5)
-//                .UNSTABLE_addTemporalMarkerOffset(0.01, ()->{lift.extendTo(lift.POSITIONS_AUTO[lift.HIGH_POLE], 1);})
-//                .lineToLinearHeading(droppingPosition0, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
-//                .UNSTABLE_addTemporalMarkerOffset(-0.8, ()->Robot.targetDegree = -146)
-//                .waitSeconds(0.4)
-//                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
-//                .waitSeconds(0.4)
-//                .addTemporalMarker(()->Servos.Wrist.goGripping())
-//                .waitSeconds(0.1)
-//                .addTemporalMarker(()-> Servos.Gripper.openGripper())
-
-
-
                 .addTemporalMarker(()->Servos.Slider.moveInside())
-//                .UNSTABLE_addTemporalMarkerOffset(0.3,()->{lift.extendTo(lift.AUTO_POSITION[0], 1);})
-                .waitSeconds(0.2)
-                .addTemporalMarker(()->{Robot.targetDegree = 0;})
-//                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[0], 1);})
+                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;lift.extendTo(lift.AUTO_POSITION[0], 1);})
 //                .UNSTABLE_addTemporalMarkerOffset(0.001,()->{Robot.targetDegree = 0;})
 //                .addTemporalMarker(()-> )
 //                .lineToLinearHeading(pickingPosition)
@@ -292,16 +272,15 @@ public class RightFinalPakka extends OpMode {
          */
         goToP1 = robot.trajectorySequenceBuilder((startToCenter.end()))
 //                .addTemporalMarker(() -> turret.setDegree(0))
-//                .addTemporalMarker(() -> lift.extendTo(0, 1))
-                .addTemporalMarker(() -> Servos.Slider.moveInside())
                 .addTemporalMarker(() -> Servos.Wrist.goInit())
+                .addTemporalMarker(() -> lift.extendTo(0, 1))
                 .addTemporalMarker(() -> Servos.Gripper.closeGripper())
-                .lineToLinearHeading(new Pose2d(PARKING1.getX(), PARKING1.getY(), Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(PARKING1.getX(), PARKING1.getY(), Math.toRadians(0)))
 //                .addTemporalMarker(() -> turret.setDegree(0))
 
 //                .turn(Math.toRadians(-90))
 //                .lineToLinearHeading(new Pose2d(PARKING3.getX(), PARKING3.getY()-24, Math.toRadians(90)))
-
+                .addTemporalMarker(() -> Servos.Slider.moveInside())
                 .build();
 
         /**
@@ -309,18 +288,15 @@ public class RightFinalPakka extends OpMode {
          */
         goToP2 = robot.trajectorySequenceBuilder((startToCenter.end()))
 //                .addTemporalMarker(() -> turret.setDegree(0))
-//                .addTemporalMarker(() -> Servos.Wrist.goInit())
-//                .addTemporalMarker(() -> lift.extendTo(0, 1))
-                .addTemporalMarker(() -> Servos.Slider.moveInside())
                 .addTemporalMarker(() -> Servos.Wrist.goInit())
+                .addTemporalMarker(() -> lift.extendTo(0, 1))
                 .addTemporalMarker(() -> Servos.Gripper.closeGripper())
-                .lineToLinearHeading(new Pose2d(PARKING2.getX(), PARKING2.getY(), Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(PARKING2.getX(), PARKING2.getY(), Math.toRadians(0)))
 //                .addTemporalMarker(() -> turret.setDegree(0))
 
 //                .turn(Math.toRadians(-90))
 //                .lineToLinearHeading(new Pose2d(PARKING3.getX(), PARKING3.getY()-24, Math.toRadians(90)))
                 .addTemporalMarker(() -> Servos.Slider.moveInside())
-                .addTemporalMarker(() -> Servos.Wrist.goInit())
                 .build();
 
         /**
@@ -328,18 +304,15 @@ public class RightFinalPakka extends OpMode {
          */
         goToP3 = robot.trajectorySequenceBuilder((startToCenter.end()))
 //                .addTemporalMarker(() -> turret.setDegree(0))
-//                .addTemporalMarker(() -> Servos.Wrist.goInit())
-//                .addTemporalMarker(() -> lift.extendTo(0, 1))
-                .addTemporalMarker(() -> Servos.Slider.moveInside())
                 .addTemporalMarker(() -> Servos.Wrist.goInit())
+                .addTemporalMarker(() -> lift.extendTo(0, 1))
                 .addTemporalMarker(() -> Servos.Gripper.closeGripper())
-                .lineToLinearHeading(new Pose2d(PARKING3.getX(), PARKING3.getY(), Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(PARKING3.getX(), PARKING3.getY(), Math.toRadians(0)))
 //                .addTemporalMarker(() -> turret.setDegree(0))
 
 //                .turn(Math.toRadians(-90))
 //                .lineToLinearHeading(new Pose2d(PARKING3.getX(), PARKING3.getY()-24, Math.toRadians(90)))
                 .addTemporalMarker(() -> Servos.Slider.moveInside())
-                .addTemporalMarker(() -> Servos.Wrist.goInit())
                 .build();
 
 
@@ -361,7 +334,7 @@ public class RightFinalPakka extends OpMode {
                 .build();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
@@ -469,8 +442,6 @@ public class RightFinalPakka extends OpMode {
 
     }
 
-
-
     /**
      * Get the information about the tag being detected and display it
      * @param detection The tag detection currently active
@@ -484,4 +455,6 @@ public class RightFinalPakka extends OpMode {
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
+
+
 }

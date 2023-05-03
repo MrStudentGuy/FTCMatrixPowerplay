@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.Autonomous.DeprecatedAutos;
 
 import static org.firstinspires.ftc.teamcode.TransferClass.poseStorage;
 import static org.firstinspires.ftc.teamcode.TransferClass.turretAngle;

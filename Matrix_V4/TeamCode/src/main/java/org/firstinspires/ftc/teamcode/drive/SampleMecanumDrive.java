@@ -28,6 +28,11 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
+import org.firstinspires.ftc.teamcode.subsystems.Elevator;
+import org.firstinspires.ftc.teamcode.subsystems.EndEffector;
+import org.firstinspires.ftc.teamcode.subsystems.Guide;
+import org.firstinspires.ftc.teamcode.subsystems.Slider;
+import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -79,6 +84,12 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private DoubleSupplier headingSupplier;
 
+    Turret turret;
+    Elevator elevator;
+    Slider slider;
+    EndEffector endEffector;
+    Guide guide;
+
     public SampleMecanumDrive(HardwareMap hardwareMap, Telemetry telemetry){
         this(hardwareMap, telemetry, new DoubleSupplier() {
             @Override
@@ -86,6 +97,15 @@ public class SampleMecanumDrive extends MecanumDrive {
                 return 0;
             }
         });
+    }
+
+    public void setHardware(Turret turret, Elevator elevator, Slider slider, EndEffector endEffector, Guide guide){
+        this.elevator = elevator;
+        this.turret = turret;
+        this.slider = slider;
+//        drive = new Drive(hardwareMap, telemetry);
+        this.guide = guide;
+        this.endEffector = endEffector;
     }
 
     public SampleMecanumDrive(HardwareMap hardwareMap, Telemetry telemetry, DoubleSupplier headingSupplier) {
@@ -199,6 +219,11 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void update() {
         updatePoseEstimate();
+        endEffector.periodic();
+        slider.periodic();;
+        elevator.periodic();
+        guide.periodic();
+        turret.periodic();
 //        localTelem.addData("Currents: ", leftFront.getCurrent(CurrentUnit.MILLIAMPS) + "," + leftRear.getCurrent(CurrentUnit.MILLIAMPS) + ", " + rightRear.getCurrent(CurrentUnit.MILLIAMPS) + ", " + rightFront.getCurrent(CurrentUnit.MILLIAMPS));
 //        localTelem.update();
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());

@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.TransferClass.turretAngle;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.profile.MotionState;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -85,26 +86,22 @@ public class V1 extends LinearOpMode {
         teleOpTime.reset();
         teleOpTime.reset();
         Servos.AlignBar.inside();
+        double turretPower = 0;
 
 
         while (opModeIsActive()) {
-            controller.setPID(Kp, Ki, Kd); //turret cant use default values, too big, not accurate, hence custom values
+            controller.setPID(Kp, Ki, Kd);
+//        liftController.setPID(Kp_lift, Ki_lift, Kd_lift);
 
+            if(turret.turretProfile != null) {
+                MotionState profileState = turret.turretProfile.get(turret.turretProfileTimer.seconds());
+                double currentTurretDegree = turret.getDegree();
+                double turret_pid = controller.calculate(currentTurretDegree, profileState.getX());
+                double ff_turret = 1 * Kf;
+                turretPower = ff_turret + turret_pid;
+            }
 
-            double currentTurretValue = turret.getDegree();
-
-            double pid = controller.calculate(currentTurretValue, targetDegree); //output power for motor
-
-            double GEAR_RATIO = 10.5 * 122.0 / 18.0;
-            //counts
-            double CPR = 28;
-            double ticks_in_degree = CPR * GEAR_RATIO / 360.0;
-            double ff = Math.cos(Math.toRadians(targetDegree / ticks_in_degree)) * Kf; //feedforward calculation
-
-            double power = pid + ff; //in future in case
-
-            turret.set(power);
-
+            turret.set(turretPower);
 
             double drivePowerThrottle, drivePowerStrafe, drivePowerHeading;
 
@@ -317,7 +314,7 @@ public class V1 extends LinearOpMode {
             if ((LEFT2) && !aFlag) {
 //            if ((gamepad1.square || LEFT2) && !aFlag) {
                 aFlag = true;
-                targetDegree += 90;
+                turret.setTargetDegree(targetDegree += 90);
 
             } else if (!LEFT2) {
 //            } else if (!gamepad1.square && !LEFT2) {
@@ -326,7 +323,7 @@ public class V1 extends LinearOpMode {
             if (RIGHT2 && !bFlag) {
 //            if ((B || RIGHT2) && !bFlag) {
                 bFlag = true;
-                targetDegree -= 90;
+                turret.setTargetDegree(targetDegree-=90);
             } else if (!RIGHT2) {
 //            } else if (!B && !RIGHT2) {
                 bFlag = false;

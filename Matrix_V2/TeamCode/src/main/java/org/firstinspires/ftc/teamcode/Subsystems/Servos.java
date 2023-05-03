@@ -86,7 +86,7 @@ public class Servos {
         }
 
         public static void moveOutside() {
-            SliderServo.setPosition(0.2);
+            SliderServo.setPosition(0.32);
         }
 
         public static void moveHalfway() {
@@ -96,7 +96,7 @@ public class Servos {
 
         public static void moveSlider(double position) {
 
-            position = Range.clip(position, 0.2, 1);
+            position = Range.clip(position, 0.28, 1);
             SliderServo.setPosition(position);
         }
 

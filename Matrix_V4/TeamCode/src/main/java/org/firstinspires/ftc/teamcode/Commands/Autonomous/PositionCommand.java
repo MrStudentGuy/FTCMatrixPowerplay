@@ -25,6 +25,11 @@ public class PositionCommand extends CommandBase {
     }
 
     @Override
+    public void execute() {
+        super.execute();
+    }
+
+    @Override
     public boolean isFinished() {
         return !drive.drive.isBusy();
     }

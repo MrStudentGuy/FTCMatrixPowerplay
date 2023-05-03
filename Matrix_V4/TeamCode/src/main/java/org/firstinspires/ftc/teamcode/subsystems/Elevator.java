@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -65,17 +66,17 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         super.periodic();
-        leftController.setPID(Kp, Ki, Kd);
-        rightController.setPID(Kp, Ki, Kd);
-        double rightCurrentCounts = rightMotor.getCurrentPosition();
-        double leftCurrentCounts = leftMotor.getCurrentPosition();
-        double leftPid = leftController.calculate(leftCurrentCounts, targetCounts);
-        double rightPid = rightController.calculate(rightCurrentCounts, targetCounts);
-
-        double ff = 1 * Kf;
-//        telemetry.addData("Position: ", currentCounts);
-        leftPower = leftPid + ff;
-        rightPower = rightPid + ff;
+//        leftController.setPID(Kp, Ki, Kd);
+//        rightController.setPID(Kp, Ki, Kd);
+//        double rightCurrentCounts = rightMotor.getCurrentPosition();
+//        double leftCurrentCounts = leftMotor.getCurrentPosition();
+//        double leftPid = leftController.calculate(leftCurrentCounts, targetCounts);
+//        double rightPid = rightController.calculate(rightCurrentCounts, targetCounts);
+//
+//        double ff = 1 * Kf;
+////        telemetry.addData("Position: ", currentCounts);
+//        leftPower = leftPid + ff;
+//        rightPower = rightPid + ff;
 
 //        if(Math.abs(leftController.getPositionError()) > 50){
 //            if(leftMotor.getVelocity() < 100){
@@ -97,7 +98,12 @@ public class Elevator extends SubsystemBase {
     }
 
     public void write(){
-        this.setPower(this.leftPower, this.rightPower);
+        leftMotorEx.setTargetPosition((int)targetCounts);
+        rightMotorEx.setTargetPosition((int)targetCounts);
+        leftMotorEx.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightMotorEx.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftMotorEx.setPower(1);
+        rightMotorEx.setPower(1);
     }
 
 
