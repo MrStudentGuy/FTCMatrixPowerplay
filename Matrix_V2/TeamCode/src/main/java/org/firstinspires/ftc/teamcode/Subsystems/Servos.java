@@ -23,7 +23,7 @@ public class Servos {
     }
 
     public static class Gripper {
-        private static final double gripperOpenPosition = 0;
+        private static final double gripperOpenPosition = 0.1;
         private static final double gripperClosePosition = 1;
         private static final double gripperBeaconPosition = 0.42;
         public static String gripperState = "OPEN";
@@ -52,7 +52,7 @@ public class Servos {
 
         private static final double TopPosition = 0.27;
         private static final double InitPosition = 0.05;
-        private static final double GrippingPosition = 0.05;
+        private static final double GrippingPosition = 0;
         private static final double TopAutoPosition = 0.4;
         public static String wristState = "INIT";
 
@@ -66,6 +66,10 @@ public class Servos {
             WristServo.setPosition(InitPosition);
         }
 
+        public static void setPosition(double pos){
+            WristServo.setPosition(pos);
+        }
+
         public static void goGripping() {
             wristState = "GRIPPING";
             WristServo.setPosition(GrippingPosition);
@@ -74,6 +78,10 @@ public class Servos {
         public static void goAutoTop() {
             wristState = "TOP";
             WristServo.setPosition(TopAutoPosition);
+        }
+
+        public static double getPosition(){
+            return WristServo.getPosition();
         }
 
 
@@ -86,7 +94,7 @@ public class Servos {
         }
 
         public static void moveOutside() {
-            SliderServo.setPosition(0.32);
+            SliderServo.setPosition(0.28);
         }
 
         public static void moveHalfway() {
@@ -107,14 +115,14 @@ public class Servos {
 
     public static class AlignBar {
 
-        public static double outPos = 0.2;
+        public static double outPos = 0.17;
 
         public static void inside() {
             AlignServo.setPosition(1);
         }
 
         public static void interMediate() {
-            AlignServo.setPosition(0.9);
+            AlignServo.setPosition(0.7);
         }
 
         public static void outside() {

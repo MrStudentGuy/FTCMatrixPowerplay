@@ -23,7 +23,7 @@ public class Turret {
     public ElapsedTime turretProfileTimer;
     public MotionProfile turretProfile;
 
-    public static double maxVel = 2000, maxAccel = 2000, maxJerk = 2000;
+    public static double maxVel = 1800, maxAccel = 1000, maxJerk = 0;
 
     public Turret(HardwareMap hardwareMap, String deviceName, Telemetry telemetry){
         motor = hardwareMap.get(DcMotorEx.class, deviceName);

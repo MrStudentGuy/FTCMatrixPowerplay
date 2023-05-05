@@ -18,7 +18,7 @@ public class Sensors {
 
     private static Telemetry localTelemetry;
 
-    private RevTouchSensor GripperSensor;
+    private RevTouchSensor AlignSensor;
     /**
      * Create a new Subsystem of Sensors.
      * @param hardwareMap Pass in the hardwaremap used by the opMode
@@ -26,13 +26,14 @@ public class Sensors {
      */
     public Sensors(HardwareMap hardwareMap, Telemetry telemetry){
         localTelemetry = telemetry;
+        AlignSensor = hardwareMap.get(RevTouchSensor.class, "alignSensor");
 //        GripperSensor  =hardwareMap.get(RevTouchSensor.class, "gripperSensor");
 //        gripperSensor = hardwareMap.get(RevColorSensorV3.class, "gripperSensor");
 //        poleSensor = hardwareMap.get(Rev2mDistanceSensor.class, "poleSensor");
     }
 
     public boolean read(){
-        return GripperSensor.isPressed();
+        return AlignSensor.isPressed();
     }
 
 }

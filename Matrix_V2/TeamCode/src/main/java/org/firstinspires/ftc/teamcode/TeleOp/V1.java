@@ -87,6 +87,7 @@ public class V1 extends LinearOpMode {
         teleOpTime.reset();
         Servos.AlignBar.inside();
         double turretPower = 0;
+        turret.setTargetDegree(0);
 
 
         while (opModeIsActive()) {
@@ -124,7 +125,6 @@ public class V1 extends LinearOpMode {
             drive.update();//drive is sample mecanum drive
 
 
-            //UNCOMMENT FOLLOWING FOR ROBOT ORIENTED DRIVE
 
 
             boolean UP = gamepad1.dpad_up;
@@ -241,7 +241,7 @@ public class V1 extends LinearOpMode {
             }
 
             if (UP) {
-                Servos.Wrist.goTop();
+                Servos.Wrist.goAutoTop();
                 lift.extendToHighPole();
                 Servos.AlignBar.outside();
             } else if ((RIGHT || gamepad2.dpad_down)) {
@@ -249,11 +249,11 @@ public class V1 extends LinearOpMode {
                 lift.extendToGrippingPosition();
                 Servos.AlignBar.inside();
             } else if (DOWN) {
-                Servos.Wrist.goTop();
+                Servos.Wrist.goAutoTop();
                 lift.extendToLowPole();
                 Servos.AlignBar.interMediate();
             } else if (LEFT) {
-                Servos.Wrist.goTop();
+                Servos.Wrist.goAutoTop();
                 lift.extendToMidPole();
                 Servos.AlignBar.outside();
             }
@@ -262,7 +262,6 @@ public class V1 extends LinearOpMode {
             if (gamepad2.start || gamepad1.start) {
                 Servos.Gripper.gripperState = "BEACON";
             }
-
 
             if (RB && !RBFlag) {
                 RBFlag = true; //only once
@@ -290,7 +289,7 @@ public class V1 extends LinearOpMode {
             if (LB && !LBFlag) {
                 LBFlag = true;
                 if (Objects.equals(Servos.Wrist.wristState, "GRIPPING")) {
-                    Servos.Wrist.goTop();
+                    Servos.Wrist.goAutoTop();
                     if (lift.getPosition()[0] < lift.POSITIONS[lift.LOW_POLE]) {
                         Servos.AlignBar.interMediate();
                     } else {
@@ -354,7 +353,7 @@ public class V1 extends LinearOpMode {
                 }
             }
 
-
+            telemetry.addData("Align Sensor: ", sensors.read());
             telemetry.addData("Currents: ", lift.getCurrent()[0] + ", " + lift.getCurrent()[1]);
             telemetry.addData("Positions: ", lift.getPosition()[0] + ", " + lift.getPosition()[1]);
             telemetry.addData("x", poseEstimate.getX());

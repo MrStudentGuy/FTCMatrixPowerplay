@@ -83,7 +83,7 @@ public class ZoomZoom extends LinearOpMode {
                 .addTemporalMarker(Servos.Gripper::closeGripper)
                 .addTemporalMarker(0.25, () -> lift.extendTo(lift.POSITIONS[lift.MID_POLE], 1))
                 .addTemporalMarker(0.4, () -> {
-                    Robot.targetDegree = 147.5;
+                    turret.setTargetDegree(147.5);
                     Servos.Wrist.goAutoTop();
                     Servos.AlignBar.outside();
                 })
@@ -105,7 +105,7 @@ public class ZoomZoom extends LinearOpMode {
                     Servos.AlignBar.inside();
                     Servos.Gripper.closeGripper();
                 })
-                .addTemporalMarker(() -> Robot.targetDegree = 0)
+                .addTemporalMarker(() -> turret.setTargetDegree(0))
 
 
                 .addTemporalMarker(() -> lift.extendTo(lift.AUTO_POSITION[4], 1))
@@ -115,15 +115,16 @@ public class ZoomZoom extends LinearOpMode {
                 .addTemporalMarker(Servos.Slider::moveOutside)
                 .waitSeconds(0.25)
                 .addTemporalMarker(Servos.Gripper::closeGripper)
-                .waitSeconds(0.1)
+                .waitSeconds(0.25)
                 .addTemporalMarker(() -> lift.extendTo(lift.POSITIONS[lift.HIGH_POLE], 1))
                 .addTemporalMarker(Servos.Wrist::goAutoTop)
                 .addTemporalMarker(Servos.AlignBar::interMediate)
                 .waitSeconds(0.1)
                 .addTemporalMarker(Servos.Slider::moveInside)
                 .waitSeconds(0.2)
-                .addTemporalMarker(() -> Robot.targetDegree = -152)
                 .lineToLinearHeading(preloadDropPosition)
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> turret.setTargetDegree(-152))
+
                 .addTemporalMarker(Servos.AlignBar::outside)
                 .waitSeconds(0.9)
                 .addTemporalMarker(Servos.Slider::moveOutside)
@@ -143,7 +144,7 @@ public class ZoomZoom extends LinearOpMode {
                     Servos.AlignBar.inside();
                     Servos.Gripper.closeGripper();
                 })
-                .addTemporalMarker(() -> Robot.targetDegree = 0)
+                .addTemporalMarker(() -> turret.setTargetDegree(0))
 
 
                 .addTemporalMarker(() -> lift.extendTo(lift.AUTO_POSITION[3], 1))
@@ -153,15 +154,15 @@ public class ZoomZoom extends LinearOpMode {
                 .addTemporalMarker(Servos.Slider::moveOutside)
                 .waitSeconds(0.25)
                 .addTemporalMarker(Servos.Gripper::closeGripper)
-                .waitSeconds(0.1)
+                .waitSeconds(0.25)
                 .addTemporalMarker(() -> lift.extendTo(lift.POSITIONS[lift.HIGH_POLE], 1))
                 .addTemporalMarker(Servos.Wrist::goAutoTop)
                 .addTemporalMarker(Servos.AlignBar::interMediate)
                 .waitSeconds(0.1)
                 .addTemporalMarker(Servos.Slider::moveInside)
                 .waitSeconds(0.2)
-                .addTemporalMarker(() -> Robot.targetDegree = -152)
                 .lineToLinearHeading(preloadDropPosition)
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> turret.setTargetDegree(-152))
                 .addTemporalMarker(Servos.AlignBar::outside)
                 .waitSeconds(0.9)
                 .addTemporalMarker(Servos.Slider::moveOutside)
@@ -181,7 +182,7 @@ public class ZoomZoom extends LinearOpMode {
                     Servos.AlignBar.inside();
                     Servos.Gripper.closeGripper();
                 })
-                .addTemporalMarker(() -> Robot.targetDegree = 0)
+                .addTemporalMarker(() -> turret.setTargetDegree(0))
 
 
                 .addTemporalMarker(() -> lift.extendTo(lift.AUTO_POSITION[2], 1))
@@ -191,15 +192,15 @@ public class ZoomZoom extends LinearOpMode {
                 .addTemporalMarker(Servos.Slider::moveOutside)
                 .waitSeconds(0.25)
                 .addTemporalMarker(Servos.Gripper::closeGripper)
-                .waitSeconds(0.1)
+                .waitSeconds(0.25)
                 .addTemporalMarker(() -> lift.extendTo(lift.POSITIONS[lift.HIGH_POLE], 1))
                 .addTemporalMarker(Servos.Wrist::goAutoTop)
                 .addTemporalMarker(Servos.AlignBar::interMediate)
                 .waitSeconds(0.1)
                 .addTemporalMarker(Servos.Slider::moveInside)
                 .waitSeconds(0.2)
-                .addTemporalMarker(() -> Robot.targetDegree = -152)
                 .lineToLinearHeading(preloadDropPosition)
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> turret.setTargetDegree(-152))
                 .addTemporalMarker(Servos.AlignBar::outside)
                 .waitSeconds(0.9)
                 .addTemporalMarker(Servos.Slider::moveOutside)
@@ -219,7 +220,7 @@ public class ZoomZoom extends LinearOpMode {
                     Servos.AlignBar.inside();
                     Servos.Gripper.closeGripper();
                 })
-                .addTemporalMarker(() -> Robot.targetDegree = 0)
+                .addTemporalMarker(() -> turret.setTargetDegree(0))
 
 
                 .addTemporalMarker(() -> lift.extendTo(lift.AUTO_POSITION[1], 1))
@@ -229,15 +230,15 @@ public class ZoomZoom extends LinearOpMode {
                 .addTemporalMarker(Servos.Slider::moveOutside)
                 .waitSeconds(0.25)
                 .addTemporalMarker(Servos.Gripper::closeGripper)
-                .waitSeconds(0.1)
+                .waitSeconds(0.25)
                 .addTemporalMarker(() -> lift.extendTo(lift.POSITIONS[lift.HIGH_POLE], 1))
                 .addTemporalMarker(Servos.Wrist::goAutoTop)
                 .addTemporalMarker(Servos.AlignBar::interMediate)
                 .waitSeconds(0.1)
                 .addTemporalMarker(Servos.Slider::moveInside)
                 .waitSeconds(0.2)
-                .addTemporalMarker(() -> Robot.targetDegree = -152)
                 .lineToLinearHeading(preloadDropPosition)
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> turret.setTargetDegree(-152))
                 .addTemporalMarker(Servos.AlignBar::outside)
                 .waitSeconds(0.9)
                 .addTemporalMarker(Servos.Slider::moveOutside)
@@ -257,7 +258,7 @@ public class ZoomZoom extends LinearOpMode {
                     Servos.AlignBar.inside();
                     Servos.Gripper.closeGripper();
                 })
-                .addTemporalMarker(() -> Robot.targetDegree = 0)
+                .addTemporalMarker(() -> turret.setTargetDegree(0))
 
 
                 .addTemporalMarker(() -> lift.extendTo(lift.AUTO_POSITION[0], 1))
@@ -267,15 +268,15 @@ public class ZoomZoom extends LinearOpMode {
                 .addTemporalMarker(Servos.Slider::moveOutside)
                 .waitSeconds(0.25)
                 .addTemporalMarker(Servos.Gripper::closeGripper)
-                .waitSeconds(0.1)
+                .waitSeconds(0.25)
                 .addTemporalMarker(() -> lift.extendTo(lift.POSITIONS[lift.HIGH_POLE], 1))
                 .addTemporalMarker(Servos.Wrist::goAutoTop)
                 .addTemporalMarker(Servos.AlignBar::interMediate)
                 .waitSeconds(0.1)
                 .addTemporalMarker(Servos.Slider::moveInside)
                 .waitSeconds(0.2)
-                .addTemporalMarker(() -> Robot.targetDegree = -152)
                 .lineToLinearHeading(preloadDropPosition)
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> turret.setTargetDegree(-152))
                 .addTemporalMarker(Servos.AlignBar::outside)
                 .waitSeconds(0.9)
                 .addTemporalMarker(Servos.Slider::moveOutside)
@@ -295,7 +296,7 @@ public class ZoomZoom extends LinearOpMode {
                     Servos.AlignBar.inside();
                     Servos.Gripper.closeGripper();
                 })
-                .addTemporalMarker(() -> Robot.targetDegree = 0)
+                .addTemporalMarker(() -> turret.setTargetDegree(0))
 
 
 //                .waitSeconds(10)
