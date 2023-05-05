@@ -38,8 +38,8 @@ public class ZoomZap extends LinearOpMode {
     static final double FEET_PER_METER = 3.28084;
 
     Pose2d PARKING1 = new Pose2d(-54, -12, Math.toRadians(90));
-    Pose2d PARKING2 = new Pose2d(-36, -13, Math.toRadians(90));
-    Pose2d PARKING3 = new Pose2d(-12, -12, Math.toRadians(90));
+    Pose2d PARKING2 = new Pose2d(-32, -13, Math.toRadians(90));
+    Pose2d PARKING3 = new Pose2d(-6, -12, Math.toRadians(90));
 
     // Lens intrinsics
     // UNITS ARE PIXELS
@@ -47,8 +47,6 @@ public class ZoomZap extends LinearOpMode {
     // You will need to do your own calibration for other configurations!
     double fx = 578.272;
     double fy = 578.272;
-
-
     double cx = 402.145;
     double cy = 221.506;
 
@@ -104,14 +102,14 @@ public class ZoomZap extends LinearOpMode {
                     Servos.AlignBar.outside();
                 })
                 .lineToLinearHeading(preloadDropPosition)
-//                .waitSeconds(0.05)
-                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> Servos.Slider.moveSlider(0.5))
-//                .waitSeconds(0.1)
+                .waitSeconds(0.05)
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.5))
+                .waitSeconds(0.1)
 //                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.25))
-//                .waitSeconds(0.05)
+//                .waitSeconds(0.1)
                 .addTemporalMarker(()->Servos.Wrist.goGripping())
                 .addTemporalMarker(()-> Servos.AlignBar.dropPosition())
-                .waitSeconds(0.25)
+                .waitSeconds(0.5)
                 .addTemporalMarker( ()-> {dropCone();})
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.AlignBar.outside())
@@ -140,7 +138,7 @@ public class ZoomZap extends LinearOpMode {
                 .addTemporalMarker(()-> Servos.AlignBar.outside())
                 .UNSTABLE_addTemporalMarkerOffset(0.2,()->Robot.targetDegree = 144)
                 .lineToLinearHeading(farHighPosition,  SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-//                .waitSeconds(0.05)
+                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
 //                .waitSeconds(0.3)
                 .waitSeconds(0.6)
@@ -179,7 +177,7 @@ public class ZoomZap extends LinearOpMode {
                 .lineToLinearHeading(preloadDropPosition)
                 .UNSTABLE_addTemporalMarkerOffset(-0.05, ()->Servos.AlignBar.outside())
 //                .addTemporalMarker(()-> Servos.AlignBar.outside())
-                .waitSeconds(0.2)
+                .waitSeconds(0.5)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
 //                .waitSeconds(0.3)
                 .waitSeconds(0.6)
@@ -216,7 +214,7 @@ public class ZoomZap extends LinearOpMode {
                 .lineToLinearHeading(preloadDropPosition)
                 .UNSTABLE_addTemporalMarkerOffset(-0.05, ()->Servos.AlignBar.outside())
 //                .addTemporalMarker(()-> Servos.AlignBar.outside())
-                .waitSeconds(0.2)
+                .waitSeconds(0.5)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
 //                .waitSeconds(0.3)
                 .waitSeconds(0.6)
@@ -253,7 +251,7 @@ public class ZoomZap extends LinearOpMode {
                 .lineToLinearHeading(preloadDropPosition)
                 .UNSTABLE_addTemporalMarkerOffset(-0.05, ()->Servos.AlignBar.outside())
 //                .addTemporalMarker(()-> Servos.AlignBar.outside())
-                .waitSeconds(0.2)
+                .waitSeconds(0.5)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
 //                .waitSeconds(0.3)
                 .waitSeconds(0.6)
@@ -291,7 +289,7 @@ public class ZoomZap extends LinearOpMode {
                 .lineToLinearHeading(preloadDropPosition)
                 .UNSTABLE_addTemporalMarkerOffset(-0.05, ()->Servos.AlignBar.outside())
 //                .addTemporalMarker(()-> Servos.AlignBar.outside())
-                .waitSeconds(0.2)
+                .waitSeconds(0.5)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
 //                .waitSeconds(0.3)
                 .waitSeconds(0.6)
@@ -413,19 +411,19 @@ public class ZoomZap extends LinearOpMode {
         }
 //        waitForStart();
         robot.followTrajectorySequence(autonomousTrajectory);
-        if(tagOfInterest != null) {
-
-            if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE1]) {
-                robot.followTrajectorySequence(goToP1);
-
-            } else if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE2]) {
-                robot.followTrajectorySequence(goToP2);
-            } else if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE3]) {
-                robot.followTrajectorySequence(goToP3);
-            }
-        } else {
-            robot.followTrajectorySequence(goToP3);
-        }
+//        if(tagOfInterest != null) {
+//
+//            if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE1]) {
+//                robot.followTrajectorySequence(goToP1);
+//
+//            } else if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE2]) {
+//                robot.followTrajectorySequence(goToP2);
+//            } else if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE3]) {
+//                robot.followTrajectorySequence(goToP3);
+//            }
+//        } else {
+        robot.followTrajectorySequence(goToP3);
+//        }
 
         while(opModeIsActive()){
             telemetry.addData("tagOfInterest is: ", tagOfInterest.id);
