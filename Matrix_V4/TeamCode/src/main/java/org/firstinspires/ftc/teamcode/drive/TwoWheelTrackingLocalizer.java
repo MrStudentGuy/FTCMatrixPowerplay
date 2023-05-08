@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.DoubleSupplier;
 
 /*
  * Sample tracking wheel localizer implementation assuming the standard configuration:
@@ -54,14 +53,12 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
 
     private SampleMecanumDrive drive;
 
-    DoubleSupplier headingSupplier;                   //This heading supplier uses the Drive class to get the robot heading, without calling the IMU again and again.
-
-    public TwoWheelTrackingLocalizer(HardwareMap hardwareMap, SampleMecanumDrive drive, DoubleSupplier headingSupplier) {
+    public TwoWheelTrackingLocalizer(HardwareMap hardwareMap, SampleMecanumDrive drive) {
         super(Arrays.asList(
                 new Pose2d(PARALLEL_X, PARALLEL_Y, 0),
                 new Pose2d(PERPENDICULAR_X, PERPENDICULAR_Y, Math.toRadians(90))
         ));
-        this.headingSupplier = headingSupplier;
+
         this.drive = drive;
 
         parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftRear"));
@@ -78,7 +75,7 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
 
     @Override
     public double getHeading() {
-        return headingSupplier.getAsDouble();
+        return drive.getRawExternalHeading();
     }
 
     @Override

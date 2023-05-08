@@ -118,11 +118,15 @@ public class    Servos {
         }
 
         public static void interMediate(){
-            AlignServo.setPosition(0.9);
+            AlignServo.setPosition(0.7);
         }
 
         public static void outside(){
             AlignServo.setPosition(outPos);
+        }
+
+        public static void teleopOut(){
+            AlignServo.setPosition(0.16);
         }
 
         public static double getPosition(){
@@ -130,7 +134,7 @@ public class    Servos {
         }
 
         public static void goodAngle(){
-            AlignServo.setPosition(0.41);
+            AlignServo.setPosition(0.46);
         }
 
         public static void dropPosition(){AlignServo.setPosition(0);}

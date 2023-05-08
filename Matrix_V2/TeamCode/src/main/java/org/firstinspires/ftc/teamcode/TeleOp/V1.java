@@ -272,7 +272,7 @@ public class V1 extends LinearOpMode {
                             sleep(400);
                             Servos.Slider.moveSlider(0.65);
                             sleep(800);
-                            Servos.Wrist.goTop();
+                            Servos.Wrist.goAutoTop();
                             sleep(200);
                             Servos.Wrist.goGripping();
                             sleep(500);
@@ -298,21 +298,21 @@ public class V1 extends LinearOpMode {
             }
 
             if (UP) {
-                Servos.Wrist.goTop();
+                Servos.Wrist.goAutoTop();
                 lift.extendToHighPole();
-                Servos.AlignBar.outside();
+                Servos.AlignBar.teleopOut();
             } else if ((RIGHT || gamepad2.dpad_down)) {
                 Servos.Wrist.goGripping();
                 lift.extendToGrippingPosition();
                 Servos.AlignBar.inside();
             } else if (DOWN) {
-                Servos.Wrist.goTop();
+                Servos.Wrist.goAutoTop();
                 lift.extendToLowPole();
                 Servos.AlignBar.interMediate();
             } else if (LEFT) {
-                Servos.Wrist.goTop();
+                Servos.Wrist.goAutoTop();
                 lift.extendToMidPole();
-                Servos.AlignBar.outside();
+                Servos.AlignBar.teleopOut();
             }
 
 
@@ -333,7 +333,9 @@ public class V1 extends LinearOpMode {
 //                        Servos.Slider.moveSlider(0.5);
 //                        sleep(300);
                         Servos.Wrist.goGripping();
-
+                        if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]+30) {
+                            Servos.AlignBar.moveTo(0.3);
+                        }
 
                         goSafeAfterReleaseFlag = true;
                         safetyTimer.reset();
@@ -344,7 +346,7 @@ public class V1 extends LinearOpMode {
 //                    if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]) {
 //                        Servos.AlignBar.moveTo(0.7);
 //                        if (Servos.AlignBar.getPosition() > 0.4) {
-//                            Servos.Slider.moveOutside();
+//                            Servos.Slider.moveteleopOut;
 //                            sleep(1000);
 //                            Servos.AlignBar.inside();
 //                            sleep(500);
@@ -360,12 +362,13 @@ public class V1 extends LinearOpMode {
             if (LB && !LBFlag) {
                 LBFlag = true;
                 if (Objects.equals(Servos.Wrist.wristState, "GRIPPING")) {
-                    Servos.Wrist.goTop();
-                    if (lift.getPosition()[0] < lift.POSITIONS[lift.LOW_POLE]) {
+                    Servos.Wrist.goAutoTop();
+                    Servos.AlignBar.interMediate();
+                    if (lift.getPosition()[0] < lift.POSITIONS[lift.MID_POLE] - 30) {
                         Servos.AlignBar.interMediate();
                     }
                     else{
-                        Servos.AlignBar.outside();
+                        Servos.AlignBar.teleopOut();
                     }
                 } else if (Objects.equals(Servos.Wrist.wristState, "TOP")) {
                     Servos.AlignBar.inside();

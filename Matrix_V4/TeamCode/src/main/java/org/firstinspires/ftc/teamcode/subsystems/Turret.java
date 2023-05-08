@@ -1,124 +1,69 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems;
 
-import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.profile.MotionProfile;
-import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
-import com.acmerobotics.roadrunner.profile.MotionState;
-import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.GlobalVars;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
-import java.util.function.DoubleSupplier;
-
-@Config
-public class Turret extends SubsystemBase {
-
-    public static double Kp_turret = 0.06;
-    public static double Ki_turret = 0;
-    public static double Kd_turret = 0.000;
-    public static double Kf_turret = 0; //feedforward, turret no gravity so 0
-    public static double targetDegree = 0;
-    private final MotorEx motor;
-    private final double GEAR_RATIO = 122.0 / 44.0;
+public class Turret {
+    private DcMotorEx motor;
+    private final double GEAR_RATIO = 122.0/44.0 ;
     private final double CPR = 8192;                //counts
-    public final double CountsPerDegree = CPR * GEAR_RATIO / 360.0;
-    private final double ticks_in_degree = CountsPerDegree;
-    public DoubleSupplier turretDegreesSupplier = new DoubleSupplier() {
-        @Override
-        public double getAsDouble() {
-            return getDegree();
-        }
-    };
-    private final PIDController turretController; //meant for the turret
-    ElapsedTime turretProfileTimer;
-    HardwareMap hardwareMap;
-    Telemetry telemetry;
-    MotionProfile turretProfile;
-    private double turretPower = 0;
+    public final double CountsPerDegree = CPR * GEAR_RATIO/360.0;
 
 
-    public Turret(HardwareMap hardwareMap, Telemetry telemetry) {
-        motor = new MotorEx(hardwareMap, "turret");
-        this.hardwareMap = hardwareMap;
-        this.telemetry = telemetry;
-        turretController = new PIDController(Kp_turret, Ki_turret, Kd_turret);
-        turretProfileTimer = new ElapsedTime();
-//        turretProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(getDegree(), 0, 0), new MotionState(targetDegree, 0, 0), 0,0,0);
-        turretProfileTimer.reset();
+
+    public Turret(HardwareMap hardwareMap, String deviceName, Telemetry telemetry){
+        motor = hardwareMap.get(DcMotorEx.class, deviceName);
+
+//        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
 
-    @Override
-    public void periodic() {
-        super.periodic();
-        turretController.setPID(Kp_turret, Ki_turret, Kd_turret);
-        double currentTurretDegree = getDegree();
-        if(turretProfile !=null) {
-            MotionState profileState = turretProfile.get(turretProfileTimer.seconds());
-            double turret_pid = turretController.calculate(currentTurretDegree, profileState.getX());
-            double ff_turret = 1 * Kf_turret;
-            turretPower = ff_turret + turret_pid;
-        }
-        else{
-            turretPower = 0;
-        }
-//        if (turretController.getPositionError() > 10) {
-//            if (motor.getVelocity() == 0) {
-//                setDegree(getNearest90(), 1000, 1000, 1000);
-//            }
-//        }
-        write();
-        if (GlobalVars.turretTelemetry) {
-            telemetry.addData("Turret Target: ", targetDegree);
-            telemetry.addData("Turret Degrees: ", getDegree());
-            telemetry.addData("Turret Motor Counts: ", getPosition());
-            telemetry.addData("Ticks in degree: ", ticks_in_degree);
-        }
+    public void setDegree(double degree){
+        double counts = degree * CountsPerDegree;
+        setPosition((int)counts); //calls set position
     }
 
-    public void write() {
-        motor.set(turretPower);
+    public void setDegreeHighPower(double degree){
+        double counts = degree * CountsPerDegree;
+        setPositionHighPower((int)counts);
     }
 
-    public void setDegree(double degree, double maxVel, double maxAccel, double maxJerk) {
-        targetDegree = degree;
-        turretProfile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(getDegree(), 0, 0), new MotionState(targetDegree, 0, 0), maxVel, maxAccel, maxJerk);
-        turretProfileTimer.reset();
+    public void setPosition(int position){
+        motor.setTargetPosition(position);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setPower(0.25);
     }
 
-
-    public void reset() {
-        motor.resetEncoder();
+    public void setPositionHighPower(int position){
+        motor.setTargetPosition(position);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setPower(0.5);
     }
 
-    public double getNearest90() {
-        double currentAngle = getDegree();
-        double sign = currentAngle / Math.abs(currentAngle);
-        currentAngle = Math.abs(currentAngle);
-        double rem = currentAngle % 90;
-
-        if (rem > 45) {
-            currentAngle = currentAngle + (90 - rem);
-        } else {
-            currentAngle = currentAngle - rem;
-        }
-
-        return currentAngle * sign;
+    public void set(double power){
+        power = Range.clip(power, -0.6, 0.6);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setPower(power);
+    }
+    public void reset(){
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-    public double getPosition() {
+    public double getPosition(){
         return motor.getCurrentPosition();
     }
 
     public double getDegree() {
-        double degree = getPosition() * 1 / ticks_in_degree;
+        double degree = getPosition() * 1/CountsPerDegree;
         return degree; // 1/countsperdegree = degrees per count and position is no. of counts
     }
 
-
+    public double getCurrent(){
+        return motor.getCurrent(CurrentUnit.MILLIAMPS);
+    }
 }

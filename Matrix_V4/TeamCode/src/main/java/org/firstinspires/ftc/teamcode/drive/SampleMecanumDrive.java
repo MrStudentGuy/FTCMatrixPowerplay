@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
@@ -17,6 +18,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -27,12 +29,8 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.Drive;
-import org.firstinspires.ftc.teamcode.subsystems.Elevator;
-import org.firstinspires.ftc.teamcode.subsystems.EndEffector;
-import org.firstinspires.ftc.teamcode.subsystems.Guide;
-import org.firstinspires.ftc.teamcode.subsystems.Slider;
-import org.firstinspires.ftc.teamcode.subsystems.Turret;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.drive.Localizer.ThreeWheelIMU;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -41,7 +39,6 @@ import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.DoubleSupplier;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
@@ -80,40 +77,15 @@ public class SampleMecanumDrive extends MecanumDrive {
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
 
+    private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    private DoubleSupplier headingSupplier;
+    public SampleMecanumDrive(HardwareMap hardwareMap, Telemetry telemetry) {
 
-    Turret turret;
-    Elevator elevator;
-    Slider slider;
-    EndEffector endEffector;
-    Guide guide;
-
-    public SampleMecanumDrive(HardwareMap hardwareMap, Telemetry telemetry){
-        this(hardwareMap, telemetry, new DoubleSupplier() {
-            @Override
-            public double getAsDouble() {
-                return 0;
-            }
-        });
-    }
-
-    public void setHardware(Turret turret, Elevator elevator, Slider slider, EndEffector endEffector, Guide guide){
-        this.elevator = elevator;
-        this.turret = turret;
-        this.slider = slider;
-//        drive = new Drive(hardwareMap, telemetry);
-        this.guide = guide;
-        this.endEffector = endEffector;
-    }
-
-    public SampleMecanumDrive(HardwareMap hardwareMap, Telemetry telemetry, DoubleSupplier headingSupplier) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
-        this.headingSupplier = headingSupplier;
         localTelem = telemetry;
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.75);
+                new Pose2d(0.5, 0.5, Math.toRadians(2.0)), 0.8);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -123,6 +95,33 @@ public class SampleMecanumDrive extends MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
+        // TODO: adjust the names of the following hardware devices to match your configuration
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
+
+        // TODO: If the hub containing the IMU you are using is mounted so that the "REV" logo does
+        // not face up, remap the IMU axes so that the z-axis points upward (normal to the floor.)
+        //
+        //             | +Z axis
+        //             |
+        //             |
+        //             |
+        //      _______|_____________     +Y axis
+        //     /       |_____________/|__________
+        //    /   REV / EXPANSION   //
+        //   /       / HUB         //
+        //  /_______/_____________//
+        // |_______/_____________|/
+        //        /
+        //       / +X axis
+        //
+        // This diagram is derived from the axes in section 3.4 https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bno055-ds000.pdf
+        // and the placement of the dot/orientation from https://docs.revrobotics.com/rev-control-system/control-system-overview/dimensions#imu-location
+        //
+        // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
+        // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
@@ -153,7 +152,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         // TODO: if desired, use setLocalizer() to change the localization method
 //        setLocalizer(new CustomThreeWheel(hardwareMap));
 //         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
-        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this, headingSupplier));
+        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
 //setLocalizer(new ThreeWheelIMU(hardwareMap, this));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }
@@ -219,11 +218,6 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void update() {
         updatePoseEstimate();
-        endEffector.periodic();
-        slider.periodic();;
-        elevator.periodic();
-        guide.periodic();
-        turret.periodic();
 //        localTelem.addData("Currents: ", leftFront.getCurrent(CurrentUnit.MILLIAMPS) + "," + leftRear.getCurrent(CurrentUnit.MILLIAMPS) + ", " + rightRear.getCurrent(CurrentUnit.MILLIAMPS) + ", " + rightFront.getCurrent(CurrentUnit.MILLIAMPS));
 //        localTelem.update();
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
@@ -311,12 +305,12 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public double getRawExternalHeading() {
-        return headingSupplier.getAsDouble();
+        return imu.getAngularOrientation().firstAngle;
     }
 
     @Override
     public Double getExternalHeadingVelocity() {
-        return (double) Drive.headingVel;
+        return (double) imu.getAngularVelocity().zRotationRate;
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {

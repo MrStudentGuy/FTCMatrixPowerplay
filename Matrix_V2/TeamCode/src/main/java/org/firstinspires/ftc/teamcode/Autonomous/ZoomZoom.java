@@ -93,9 +93,10 @@ public class ZoomZoom extends LinearOpMode {
         TransferClass.offsetpose = 90;
 
         TrajectorySequence autonomousTrajectory = robot.trajectorySequenceBuilder(startPose)
+                .addTemporalMarker(()->Robot.targetDegree = 0)
                 .addTemporalMarker(()-> Servos.Gripper.closeGripper())
                 .addTemporalMarker(0.25,()->lift.extendTo(lift.POSITIONS[lift.MID_POLE], 1))
-                .addTemporalMarker(1, ()->{Robot.targetDegree = 147.5;
+                .addTemporalMarker(0.7, ()->{Robot.targetDegree = 147.5;
                     Servos.Wrist.goAutoTop();
                     Servos.AlignBar.moveTo(0);
                 })

@@ -10,24 +10,24 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 public class CVMaster {
-    private final OpenCvWebcam webcam;
+    private OpenCvWebcam webcam;
     private StickObserverPipeline opencv = null;
-    private final LinearOpMode op;
-
-    public CVMaster(LinearOpMode p_op) {
+    private LinearOpMode op;
+    public CVMaster(LinearOpMode p_op){
         //you can input  a hardwareMap instead of linearOpMode if you want
         op = p_op;
         //initialize webcam
         webcam = OpenCvCameraFactory.getInstance().createWebcam(op.hardwareMap.get(WebcamName.class, "webcam"));
     }
-
-    public void observeStick() {
+    public void observeStick(){
         //create the pipeline
         opencv = new StickObserverPipeline();
 
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
             @Override
-            public void onOpened() {
+            public void onOpened()
+            {
                 /*
                  * Tell the webcam to start streaming images to us! Note that you must make sure
                  * the resolution you specify is supported by the camera. If it is not, an exception
@@ -53,7 +53,8 @@ public class CVMaster {
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode)
+            {
                 /*
                  * This will be called if the camera could not be opened
                  */
@@ -62,7 +63,7 @@ public class CVMaster {
     }
 
     //stop streaming
-    public void stopCamera() {
+    public void stopCamera(){
         webcam.stopStreaming();
     }
 }
