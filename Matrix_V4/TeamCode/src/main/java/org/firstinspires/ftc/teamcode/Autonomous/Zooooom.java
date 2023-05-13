@@ -41,9 +41,9 @@ public class Zooooom extends LinearOpMode {
 
     static final double FEET_PER_METER = 3.28084;
 
-    Pose2d PARKING1 = new Pose2d(-56, -12, Math.toRadians(90));
-    Pose2d PARKING2 = new Pose2d(-32, -13, Math.toRadians(90));
-    Pose2d PARKING3 = new Pose2d(-8, -12, Math.toRadians(90));
+    Pose2d PARKING1 = new Pose2d(-58, -12, Math.toRadians(90));
+    Pose2d PARKING2 = new Pose2d(-34, -13, Math.toRadians(90));
+    Pose2d PARKING3 = new Pose2d(-10, -12, Math.toRadians(90));
 
     // Lens intrinsics
     // UNITS ARE PIXELS
@@ -79,7 +79,7 @@ public class Zooooom extends LinearOpMode {
     final Pose2d pickingPosition3 = new Pose2d(-46, -12, Math.toRadians(180));
     final Pose2d pickingPosition4 = new Pose2d(-46.5, -12, Math.toRadians(180));
 
-    final Pose2d midDropPosition = new Pose2d(-41, -12, Math.toRadians(180));
+    final Pose2d midDropPosition = new Pose2d(-40, -12, Math.toRadians(180));
     final Pose2d centerHighPosition = new Pose2d(midDropPosition.getX() + 24, -12, Math.toRadians(180));
 
     //----------------------------------------------------------------------------------------------------------------------------------
@@ -149,22 +149,24 @@ public class Zooooom extends LinearOpMode {
                 .waitSeconds(0.2)
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
                 .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> Servos.Slider.moveInside())
-                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->Robot.targetDegree = -146.5)
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->Robot.targetDegree = -148)
                 .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(()-> Servos.Wrist.goAutoTop())
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.AlignBar.autoOutsideHigh())
-                .waitSeconds(0.6)
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.65))
+                .waitSeconds(0.5)
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.55))
                 .waitSeconds(0.05)
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
 //                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
                 .waitSeconds(0.7)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
+                .waitSeconds(0.05)
                 .addTemporalMarker(()-> Servos.AlignBar.moveTo(0.25))
-                .waitSeconds(0.25)
-                .addTemporalMarker(()-> Servos.Gripper.openGripper())
+                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Slider.moveInside())
+                .waitSeconds(0.15)
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
                 .addTemporalMarker(()->Robot.targetDegree=0)
                 .waitSeconds(0.4)
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[3], 1))
@@ -184,22 +186,24 @@ public class Zooooom extends LinearOpMode {
                 .waitSeconds(0.2)
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
                 .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> Servos.Slider.moveInside())
-                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->Robot.targetDegree = -146.5)
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->Robot.targetDegree = -148)
                 .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(()-> Servos.Wrist.goAutoTop())
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.AlignBar.autoOutsideHigh())
-                .waitSeconds(0.6)
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.65))
+                .waitSeconds(0.5)
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.55))
                 .waitSeconds(0.05)
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
 //                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
                 .waitSeconds(0.7)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
+                .waitSeconds(0.05)
                 .addTemporalMarker(()-> Servos.AlignBar.moveTo(0.25))
-                .waitSeconds(0.25)
-                .addTemporalMarker(()-> Servos.Gripper.openGripper())
+                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Slider.moveInside())
+                .waitSeconds(0.15)
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
                 .addTemporalMarker(()->Robot.targetDegree=0)
                 .waitSeconds(0.4)
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[2], 1))
@@ -217,22 +221,24 @@ public class Zooooom extends LinearOpMode {
                 .waitSeconds(0.2)
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
                 .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> Servos.Slider.moveInside())
-                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->Robot.targetDegree = -146.5)
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->Robot.targetDegree = -148)
                 .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(()-> Servos.Wrist.goAutoTop())
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.AlignBar.autoOutsideHigh())
-                .waitSeconds(0.6)
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.65))
+                .waitSeconds(0.5)
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.55))
                 .waitSeconds(0.05)
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
 //                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
                 .waitSeconds(0.7)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
+                .waitSeconds(0.05)
                 .addTemporalMarker(()-> Servos.AlignBar.moveTo(0.25))
-                .waitSeconds(0.25)
-                .addTemporalMarker(()-> Servos.Gripper.openGripper())
+                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Slider.moveInside())
+                .waitSeconds(0.15)
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
                 .addTemporalMarker(()->Robot.targetDegree=0)
                 .waitSeconds(0.4)
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[1], 1))
@@ -250,22 +256,24 @@ public class Zooooom extends LinearOpMode {
                 .waitSeconds(0.2)
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
                 .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> Servos.Slider.moveInside())
-                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->Robot.targetDegree = -146.5)
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->Robot.targetDegree = -148)
                 .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(()-> Servos.Wrist.goAutoTop())
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.AlignBar.autoOutsideHigh())
-                .waitSeconds(0.6)
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.65))
+                .waitSeconds(0.5)
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.55))
                 .waitSeconds(0.05)
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
 //                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
                 .waitSeconds(0.7)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
+                .waitSeconds(0.05)
                 .addTemporalMarker(()-> Servos.AlignBar.moveTo(0.25))
-                .waitSeconds(0.25)
-                .addTemporalMarker(()-> Servos.Gripper.openGripper())
+                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Slider.moveInside())
+                .waitSeconds(0.15)
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
                 .addTemporalMarker(()->Robot.targetDegree=0)
                 .waitSeconds(0.4)
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[0], 1))
@@ -277,33 +285,6 @@ public class Zooooom extends LinearOpMode {
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
                 .waitSeconds(0.3)
 
-
-
-                .addTemporalMarker(()-> Servos.Gripper.closeGripper())
-                .waitSeconds(0.2)
-                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> Servos.Slider.moveInside())
-                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->Robot.targetDegree = -146.5)
-                .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addTemporalMarker(()-> Servos.Wrist.goAutoTop())
-                .waitSeconds(0.1)
-                .addTemporalMarker(()-> Servos.AlignBar.autoOutsideHigh())
-                .waitSeconds(0.6)
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.65))
-                .waitSeconds(0.05)
-                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
-//                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
-                .waitSeconds(0.7)
-                .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .addTemporalMarker(()-> Servos.AlignBar.moveTo(0.25))
-                .waitSeconds(0.25)
-                .addTemporalMarker(()-> Servos.Gripper.openGripper())
-                .addTemporalMarker(()-> Servos.Slider.moveInside())
-                .addTemporalMarker(()->Robot.targetDegree=0)
-                .waitSeconds(0.4)
-                .UNSTABLE_addTemporalMarkerOffset(0.1,()->{Servos.Gripper.closeGripper();
-                    Servos.AlignBar.inside();})
-                .lineToLinearHeading(pickingPosition)
 
 
 
@@ -321,9 +302,36 @@ public class Zooooom extends LinearOpMode {
  * Sequence for going and parking at parking zone 1
  */
         TrajectorySequence goToP1 = robot.trajectorySequenceBuilder((autonomousTrajectory.end()))
+                .addTemporalMarker(()-> Servos.Gripper.closeGripper())
+                .waitSeconds(0.2)
+                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> Servos.Slider.moveInside())
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->Robot.targetDegree = -148)
+                .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(()-> Servos.Wrist.goAutoTop())
+                .waitSeconds(0.1)
+                .addTemporalMarker(()-> Servos.AlignBar.autoOutsideHigh())
+                .waitSeconds(0.5)
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.55))
+                .waitSeconds(0.05)
+                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
+//                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
+                .waitSeconds(0.7)
+                .addTemporalMarker(()-> Servos.Wrist.goGripping())
+                .waitSeconds(0.05)
+                .addTemporalMarker(()-> Servos.AlignBar.moveTo(0.25))
+                .waitSeconds(0.2)
+                .addTemporalMarker(()-> Servos.Slider.moveInside())
+                .waitSeconds(0.15)
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
+                .addTemporalMarker(()->Robot.targetDegree=0)
+                .UNSTABLE_addTemporalMarkerOffset(0.1,()->{Servos.Gripper.closeGripper();
+                    Servos.AlignBar.inside();
+                    Robot.targetDegree=0;
+                })
                 .lineToLinearHeading(new Pose2d(PARKING1.getX(), PARKING1.getY(), Math.toRadians(180)))
                 .addTemporalMarker(()->lift.extendTo(0,1))
-                .turn(Math.toRadians(90))
+//                .turn(Math.toRadians(90))
 //                .addTemporalMarker(() -> turret.setDegree(0))
 
 //                .turn(Math.toRadians(-90))
@@ -335,9 +343,33 @@ public class Zooooom extends LinearOpMode {
          * Sequence for going and parking at parking zone 2
          */
         TrajectorySequence goToP2 = robot.trajectorySequenceBuilder((autonomousTrajectory.end()))
+                .addTemporalMarker(()-> Servos.Gripper.closeGripper())
+                .waitSeconds(0.2)
+                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> Servos.Slider.moveInside())
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->Robot.targetDegree = -148)
+                .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .UNSTABLE_addTemporalMarkerOffset(-0.8, ()-> Servos.Wrist.goAutoTop())
+                .UNSTABLE_addTemporalMarkerOffset(-0.7, ()-> Servos.AlignBar.autoOutsideHigh())
+                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> Servos.Slider.moveSlider(0.6))
+                .UNSTABLE_addTemporalMarkerOffset(0.001, ()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE], 1))
+//                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
+                .waitSeconds(0.6)
+                .addTemporalMarker(()-> Servos.Wrist.goGripping())
+                .waitSeconds(0.05)
+                .addTemporalMarker(()-> Servos.AlignBar.moveTo(0.25))
+                .waitSeconds(0.2)
+                .addTemporalMarker(()-> Servos.Slider.moveInside())
+                .waitSeconds(0.15)
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
+                .addTemporalMarker(()->Robot.targetDegree=0)
+                .UNSTABLE_addTemporalMarkerOffset(0.1,()->{Servos.Gripper.closeGripper();
+                    Servos.AlignBar.inside();
+                    Robot.targetDegree=0;
+                })
                 .lineToLinearHeading(new Pose2d(PARKING2.getX(), PARKING2.getY(), Math.toRadians(180)))
                 .addTemporalMarker(()->lift.extendTo(0,1))
-                .turn(Math.toRadians(90))
+//                .turn(Math.toRadians(90))
 //                .addTemporalMarker(() -> turret.
                 .build();
 
@@ -345,11 +377,38 @@ public class Zooooom extends LinearOpMode {
          * Sequence for going and parking at parking zone 3
          */
         TrajectorySequence goToP3 = robot.trajectorySequenceBuilder((autonomousTrajectory.end()))
-                .lineToLinearHeading(new Pose2d(PARKING3.getX(), PARKING3.getY(), Math.toRadians(180)))
-                .addTemporalMarker(()->lift.extendTo(0,1))
-                .turn(Math.toRadians(90))
-                .build();
+                .addTemporalMarker(()-> Servos.Gripper.closeGripper())
+                .waitSeconds(0.2)
+                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> Servos.Slider.moveInside())
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->Robot.targetDegree = 148)
+                .lineToLinearHeading(centerHighPosition, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(()-> Servos.Wrist.goAutoTop())
+                .waitSeconds(0.1)
+                .addTemporalMarker(()-> Servos.AlignBar.autoOutsideHigh())
+                .waitSeconds(0.5)
+                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.55))
+                .waitSeconds(0.05)
+                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
+//                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.6))
+                .waitSeconds(0.7)
+                .addTemporalMarker(()-> Servos.Wrist.goGripping())
+                .waitSeconds(0.05)
+                .addTemporalMarker(()-> Servos.AlignBar.moveTo(0.25))
+                .waitSeconds(0.2)
+                .addTemporalMarker(()-> Servos.Slider.moveInside())
+                .waitSeconds(0.15)
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
+                .addTemporalMarker(()->Robot.targetDegree=0)
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()->Robot.targetDegree=0)
+                .UNSTABLE_addTemporalMarkerOffset(0.4,()->{Servos.Gripper.closeGripper();
+                    Servos.AlignBar.inside();
+                    })
 
+                .lineToLinearHeading(new Pose2d(PARKING3.getX(), PARKING3.getY(), Math.toRadians(180)))
+                .UNSTABLE_addTemporalMarkerOffset(-0.04, ()->lift.extendTo(0,1))
+//                .turn(Math.toRadians(90))
+                .build();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -414,19 +473,19 @@ public class Zooooom extends LinearOpMode {
 //        waitForStart();
         Robot.targetDegree = 0;
         robot.followTrajectorySequence(autonomousTrajectory);
-//        if(tagOfInterest != null) {
-//
-//            if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE1]) {
-//                robot.followTrajectorySequence(goToP1);
-//
-//            } else if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE2]) {
-//                robot.followTrajectorySequence(goToP2);
-//            } else if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE3]) {
-//                robot.followTrajectorySequence(goToP3);
-//            }
-//        } else {
-//            robot.followTrajectorySequence(goToP3);
-//        }
+        if(tagOfInterest != null) {
+
+            if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE1]) {
+                robot.followTrajectorySequence(goToP1);
+
+            } else if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE2]) {
+                robot.followTrajectorySequence(goToP2);
+            } else if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE3]) {
+                robot.followTrajectorySequence(goToP3);
+            }
+        } else {
+            robot.followTrajectorySequence(goToP3);
+        }
 
         Servos.AlignBar.inside();
 
