@@ -14,6 +14,10 @@ public class Turret {
     private final double CPR = 8192;                //counts
     public final double CountsPerDegree = CPR * GEAR_RATIO/360.0;
 
+    public double prevDegree = 0;
+
+    public double maxPower = 0.6;
+
 
 
     public Turret(HardwareMap hardwareMap, String deviceName, Telemetry telemetry){
@@ -46,9 +50,13 @@ public class Turret {
     }
 
     public void set(double power){
-        power = Range.clip(power, -0.6, 0.6);
+        power = Range.clip(power, -maxPower, maxPower);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor.setPower(power);
+    }
+
+    public void setMaxPower(double max){
+        this.maxPower = max;
     }
     public void reset(){
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -61,6 +69,11 @@ public class Turret {
     public double getDegree() {
         double degree = getPosition() * 1/CountsPerDegree;
         return degree; // 1/countsperdegree = degrees per count and position is no. of counts
+    }
+
+    public double getVelocity(){
+        double vel = getDegree() - prevDegree;
+        return vel;
     }
 
     public double getCurrent(){
