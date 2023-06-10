@@ -24,7 +24,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous
-public class NewAlignerAuto extends LinearOpMode {
+public class NewAlignerAutoRight extends LinearOpMode {
 
     //----------------------------------------------------------------------------------------------------------------------------------
     //--------------------------------------------------------APRIL TAG DETECTION-------------------------------------------------------
@@ -34,9 +34,9 @@ public class NewAlignerAuto extends LinearOpMode {
 
     static final double FEET_PER_METER = 3.28084;
 
-    Pose2d PARKING1 = new Pose2d(-58, -12, Math.toRadians(180));
-    Pose2d PARKING2 = new Pose2d(-34, -13, Math.toRadians(180));
-    Pose2d PARKING3 = new Pose2d(-10, -12, Math.toRadians(180));
+    Pose2d PARKING1 = new Pose2d(-58+72, -12, Math.toRadians(0));
+    Pose2d PARKING2 = new Pose2d(-34+72, -13, Math.toRadians(0));
+    Pose2d PARKING3 = new Pose2d(-10+72, -12, Math.toRadians(0));
 
     // Lens intrinsics
     // UNITS ARE PIXELS
@@ -66,14 +66,14 @@ public class NewAlignerAuto extends LinearOpMode {
     //----------------------------------------------------------------------------------------------------------------------------------
     //--------------------------------------------------------COORDINATES---------------------------------------------------------------
     //----------------------------------------------------------------------------------------------------------------------------------
-    final Pose2d pickingPosition = new Pose2d(-44, -12, Math.toRadians(180));
-    final Pose2d pickingPosition1 = new Pose2d(-44.01, -12, Math.toRadians(180));
-    final Pose2d pickingPosition2 = new Pose2d(-45.5, -12, Math.toRadians(180));
-    final Pose2d pickingPosition3 = new Pose2d(-46.5, -12, Math.toRadians(180));
-    final Pose2d pickingPosition4 = new Pose2d(-47, -12, Math.toRadians(180));
+    final Pose2d pickingPosition = new Pose2d(44.5, -12, Math.toRadians(0));
+    final Pose2d pickingPosition1 = new Pose2d(44.51, -12, Math.toRadians(0));
+    final Pose2d pickingPosition2 = new Pose2d(45.5, -12, Math.toRadians(0));
+    final Pose2d pickingPosition3 = new Pose2d(46.5, -12, Math.toRadians(0));
+    final Pose2d pickingPosition4 = new Pose2d(47, -12, Math.toRadians(0));
 
-    final Pose2d midDropPosition = new Pose2d(-36, -10, Math.toRadians(180));
-    final Pose2d centerHighPosition = new Pose2d(midDropPosition.getX() + 24, -12, Math.toRadians(180));
+    final Pose2d midDropPosition = new Pose2d(36, -10, Math.toRadians(0));
+    final Pose2d centerHighPosition = new Pose2d(midDropPosition.getX() - 24, -12, Math.toRadians(0));
 
     //----------------------------------------------------------------------------------------------------------------------------------
     //**********************************************************************************************************************************
@@ -104,7 +104,7 @@ public class NewAlignerAuto extends LinearOpMode {
         Servos.AlignBar.inside();
         Servos.SliderServo.setPosition(0);
 
-        Pose2d startPose = new Pose2d(-31.8, -63.3, Math.toRadians(180));
+        Pose2d startPose = new Pose2d(31.8, -63.3, Math.toRadians(0));
         robot.setPoseEstimate(startPose);
 
         TransferClass.offsetpose = 90;
@@ -114,7 +114,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .waitSeconds(0.2)
                 .addSpatialMarker(new Vector2d(startPose.getX(), startPose.getY()), ()->lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
                 .addDisplacementMarker(1, ()->{
-                    Robot.targetDegree = -144;
+                    Robot.targetDegree = 144;
                     Servos.Slider.moveSlider(0.15);
                 })
                 .addDisplacementMarker(10, ()-> {;
@@ -138,7 +138,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->lift.extendTo(lift.AUTO_POSITION[4], 1))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.76))
-                .waitSeconds(0.45)
+                .waitSeconds(0.5)
 
 
 
@@ -148,7 +148,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .waitSeconds(0.05)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.5)
-                .addTemporalMarker(()->Robot.targetDegree = -150)
+                .addTemporalMarker(()->Robot.targetDegree = 152)
                 .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(0.3394))
                 .waitSeconds(0.6)
@@ -162,7 +162,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Gripper.openGripper())
                 .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(Servos.AlignBar_2.insideForGripping))
-                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
+                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 10)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .addTemporalMarker(()->Robot.targetDegree = 0)
                 .lineToLinearHeading(pickingPosition1)
@@ -170,7 +170,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[3], 1))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.76))
-                .waitSeconds(0.45)
+                .waitSeconds(0.5)
 
 
 
@@ -181,7 +181,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .waitSeconds(0.05)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.5)
-                .addTemporalMarker(()->Robot.targetDegree = -150)
+                .addTemporalMarker(()->Robot.targetDegree = 152)
                 .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(0.3394))
                 .waitSeconds(0.6)
@@ -195,7 +195,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Gripper.openGripper())
                 .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(Servos.AlignBar_2.insideForGripping))
-                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
+                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 10)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .addTemporalMarker(()->Robot.targetDegree = 0)
                 .lineToLinearHeading(pickingPosition)
@@ -203,7 +203,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[2], 1))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.76))
-                .waitSeconds(0.45)
+                .waitSeconds(0.5)
 
 
 
@@ -213,7 +213,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .waitSeconds(0.05)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.5)
-                .addTemporalMarker(()->Robot.targetDegree = -150)
+                .addTemporalMarker(()->Robot.targetDegree = 152)
                 .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(0.3394))
                 .waitSeconds(0.6)
@@ -227,7 +227,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Gripper.openGripper())
                 .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(Servos.AlignBar_2.insideForGripping))
-                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
+                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 10)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .addTemporalMarker(()->Robot.targetDegree = 0)
                 .lineToLinearHeading(pickingPosition1)
@@ -235,7 +235,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[1], 1))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.76))
-                .waitSeconds(0.45)
+                .waitSeconds(0.5)
 
 
 
@@ -246,7 +246,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .waitSeconds(0.05)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.5)
-                .addTemporalMarker(()->Robot.targetDegree = -150)
+                .addTemporalMarker(()->Robot.targetDegree = 152)
                 .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(0.3394))
                 .waitSeconds(0.6)
@@ -260,7 +260,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Gripper.openGripper())
                 .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(Servos.AlignBar_2.insideForGripping))
-                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
+                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 10)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .addTemporalMarker(()->Robot.targetDegree = 0)
                 .lineToLinearHeading(pickingPosition)
@@ -268,7 +268,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[0], 1))
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.76))
-                .waitSeconds(0.45)
+                .waitSeconds(0.5)
 
 
 
@@ -278,7 +278,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .waitSeconds(0.05)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.5)
-                .addTemporalMarker(()->Robot.targetDegree = -150)
+                .addTemporalMarker(()->Robot.targetDegree = 152)
                 .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(0.3394))
                 .waitSeconds(0.6)
@@ -292,7 +292,7 @@ public class NewAlignerAuto extends LinearOpMode {
                 .waitSeconds(0.1)
                 .addTemporalMarker(()-> Servos.Gripper.openGripper())
                 .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(Servos.AlignBar_2.insideForGripping))
-                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
+                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 10)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .addTemporalMarker(()->Robot.targetDegree = 0)
 
