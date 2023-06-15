@@ -109,17 +109,39 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(550);
+        Pose2d startPose = new Pose2d(31.8, -63.3, Math.toRadians(0));
+        final Pose2d dropPosition = new Pose2d(40, -12, Math.toRadians(0));
+        final Pose2d pickingPosition1 = new Pose2d(44.01, -12, Math.toRadians(0));
+        final Pose2d midDropPosition = new Pose2d(36, -10, Math.toRadians(0));
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
-                .setConstraints(40,40,Math.toRadians(180),Math.toRadians(180),13)
+                .setConstraints(71.4,50,Math.toRadians(347),Math.toRadians(262),12.2)
                 .setDimensions(16,15.3)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
 
-                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(38, 63, Math.toRadians(180)))
-                        .lineToConstantHeading(new Vector2d(35, 63))
-                        .waitSeconds(0.001)
-                        .lineToLinearHeading(new Pose2d(35.3, 3, Math.toRadians(196)))
-                        .waitSeconds(5)
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(startPose)
+                        .lineToLinearHeading(midDropPosition)
+                        .waitSeconds(3)
+                        .lineToLinearHeading(pickingPosition1)
+                        .waitSeconds(2)
+                        .lineToLinearHeading(dropPosition)
+                        .waitSeconds(3)
+                        .lineToLinearHeading(pickingPosition1)
+                        .waitSeconds(2)
+                        .lineToLinearHeading(dropPosition)
+                        .waitSeconds(3)
+                        .lineToLinearHeading(pickingPosition1)
+                        .waitSeconds(2)
+                        .lineToLinearHeading(dropPosition)
+                        .waitSeconds(3)
+                        .lineToLinearHeading(pickingPosition1)
+                        .waitSeconds(2)
+                        .lineToLinearHeading(dropPosition)
+                        .waitSeconds(3)
+                        .lineToLinearHeading(pickingPosition1)
+                        .waitSeconds(2)
+                        .lineToLinearHeading(dropPosition)
+                        .waitSeconds(3)
                         .build()
                 );
 
