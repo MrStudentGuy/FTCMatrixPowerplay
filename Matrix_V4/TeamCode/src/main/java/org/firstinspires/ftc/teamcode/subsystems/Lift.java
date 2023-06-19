@@ -32,8 +32,8 @@ public class Lift extends Subsystem{
     private final double CIRCUMFERENCE = 30 * Math.PI;
     private final double TICKS_PER_MM = CPR * GEAR_RATIO/CIRCUMFERENCE;
     private final double MM_PER_TICK = GEAR_RATIO * CIRCUMFERENCE / CPR;
-    public final int[] POSITIONS = {7, 488, 780, 1265};  //-390
-    public final int[] AUTO_POSITION = {5, 62, 113, 177, 238};
+    public final int[] POSITIONS = {7, 488, 850, 1265};  //-390
+    public final int[] AUTO_POSITION = {5, 72, 123, 187, 238};
 
     public final int[] POSITIONS_AUTO = {-278, 320, 930, 1500};
 //    {-420, -374, -334, -160, -35};

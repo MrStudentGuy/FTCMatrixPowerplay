@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 
 
 @Autonomous
+@Disabled
 public class Zoom extends LinearOpMode {
 
     //----------------------------------------------------------------------------------------------------------------------------------

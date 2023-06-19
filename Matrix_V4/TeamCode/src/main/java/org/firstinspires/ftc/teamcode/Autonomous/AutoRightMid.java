@@ -30,7 +30,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 
 @Autonomous
-public class ConfigurableAuto2Right extends LinearOpMode {
+public class AutoRightMid extends LinearOpMode {
 
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -97,8 +97,8 @@ public class ConfigurableAuto2Right extends LinearOpMode {
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.2))
                 .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
-                .UNSTABLE_addTemporalMarkerOffset(-1.3, ()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
-                .UNSTABLE_addTemporalMarkerOffset(-2, ()->Robot.targetDegree = (Auto2_0.preloadTurretPosition))
+                .UNSTABLE_addTemporalMarkerOffset(-1.3, ()->lift.extendTo(lift.POSITIONS[lift.MID_POLE],1))
+                .UNSTABLE_addTemporalMarkerOffset(-2, ()->Robot.targetDegree = (-Auto2_0.preloadTurretPosition))
                 .UNSTABLE_addTemporalMarkerOffset(-1, ()-> Servos.Wrist.setPosition(Auto2_0.preloadWristPosition))
 //                .waitSeconds(0.01)
                 .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> Servos.AlignBar_2.setPosition(Auto2_0.preloadAlignPosition))
@@ -126,12 +126,12 @@ public class ConfigurableAuto2Right extends LinearOpMode {
                 .build();
 
         TrajectorySequence pickToDrop = robot.trajectorySequenceBuilder(pickingPosition1)
-                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
+                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.MID_POLE],1))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.5))
-                .addTemporalMarker(()->Robot.targetDegree = (Auto2_0.highTurretPosition-3))
+                .addTemporalMarker(()->Robot.targetDegree = (-(Auto2_0.highTurretPosition-3)))
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(Auto2_0.highWristPosition))
                 .lineToLinearHeading(dropPosition)
                 .waitSeconds(0.4)

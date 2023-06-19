@@ -7,9 +7,9 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Autonomous.DeprecatedAutos.Auto2_0;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.Lift;
 import org.firstinspires.ftc.teamcode.Subsystems.Servos;
@@ -40,7 +40,7 @@ public class ConfigurableAuto2Left extends LinearOpMode {
 
 
     Pose2d PARKING3 = new Pose2d(-10, -12, Math.toRadians(90));
-Pose2d PARKING3_INSIDE = new Pose2d(-10, -24, Math.toRadians(90));
+    Pose2d PARKING3_INSIDE = new Pose2d(-10, -24, Math.toRadians(90));
 
     double fx = 578.272;
     double fy = 578.272;
@@ -94,11 +94,11 @@ Pose2d PARKING3_INSIDE = new Pose2d(-10, -24, Math.toRadians(90));
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.2))
                 .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
                 .UNSTABLE_addTemporalMarkerOffset(-1.3, ()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
-                .UNSTABLE_addTemporalMarkerOffset(-2, ()->Robot.targetDegree = -(Auto2_0.preloadTurretPosition+2))
+                .UNSTABLE_addTemporalMarkerOffset(-1.8, ()->Robot.targetDegree = -(Auto2_0.preloadTurretPosition+2))
                 .UNSTABLE_addTemporalMarkerOffset(-1, ()-> Servos.Wrist.setPosition(Auto2_0.preloadWristPosition))
 //                .waitSeconds(0.01)
                 .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> Servos.AlignBar_2.setPosition(Auto2_0.preloadAlignPosition))
-                .addTemporalMarker(()-> robot.setTargetForSlider(Auto2_0.preloadSliderPosition+0.1))
+                .addTemporalMarker(()-> robot.setTargetForSlider(Auto2_0.preloadSliderPosition+1))
                 .waitSeconds(0.0001)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
                 .waitSeconds(0.2)
@@ -115,7 +115,7 @@ Pose2d PARKING3_INSIDE = new Pose2d(-10, -24, Math.toRadians(90));
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4],1))
                 .lineToLinearHeading(pickingPosition1)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.4))
-                .waitSeconds(0.5)
+                .waitSeconds(0.25)
                 .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Gripper.closeGripper())
@@ -127,7 +127,7 @@ Pose2d PARKING3_INSIDE = new Pose2d(-10, -24, Math.toRadians(90));
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.5))
-                .addTemporalMarker(()->Robot.targetDegree = -(Auto2_0.highTurretPosition+2))
+                .addTemporalMarker(()->Robot.targetDegree = -(Auto2_0.highTurretPosition+3))
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(Auto2_0.highWristPosition))
                 .lineToLinearHeading(dropPosition)
                 .waitSeconds(0.4)
@@ -150,7 +150,7 @@ Pose2d PARKING3_INSIDE = new Pose2d(-10, -24, Math.toRadians(90));
                 .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[3],1))
                 .lineToLinearHeading(pickingPosition1)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.4))
-                .waitSeconds(0.5)
+                .waitSeconds(0.25)
                 .addTemporalMarker(()->turret.setMaxPower(0))
                 .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.2)
@@ -162,7 +162,7 @@ Pose2d PARKING3_INSIDE = new Pose2d(-10, -24, Math.toRadians(90));
                 .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[2],1))
                 .lineToLinearHeading(pickingPosition1)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.4))
-                .waitSeconds(0.5)
+                .waitSeconds(0.25)
                 .addTemporalMarker(()->turret.setMaxPower(0.4))
                 .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.2)
@@ -174,7 +174,7 @@ Pose2d PARKING3_INSIDE = new Pose2d(-10, -24, Math.toRadians(90));
                 .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[1],1))
                 .lineToLinearHeading(pickingPosition1)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.4))
-                .waitSeconds(0.5)
+                .waitSeconds(0.25)
                 .addTemporalMarker(()->turret.setMaxPower(0.4))
                 .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.2)
@@ -185,8 +185,8 @@ Pose2d PARKING3_INSIDE = new Pose2d(-10, -24, Math.toRadians(90));
         TrajectorySequence dropToPick0 = robot.trajectorySequenceBuilder(dropPosition)
                 .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[0],1))
                 .lineToLinearHeading(pickingPosition1)
-                .UNSTABLE_addTemporalMarkerOffset(-0.2, ()->robot.setTargetForSlider(0.4))
-                .waitSeconds(0.5)
+                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->robot.setTargetForSlider(0.4))
+                .waitSeconds(0.25)
                 .addTemporalMarker(()->turret.setMaxPower(0.4))
                 .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.2)
@@ -199,7 +199,7 @@ Pose2d PARKING3_INSIDE = new Pose2d(-10, -24, Math.toRadians(90));
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
                 .splineTo(new Vector2d(-56.42, -20.56), Math.toRadians(246.41))
-                .splineTo(new Vector2d(-58.48, -37.50), Math.toRadians(-90))
+                .splineTo(new Vector2d(-58.48, -30.50), Math.toRadians(-90))
                 .build();
 
         TrajectorySequence parking2Traj = robot.trajectorySequenceBuilder(dropPosition)
@@ -306,6 +306,10 @@ Pose2d PARKING3_INSIDE = new Pose2d(-10, -24, Math.toRadians(90));
         }
         else{
             robot.followTrajectorySequence(parking2Traj);
+        }
+
+        while(opModeIsActive()){
+            robot.update();
         }
     }
     void tagToTelemetry(AprilTagDetection detection) {

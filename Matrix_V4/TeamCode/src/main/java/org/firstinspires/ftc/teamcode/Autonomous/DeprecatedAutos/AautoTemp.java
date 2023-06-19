@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.Autonomous.DeprecatedAutos;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -24,7 +25,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous
-public class AaautoFast extends LinearOpMode {
+@Disabled
+public class AautoTemp extends LinearOpMode {
     //----------------------------------------------------------------------------------------------------------------------------------
     //--------------------------------------------------------APRIL TAG DETECTION-------------------------------------------------------
     //----------------------------------------------------------------------------------------------------------------------------------
@@ -65,8 +67,8 @@ public class AaautoFast extends LinearOpMode {
     //----------------------------------------------------------------------------------------------------------------------------------
     //--------------------------------------------------------COORDINATES---------------------------------------------------------------
     //----------------------------------------------------------------------------------------------------------------------------------
-    final Pose2d pickingPosition = new Pose2d(-45, -12, Math.toRadians(180));
-    final Pose2d pickingPosition1 = new Pose2d(-45.1, -12, Math.toRadians(180));
+    final Pose2d pickingPosition = new Pose2d(-45.1, -12, Math.toRadians(180));
+    final Pose2d pickingPosition1 = new Pose2d(-45.11, -12, Math.toRadians(180));
     final Pose2d pickingPosition2 = new Pose2d(-45.5, -12, Math.toRadians(180));
     final Pose2d pickingPosition3 = new Pose2d(-46.5, -12, Math.toRadians(180));
     final Pose2d pickingPosition4 = new Pose2d(-47, -12, Math.toRadians(180));
@@ -113,7 +115,7 @@ public class AaautoFast extends LinearOpMode {
                 .addSpatialMarker(new Vector2d(startPose.getX(), startPose.getY()), ()->lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
                 .addDisplacementMarker(1, ()->{
                     lift.extendTo(lift.POSITIONS[lift.MID_POLE], 1);
-                    Robot.targetDegree = 146;
+                    Robot.targetDegree = 144;
                 })
                 .addDisplacementMarker(19, ()-> {Servos.AlignBar.autoOutside();
                 })
@@ -147,9 +149,9 @@ public class AaautoFast extends LinearOpMode {
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
                 .waitSeconds(0.8)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
-                .waitSeconds(0.21)
+                .waitSeconds(1.2)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .addTemporalMarker(()-> Servos.AlignBar.goodAngle2())
+                .addTemporalMarker(()-> Servos.AlignBar.goodAngle3())
                 .waitSeconds(0.3)
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[3],0.5))
                 .waitSeconds(0.1)
@@ -162,16 +164,15 @@ public class AaautoFast extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetDegree(0,1,1))
                 .addTemporalMarker(()-> Servos.Gripper.closeGripper())
                 .addTemporalMarker(()-> Servos.AlignBar.inside())
-                .waitSeconds(0.5)
+                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.3))
+                .waitSeconds(0.3)
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[3],1))
                 .lineToLinearHeading(pickingPosition1)
-                .UNSTABLE_addTemporalMarkerOffset(-0.5,()-> Servos.Gripper.openGripper())
+                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> Servos.Gripper.openGripper())
 //                .waitSeconds(0.0000001)
                 .UNSTABLE_addTemporalMarkerOffset(0.01,()-> Servos.Slider.moveOutside())
                 .waitSeconds(0.35)
-
-
 
 
 
@@ -187,9 +188,9 @@ public class AaautoFast extends LinearOpMode {
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
                 .waitSeconds(0.8)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
-                .waitSeconds(0.21)
+                .waitSeconds(1.2)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .addTemporalMarker(()-> Servos.AlignBar.goodAngle2())
+                .addTemporalMarker(()-> Servos.AlignBar.goodAngle3())
                 .waitSeconds(0.3)
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[3],0.5))
                 .waitSeconds(0.1)
@@ -202,14 +203,16 @@ public class AaautoFast extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetDegree(0,1,1))
                 .addTemporalMarker(()-> Servos.Gripper.closeGripper())
                 .addTemporalMarker(()-> Servos.AlignBar.inside())
-                .waitSeconds(0.5)
+                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.3))
+                .waitSeconds(0.3)
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[2],1))
                 .lineToLinearHeading(pickingPosition)
-                .UNSTABLE_addTemporalMarkerOffset(-0.5,()-> Servos.Gripper.openGripper())
+                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> Servos.Gripper.openGripper())
 //                .waitSeconds(0.0000001)
                 .UNSTABLE_addTemporalMarkerOffset(0.01,()-> Servos.Slider.moveOutside())
                 .waitSeconds(0.35)
+
 
 
                 .addTemporalMarker(()-> Servos.Gripper.closeGripper())
@@ -224,9 +227,9 @@ public class AaautoFast extends LinearOpMode {
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
                 .waitSeconds(0.8)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
-                .waitSeconds(0.21)
+                .waitSeconds(1.2)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .addTemporalMarker(()-> Servos.AlignBar.goodAngle2())
+                .addTemporalMarker(()-> Servos.AlignBar.goodAngle3())
                 .waitSeconds(0.3)
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[3],0.5))
                 .waitSeconds(0.1)
@@ -239,16 +242,15 @@ public class AaautoFast extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetDegree(0,1,1))
                 .addTemporalMarker(()-> Servos.Gripper.closeGripper())
                 .addTemporalMarker(()-> Servos.AlignBar.inside())
-                .waitSeconds(0.5)
+                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.3))
+                .waitSeconds(0.3)
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[1],1))
                 .lineToLinearHeading(pickingPosition1)
-                .UNSTABLE_addTemporalMarkerOffset(-0.5,()-> Servos.Gripper.openGripper())
+                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> Servos.Gripper.openGripper())
 //                .waitSeconds(0.0000001)
                 .UNSTABLE_addTemporalMarkerOffset(0.01,()-> Servos.Slider.moveOutside())
                 .waitSeconds(0.35)
-
-
 
 
 
@@ -264,9 +266,9 @@ public class AaautoFast extends LinearOpMode {
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
                 .waitSeconds(0.8)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
-                .waitSeconds(0.21)
+                .waitSeconds(1.2)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .addTemporalMarker(()-> Servos.AlignBar.goodAngle2())
+                .addTemporalMarker(()-> Servos.AlignBar.goodAngle3())
                 .waitSeconds(0.3)
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[3],0.5))
                 .waitSeconds(0.1)
@@ -279,14 +281,17 @@ public class AaautoFast extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetDegree(0,1,1))
                 .addTemporalMarker(()-> Servos.Gripper.closeGripper())
                 .addTemporalMarker(()-> Servos.AlignBar.inside())
-                .waitSeconds(0.5)
+                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.3))
+                .waitSeconds(0.3)
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[0],1))
                 .lineToLinearHeading(pickingPosition)
-                .UNSTABLE_addTemporalMarkerOffset(-0.5,()-> Servos.Gripper.openGripper())
+                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> Servos.Gripper.openGripper())
 //                .waitSeconds(0.0000001)
                 .UNSTABLE_addTemporalMarkerOffset(0.01,()-> Servos.Slider.moveOutside())
                 .waitSeconds(0.35)
+
+
 
 
                 .addTemporalMarker(()-> Servos.Gripper.closeGripper())
@@ -301,11 +306,10 @@ public class AaautoFast extends LinearOpMode {
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
                 .waitSeconds(0.8)
                 .addTemporalMarker(()-> Servos.Slider.moveOutside())
-                .waitSeconds(0.21)
+                .waitSeconds(1.2)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .addTemporalMarker(()-> Servos.AlignBar.goodAngle2())
+                .addTemporalMarker(()-> Servos.AlignBar.goodAngle3())
                 .waitSeconds(0.3)
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.3))
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[3],0.5))
                 .waitSeconds(0.1)
 //                .addTemporalMarker(()-> Servos.Gripper.openGripper())
@@ -317,10 +321,6 @@ public class AaautoFast extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetDegree(0,1,1))
                 .addTemporalMarker(()-> Servos.Gripper.closeGripper())
                 .addTemporalMarker(()-> Servos.AlignBar.inside())
-                .waitSeconds(0.5)
-                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[3],1))
-                .lineToLinearHeading(pickingPosition1)
-                .UNSTABLE_addTemporalMarkerOffset(-0.5,()-> Servos.Gripper.openGripper())
 
                 .waitSeconds(20)
 
