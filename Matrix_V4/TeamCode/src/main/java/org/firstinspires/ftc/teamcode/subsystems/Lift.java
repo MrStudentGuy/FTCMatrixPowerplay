@@ -128,7 +128,7 @@ extendTousingVelo(POSITIONS[HIGH_POLE], 2000);
      * Quick method of setting the lift to the Low Junction
      */
     public void extendToLowPole(){
-        double velocity = 2000;
+        double velocity = 2000; //2800 encoder counts per second is max, if battery voltage drops it cant reach that 
         if(liftPosition > 1){
             velocity = 1000;
         }
