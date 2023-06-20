@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 
 @Autonomous
-//@Disabled
+@Disabled
 public class TurretPIDTuning extends LinearOpMode {
 
     Lift lift;

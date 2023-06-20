@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Tests;
 
 import com.outoftheboxrobotics.photoncore.PhotonCore;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 
 @TeleOp
+@Disabled
 public class AlignServoTest extends LinearOpMode {
     Lift lift = null;
     Servos servos = null;

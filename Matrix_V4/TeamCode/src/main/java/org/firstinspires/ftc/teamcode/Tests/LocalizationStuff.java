@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Tests;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
 
 @TeleOp
 @Config
+@Disabled
 public class LocalizationStuff extends LinearOpMode {
     public  static double leftMulti = 1;
     public static double X_MULTIPLIER = 1.017656780029573 * 0.975609756097561 * 0.9969481180061038; // Multiplier in the X direction

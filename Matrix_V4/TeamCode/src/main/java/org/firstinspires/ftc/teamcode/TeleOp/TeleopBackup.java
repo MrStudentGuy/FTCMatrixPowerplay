@@ -11,6 +11,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -27,6 +28,7 @@ import java.util.Objects;
 
 @TeleOp(name = "-->BACKUP TELEOP")
 @Config
+@Disabled
 public class TeleopBackup extends LinearOpMode {
     ElapsedTime teleOpTime = new ElapsedTime();
     ElapsedTime safetyTimer = new ElapsedTime();

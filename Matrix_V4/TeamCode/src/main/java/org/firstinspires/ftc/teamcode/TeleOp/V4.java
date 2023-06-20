@@ -85,7 +85,8 @@ public class V4 extends LinearOpMode {
         Servos.Slider.moveInside();                   //Slider moves inside
         Servos.AlignBar_2.goInside();                 //Take the Pole Aligner inside
 
-        robot.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(180)));   //Set the robot pose to be facing the driver, so that field oriented works properly
+        Pose2d startPose = new Pose2d(0,0,Robot.heading);
+        robot.setPoseEstimate(startPose);   //Set the robot pose to be facing the driver, so that field oriented works properly
 
 
         waitForStart();
@@ -118,7 +119,7 @@ public class V4 extends LinearOpMode {
             }
 
             if (driverButtons[X]) {
-                robot.setPoseEstimate(new Pose2d());
+                robot.setPoseEstimate(new Pose2d(0,0,0));
             }
             if (vibrateFlag) {
                 vibrateFlag = false;

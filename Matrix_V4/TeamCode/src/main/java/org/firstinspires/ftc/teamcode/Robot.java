@@ -32,6 +32,8 @@ public class Robot extends SampleMecanumDrive {
 
     public static double sliderMaxVelocity = 20;
     public static double sliderMaxAcceleration = 2.8;
+
+    public static double heading = 0;
     Servo SliderServo, alignServo, wristServo;
     MotionProfile sliderProfile;
     ElapsedTime sliderProfileTimer;
@@ -80,6 +82,7 @@ public class Robot extends SampleMecanumDrive {
     @Override
     public void update() {
         super.update();
+
 
         telemetry.addData("Loop time: ", robotTimer.milliseconds());
 //        while(robotTimer.milliseconds() < 60);
