@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Autonomous.DeprecatedAutos.Auto2_0;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.Lift;
 import org.firstinspires.ftc.teamcode.Subsystems.Servos;
@@ -25,8 +24,6 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.ArrayList;
 
 @Autonomous
@@ -60,7 +57,7 @@ public class RightMid extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
     Pose2d startPose = new Pose2d(31.8, -63.3, Math.toRadians(0));
     final Pose2d dropPosition = new Pose2d(40, -12, Math.toRadians(0));
-    final Pose2d pickingPosition1 = new Pose2d(45.01, -12, Math.toRadians(0));
+    final Pose2d pickingPosition1 = new Pose2d(45.01, -11, Math.toRadians(0));
     final Pose2d midDropPosition = new Pose2d(36, -10, Math.toRadians(0));
 
     Lift lift = null;
@@ -98,11 +95,11 @@ public class RightMid extends LinearOpMode {
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.2))
                 .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
                 .UNSTABLE_addTemporalMarkerOffset(-1.3, ()->lift.extendTo(lift.POSITIONS[lift.MID_POLE],1))
-                .UNSTABLE_addTemporalMarkerOffset(-2, ()->Robot.targetDegree = (-Auto2_0.preloadTurretPosition))
-                .UNSTABLE_addTemporalMarkerOffset(-1, ()-> Servos.Wrist.setPosition(Auto2_0.preloadWristPosition))
+                .UNSTABLE_addTemporalMarkerOffset(-2, ()->Robot.targetDegree = (-AutoPositions.preloadTurretPosition))
+                .UNSTABLE_addTemporalMarkerOffset(-1, ()-> Servos.Wrist.setPosition(AutoPositions.preloadWristPosition))
 //                .waitSeconds(0.01)
-                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> Servos.AlignBar_2.setPosition(Auto2_0.preloadAlignPosition))
-                .addTemporalMarker(()-> robot.setTargetForSlider(Auto2_0.preloadSliderPosition+0.1))
+                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> Servos.AlignBar_2.setPosition(AutoPositions.preloadAlignPosition))
+                .addTemporalMarker(()-> robot.setTargetForSlider(AutoPositions.preloadSliderPosition+0.1))
                 .waitSeconds(0.0001)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
                 .waitSeconds(0.2)
@@ -131,13 +128,13 @@ public class RightMid extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.5))
-                .addTemporalMarker(()->Robot.targetDegree = (-(Auto2_0.highTurretPosition-3)))
-                .addTemporalMarker(()-> Servos.Wrist.setPosition(Auto2_0.highWristPosition))
+                .addTemporalMarker(()->Robot.targetDegree = (-(AutoPositions.highTurretPosition-3)))
+                .addTemporalMarker(()-> Servos.Wrist.setPosition(AutoPositions.highWristPosition))
                 .lineToLinearHeading(dropPosition)
                 .waitSeconds(0.4)
-                .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(Auto2_0.highAlignPosition))
+                .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(AutoPositions.highAlignPosition))
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 2.9)
-                .addTemporalMarker(()->robot.setTargetForSlider(Auto2_0.highSliderPosition))
+                .addTemporalMarker(()->robot.setTargetForSlider(AutoPositions.highSliderPosition))
                 .waitSeconds(0.6)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
                 .waitSeconds(0.15)
