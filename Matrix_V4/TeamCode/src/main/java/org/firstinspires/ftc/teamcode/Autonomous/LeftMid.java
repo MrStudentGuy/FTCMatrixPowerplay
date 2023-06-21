@@ -111,9 +111,9 @@ public class LeftMid extends LinearOpMode {
                 .build();
 
         TrajectorySequence preloadToPick = robot.trajectorySequenceBuilder(startToMid.end())
-                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4],1))
                 .lineToLinearHeading(pickingPosition1)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.4))
+                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4],1))
                 .waitSeconds(0.25)
                 .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.2)
