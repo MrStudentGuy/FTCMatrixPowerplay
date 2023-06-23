@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
+@Config
 public class Turret {
     private DcMotorEx motor;
     private final double GEAR_RATIO = 122.0/44.0 ;
@@ -16,7 +18,7 @@ public class Turret {
 
     public double prevDegree = 0;
 
-    public double maxPower = 0.6;
+    public static double maxPower = 0.6;
 
 
 

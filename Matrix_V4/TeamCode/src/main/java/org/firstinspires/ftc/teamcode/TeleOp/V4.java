@@ -88,6 +88,9 @@ public class V4 extends LinearOpMode {
         Pose2d startPose = new Pose2d(0,0,Robot.heading);
         robot.setPoseEstimate(startPose);   //Set the robot pose to be facing the driver, so that field oriented works properly
 
+        Robot.Kp_turret = 0.005;
+        turret.setMaxPower(1);
+        Robot.Kd_turret = 0.0005;
 
         waitForStart();
 
@@ -118,23 +121,22 @@ public class V4 extends LinearOpMode {
                 normalFunctionality();
             }
 
-            if (driverButtons[X]) {
-                robot.setPoseEstimate(new Pose2d(0,0,0));
-            }
             if (vibrateFlag) {
                 vibrateFlag = false;
                 gamepad1.rumbleBlips(2);
             }
             int DOWN = 4;
             if (driverButtons[DOWN]) {
-                selection = lift.POSITIONS[lift.GRIPPING_POSITION];
-                lift.extendTo(selection, 1);
+//                selection = lift.POSITIONS[lift.GRIPPING_POSITION];
+//                lift.extendTo(selection, 1);
+
+                lift.extendTo(lift.POSITIONS[lift.GRIPPING_POSITION], 1);
             }
-            if (driverButtons[LB] && lift.getPosition()[0] < lift.POSITIONS[lift.LOW_POLE] + 50 && lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE] - 50) {
-                Servos.Wrist.goLowDrop();
-                timerForLowDrop.reset();
-                flagForLowDrop = true;
-            }
+//            if (driverButtons[LB] && lift.getPosition()[0] < lift.POSITIONS[lift.LOW_POLE] + 50 && lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE] - 50) {
+//                Servos.Wrist.goLowDrop();
+//                timerForLowDrop.reset();
+//                flagForLowDrop = true;
+//            }
             if (flagForLowDrop && timerForLowDrop.milliseconds() > 400) {
                 flagForLowDrop = false;
                 Servos.Wrist.goGripping();
@@ -145,8 +147,8 @@ public class V4 extends LinearOpMode {
 
             int r2 = 14;
             if (operatorButtons[r2]) {
-                speedThrottle = 0.38;
-                headingThrottle = 0.5;
+                speedThrottle = 0.34;
+                headingThrottle = 0.4;
             } else {
                 speedThrottle = 1;
                 headingThrottle = 1;
@@ -183,7 +185,7 @@ public class V4 extends LinearOpMode {
             }
 
             if (flagForSafe && timerForSafe.milliseconds() < 400) {
-                Servos.Slider.moveSlider(0.35);
+                Servos.Slider.moveSlider(0.25);
             } else if (timerForSafe.milliseconds() >= 400) {
                 flagForSafe = false;
                 Servos.Slider.moveSlider(gamepad1.left_trigger);
@@ -249,8 +251,8 @@ public class V4 extends LinearOpMode {
             previousOperatorTriggers = operatorTriggers;
 
 
-            telemetry.addData("Lift Left Current: ", lift.getCurrent()[0]);
-            telemetry.addData("Lift Right Current: ", lift.getCurrent()[1]);
+            telemetry.addData("Lift Left Current Consumption: ", lift.getCurrent()[0]);
+            telemetry.addData("Lift Right Current Consumption: ", lift.getCurrent()[1]);
             telemetry.addData("Trigger: ", driverTriggers[LT]);
             telemetry.addData("Slider: ", Servos.Slider.getPosition());
             telemetry.addData("Selection: ", selection);

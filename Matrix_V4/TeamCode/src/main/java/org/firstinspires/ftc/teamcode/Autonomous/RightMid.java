@@ -33,15 +33,15 @@ public class RightMid extends LinearOpMode {
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
     static final double FEET_PER_METER = 3.28084;
 
-    Pose2d PARKING1 = new Pose2d(-58+72, -12, Math.toRadians(90));
-    Pose2d PARKING1_INSIDE = new Pose2d(-58+72, -24, Math.toRadians(90));
+    Pose2d PARKING1 = new Pose2d(-58 + 72, -12, Math.toRadians(90));
+    Pose2d PARKING1_INSIDE = new Pose2d(-58 + 72, -24, Math.toRadians(90));
 
-    Pose2d PARKING2 = new Pose2d(-34+72, -13, Math.toRadians(90));
-    Pose2d PARKING2_INSIDE = new Pose2d(-34+72, -24, Math.toRadians(90));
+    Pose2d PARKING2 = new Pose2d(-34 + 72, -13, Math.toRadians(90));
+    Pose2d PARKING2_INSIDE = new Pose2d(-34 + 72, -24, Math.toRadians(90));
 
 
-    Pose2d PARKING3 = new Pose2d(-10+72, -12, Math.toRadians(90));
-    Pose2d PARKING3_INSIDE = new Pose2d(-10+72, -24, Math.toRadians(90));
+    Pose2d PARKING3 = new Pose2d(-10 + 72, -12, Math.toRadians(90));
+    Pose2d PARKING3_INSIDE = new Pose2d(-10 + 72, -24, Math.toRadians(90));
 
     double fx = 578.272;
     double fy = 578.272;
@@ -89,135 +89,136 @@ public class RightMid extends LinearOpMode {
 
 
         TrajectorySequence startToMid = robot.trajectorySequenceBuilder(startPose)
-                .addTemporalMarker(()->Servos.Gripper.closeGripper())
+                .addTemporalMarker(() -> Servos.Gripper.closeGripper())
                 .waitSeconds(0.2)
-                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
-                .addTemporalMarker(()-> Servos.Slider.moveSlider(0.2))
+                .addTemporalMarker(() -> lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
+                .addTemporalMarker(() -> Servos.Slider.moveSlider(0.2))
                 .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
-                .UNSTABLE_addTemporalMarkerOffset(-1.3, ()->lift.extendTo(lift.POSITIONS[lift.MID_POLE],1))
-                .UNSTABLE_addTemporalMarkerOffset(-2, ()->Robot.targetDegree = (-AutoPositions.preloadTurretPosition))
-                .UNSTABLE_addTemporalMarkerOffset(-1, ()-> Servos.Wrist.setPosition(AutoPositions.preloadWristPosition))
+                .UNSTABLE_addTemporalMarkerOffset(-1.3, () -> lift.extendTo(lift.POSITIONS[lift.MID_POLE], 1))
+                .UNSTABLE_addTemporalMarkerOffset(-2, () -> Robot.targetDegree = (-AutoPositions.preloadTurretPosition))
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> Servos.Wrist.setPosition(AutoPositions.preloadWristPosition))
 //                .waitSeconds(0.01)
-                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> Servos.AlignBar_2.setPosition(AutoPositions.preloadAlignPosition))
-                .addTemporalMarker(()-> robot.setTargetForSlider(AutoPositions.preloadSliderPosition+0.1))
+                .UNSTABLE_addTemporalMarkerOffset(-0.1, () -> Servos.AlignBar_2.setPosition(AutoPositions.preloadAlignPosition))
+                .addTemporalMarker(() -> robot.setTargetForSlider(AutoPositions.preloadSliderPosition + 0.1))
                 .waitSeconds(0.0001)
-                .addTemporalMarker(()-> Servos.Wrist.goGripping())
+                .addTemporalMarker(() -> Servos.Wrist.goGripping())
                 .waitSeconds(0.2)
-                .addTemporalMarker(()-> Servos.Gripper.openGripperFull())
-                .addTemporalMarker(()-> Servos.AlignBar_2.goInside())
-                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
-                .addTemporalMarker(()->robot.setTargetForSlider(0))
+                .addTemporalMarker(() -> Servos.Gripper.openGripperFull())
+                .addTemporalMarker(() -> Servos.AlignBar_2.goInside())
+                .addTemporalMarker(() -> Robot.sliderMaxAcceleration = 100)
+                .addTemporalMarker(() -> robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
-                .addTemporalMarker(()->turret.setMaxPower(0.6))
-                .addTemporalMarker(()->Robot.targetDegree = 0)
+                .addTemporalMarker(() -> turret.setMaxPower(0.6))
+                .addTemporalMarker(() -> Robot.targetDegree = 0)
                 .build();
 
         TrajectorySequence preloadToPick = robot.trajectorySequenceBuilder(startToMid.end())
                 .lineToLinearHeading(pickingPosition1)
-                .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4],1))
-                .addTemporalMarker(()->robot.setTargetForSlider(0.4))
+                .addTemporalMarker(() -> lift.extendTo(lift.AUTO_POSITION[4], 1))
+                .addTemporalMarker(() -> robot.setTargetForSlider(0.4))
                 .waitSeconds(0.25)
-                .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
+                .addTemporalMarker(() -> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.2)
-                .addTemporalMarker(()-> Servos.Gripper.closeGripper())
+                .addTemporalMarker(() -> Servos.Gripper.closeGripper())
                 .build();
 
         TrajectorySequence pickToDrop = robot.trajectorySequenceBuilder(pickingPosition1)
-                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.MID_POLE],1))
+                .addTemporalMarker(() -> lift.extendTo(lift.POSITIONS[lift.MID_POLE], 1))
                 .waitSeconds(0.1)
-                .addTemporalMarker(()->robot.setTargetForSlider(0))
+                .addTemporalMarker(() -> robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
-                .addTemporalMarker(()->turret.setMaxPower(0.5))
-                .addTemporalMarker(()->Robot.targetDegree = (-(AutoPositions.highTurretPosition-3)))
-                .addTemporalMarker(()-> Servos.Wrist.setPosition(AutoPositions.highWristPosition))
+                .addTemporalMarker(() -> turret.setMaxPower(0.7))
+                .addTemporalMarker(() -> Robot.targetDegree = (-(AutoPositions.highTurretPosition - 3)))
+                .addTemporalMarker(() -> Servos.Wrist.setPosition(AutoPositions.highWristPosition))
                 .lineToLinearHeading(dropPosition)
                 .waitSeconds(0.4)
-                .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(AutoPositions.highAlignPosition))
-                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 2.9)
-                .addTemporalMarker(()->robot.setTargetForSlider(AutoPositions.highSliderPosition))
+                .addTemporalMarker(() -> Servos.AlignBar_2.setPosition(AutoPositions.highAlignPosition))
+                .addTemporalMarker(() -> Robot.sliderMaxAcceleration = 2.9)
+                .addTemporalMarker(() -> robot.setTargetForSlider(AutoPositions.highSliderPosition))
                 .waitSeconds(0.6)
-                .addTemporalMarker(()-> Servos.Wrist.goGripping())
+                .addTemporalMarker(() -> Servos.Wrist.goGripping())
                 .waitSeconds(0.15)
-                .addTemporalMarker(()-> Servos.Gripper.openGripperFull())
-                .addTemporalMarker(()-> Servos.AlignBar_2.goInside())
-                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
-                .addTemporalMarker(()->robot.setTargetForSlider(0))
-                .waitSeconds(0.2)
-                .addTemporalMarker(()->turret.setMaxPower(0.7))
-                .addTemporalMarker(()->Robot.targetDegree = 0)
+                .addTemporalMarker(() -> Servos.Gripper.openGripperFull())
+                .addTemporalMarker(() -> Servos.AlignBar_2.goInside())
+                .addTemporalMarker(() -> Robot.sliderMaxAcceleration = 100)
+                .addTemporalMarker(() -> robot.setTargetForSlider(0))
+                .waitSeconds(0.1)
+                .addTemporalMarker(() -> turret.setMaxPower(1))
+                .addTemporalMarker(() -> Robot.targetDegree = 0)
+                .waitSeconds(0.1)
                 .build();
 
         TrajectorySequence dropToPick3 = robot.trajectorySequenceBuilder(dropPosition)
-                .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[3],1))
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> lift.extendTo(lift.AUTO_POSITION[3], 1))
                 .lineToLinearHeading(pickingPosition1)
-                .addTemporalMarker(()->robot.setTargetForSlider(0.4))
+                .addTemporalMarker(() -> robot.setTargetForSlider(0.4))
                 .waitSeconds(0.25)
-                .addTemporalMarker(()->turret.setMaxPower(0))
-                .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
+                .addTemporalMarker(() -> turret.setMaxPower(0))
+                .addTemporalMarker(() -> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.2)
-                .addTemporalMarker(()-> Servos.Gripper.closeGripper())
+                .addTemporalMarker(() -> Servos.Gripper.closeGripper())
                 .build();
 
 
         TrajectorySequence dropToPick2 = robot.trajectorySequenceBuilder(dropPosition)
-                .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[2],1))
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> lift.extendTo(lift.AUTO_POSITION[2], 1))
                 .lineToLinearHeading(pickingPosition1)
-                .addTemporalMarker(()->robot.setTargetForSlider(0.4))
+                .addTemporalMarker(() -> robot.setTargetForSlider(0.4))
                 .waitSeconds(0.25)
-                .addTemporalMarker(()->turret.setMaxPower(0.4))
-                .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
+                .addTemporalMarker(() -> turret.setMaxPower(0.4))
+                .addTemporalMarker(() -> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.2)
-                .addTemporalMarker(()-> Servos.Gripper.closeGripper())
+                .addTemporalMarker(() -> Servos.Gripper.closeGripper())
                 .build();
 
 
         TrajectorySequence dropToPick1 = robot.trajectorySequenceBuilder(dropPosition)
-                .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[1],1))
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> lift.extendTo(lift.AUTO_POSITION[1], 1))
                 .lineToLinearHeading(pickingPosition1)
-                .addTemporalMarker(()->robot.setTargetForSlider(0.4))
+                .addTemporalMarker(() -> robot.setTargetForSlider(0.4))
                 .waitSeconds(0.25)
-                .addTemporalMarker(()->turret.setMaxPower(0.4))
-                .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
+                .addTemporalMarker(() -> turret.setMaxPower(0.4))
+                .addTemporalMarker(() -> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.2)
-                .addTemporalMarker(()-> Servos.Gripper.closeGripper())
+                .addTemporalMarker(() -> Servos.Gripper.closeGripper())
                 .build();
 
 
         TrajectorySequence dropToPick0 = robot.trajectorySequenceBuilder(dropPosition)
-                .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[0],1))
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> lift.extendTo(lift.AUTO_POSITION[0], 1))
                 .lineToLinearHeading(pickingPosition1)
-                .UNSTABLE_addTemporalMarkerOffset(-0.2, ()->robot.setTargetForSlider(0.4))
+                .UNSTABLE_addTemporalMarkerOffset(-0.2, () -> robot.setTargetForSlider(0.4))
                 .waitSeconds(0.25)
-                .addTemporalMarker(()->turret.setMaxPower(0.4))
-                .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
+                .addTemporalMarker(() -> turret.setMaxPower(0.4))
+                .addTemporalMarker(() -> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.2)
-                .addTemporalMarker(()-> Servos.Gripper.closeGripper())
+                .addTemporalMarker(() -> Servos.Gripper.closeGripper())
                 .build();
 
         TrajectorySequence parking1Traj = robot.trajectorySequenceBuilder(dropPosition)
-                .addTemporalMarker(()->Robot.targetDegree = 0)
-                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
-                .addTemporalMarker(()->robot.setTargetForSlider(0))
-                .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
+                .addTemporalMarker(() -> Robot.targetDegree = 0)
+                .addTemporalMarker(() -> Robot.sliderMaxAcceleration = 100)
+                .addTemporalMarker(() -> robot.setTargetForSlider(0))
+                .addTemporalMarker(() -> lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
                 .setReversed(true)
 //                .splineTo(new Vector2d(-56.42+72, -20.56), Math.toRadians(246.41))
                 .splineTo(new Vector2d(10.75, -31.07), Math.toRadians(-90.00))
                 .build();
 
         TrajectorySequence parking2Traj = robot.trajectorySequenceBuilder(dropPosition)
-                .addTemporalMarker(()->Robot.targetDegree = 0)
-                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
-                .addTemporalMarker(()->robot.setTargetForSlider(0))
-                .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
+                .addTemporalMarker(() -> Robot.targetDegree = 0)
+                .addTemporalMarker(() -> Robot.sliderMaxAcceleration = 100)
+                .addTemporalMarker(() -> robot.setTargetForSlider(0))
+                .addTemporalMarker(() -> lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
 //                .lineToLinearHeading(PARKING2)
                 .lineToLinearHeading(PARKING2_INSIDE)
                 .build();
 
         TrajectorySequence parking3Traj = robot.trajectorySequenceBuilder(dropPosition)
-                .addTemporalMarker(()->Robot.targetDegree = 0)
-                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
-                .addTemporalMarker(()->robot.setTargetForSlider(0))
-                .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
+                .addTemporalMarker(() -> Robot.targetDegree = 0)
+                .addTemporalMarker(() -> Robot.sliderMaxAcceleration = 100)
+                .addTemporalMarker(() -> robot.setTargetForSlider(0))
+                .addTemporalMarker(() -> lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1))
 //                .setReversed(true)
                 .splineTo(new Vector2d(60.58, -32.32), Math.toRadians(-90.00))
 
@@ -248,7 +249,7 @@ public class RightMid extends LinearOpMode {
         });
         telemetry.setMsTransmissionInterval(50);
 
-        while(opModeInInit()) {
+        while (opModeInInit()) {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
             if (currentDetections.size() != 0) {
                 boolean tagFound = false;
@@ -296,28 +297,26 @@ public class RightMid extends LinearOpMode {
         robot.followTrajectorySequence(dropToPick0);
         robot.followTrajectorySequence(pickToDrop);
 
-        if(tagOfInterest != null){
-            if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE1]){
+        if (tagOfInterest != null) {
+            if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE1]) {
                 robot.followTrajectorySequence(parking1Traj);
                 Robot.heading = Math.toRadians(0);
-            }
-            else if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE2]){
+            } else if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE2]) {
                 robot.followTrajectorySequence(parking2Traj);
-                Robot.heading = Math.toRadians(180);
-            }
-            else  if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE3]){
+                Robot.heading = Math.toRadians(0);
+            } else if (tagOfInterest.id == MATRIX_IDS[PARKING_ZONE3]) {
                 robot.followTrajectorySequence(parking3Traj);
                 Robot.heading = Math.toRadians(180);
             }
-        }
-        else{
+        } else {
             robot.followTrajectorySequence(parking2Traj);
         }
 
-        while(opModeIsActive()){
+        while (opModeIsActive()) {
             robot.update();
         }
     }
+
     void tagToTelemetry(AprilTagDetection detection) {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
         telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x * FEET_PER_METER));
@@ -327,4 +326,5 @@ public class RightMid extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
+
 }

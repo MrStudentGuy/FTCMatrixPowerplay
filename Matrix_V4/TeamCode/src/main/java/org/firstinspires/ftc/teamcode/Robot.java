@@ -45,9 +45,11 @@ public class Robot extends SampleMecanumDrive {
     ElapsedTime profileTimer;
     private PIDController liftController;
 
-    public static double Kp_turret = 0.04;
+//    public static double Kp_turret = 0.0111\\;
+    public static double Kp_turret = 0.0103;
     public static double Ki_turret = 0.1;
-    public static double Kd_turret = 0.005;
+//    public static double Kd_turret = 0.002;
+public static double Kd_turret = 0.0011;
     public static double Kf_turret = 0; //feedforward, turret no gravity so 0
 
     public static double Kp_lift = 0.1;
@@ -85,7 +87,7 @@ public class Robot extends SampleMecanumDrive {
 
 
         telemetry.addData("Loop time: ", robotTimer.milliseconds());
-//        while(robotTimer.milliseconds() < 60);
+        while(robotTimer.milliseconds() < 60);
         robotTimer.reset();
         Pose2d pose = super.getPoseEstimate();
         poseStorage = pose;

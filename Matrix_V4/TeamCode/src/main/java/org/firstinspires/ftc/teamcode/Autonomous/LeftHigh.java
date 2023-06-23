@@ -55,7 +55,7 @@ public class LeftHigh extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
     Pose2d startPose = new Pose2d(-31.8, -63.3, Math.toRadians(180));
     final Pose2d dropPosition = new Pose2d(-40, -12, Math.toRadians(180));
-    final Pose2d pickingPosition1 = new Pose2d(-45.01, -13, Math.toRadians(180));
+    final Pose2d pickingPosition1 = new Pose2d(-45.01, -12, Math.toRadians(180));
     final Pose2d midDropPosition = new Pose2d(-36, -10, Math.toRadians(180));
 
     Lift lift = null;
@@ -129,7 +129,7 @@ public class LeftHigh extends LinearOpMode {
                 .addTemporalMarker(()->Robot.targetDegree = -(AutoPositions.highTurretPosition+3))
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(AutoPositions.highWristPosition))
                 .lineToLinearHeading(dropPosition)
-                .waitSeconds(0.4)
+                .waitSeconds(0.3)
                 .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(AutoPositions.highAlignPosition))
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 2.7)
                 .addTemporalMarker(()->robot.setTargetForSlider(AutoPositions.highSliderPosition))
@@ -140,9 +140,10 @@ public class LeftHigh extends LinearOpMode {
                 .addTemporalMarker(()-> Servos.AlignBar_2.goInside())
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
-                .waitSeconds(0.2)
+                .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.7))
                 .addTemporalMarker(()->Robot.targetDegree = 0)
+                .waitSeconds(0.1)
                 .build();
 
         TrajectorySequence dropToPick3 = robot.trajectorySequenceBuilder(dropPosition)

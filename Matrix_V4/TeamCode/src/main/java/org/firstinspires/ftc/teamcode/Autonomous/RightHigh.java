@@ -108,7 +108,7 @@ public class RightHigh extends LinearOpMode {
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
-                .addTemporalMarker(()->turret.setMaxPower(0.6))
+                .addTemporalMarker(()->turret.setMaxPower(0.8))
                 .addTemporalMarker(()->Robot.targetDegree = 0)
                 .build();
 
@@ -131,20 +131,21 @@ public class RightHigh extends LinearOpMode {
                 .addTemporalMarker(()->Robot.targetDegree = (AutoPositions.highTurretPosition-3))
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(AutoPositions.highWristPosition))
                 .lineToLinearHeading(dropPosition)
-                .waitSeconds(0.4)
+                .waitSeconds(0.3)
                 .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(AutoPositions.highAlignPosition))
-                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 2.9)
+                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 2.7)
                 .addTemporalMarker(()->robot.setTargetForSlider(AutoPositions.highSliderPosition))
-                .waitSeconds(0.6)
+                .waitSeconds(0.55)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
                 .waitSeconds(0.15)
                 .addTemporalMarker(()-> Servos.Gripper.openGripperFull())
                 .addTemporalMarker(()-> Servos.AlignBar_2.goInside())
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
-                .waitSeconds(0.2)
+                .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.7))
                 .addTemporalMarker(()->Robot.targetDegree = 0)
+                .waitSeconds(0.1)
                 .build();
 
         TrajectorySequence dropToPick3 = robot.trajectorySequenceBuilder(dropPosition)
@@ -303,7 +304,7 @@ public class RightHigh extends LinearOpMode {
             }
             else if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE2]){
                 robot.followTrajectorySequence(parking2Traj);
-                Robot.heading = Math.toRadians(180);
+                Robot.heading = Math.toRadians(0);
             }
             else  if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE3]){
                 robot.followTrajectorySequence(parking3Traj);
