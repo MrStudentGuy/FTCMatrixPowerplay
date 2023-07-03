@@ -78,7 +78,7 @@ public class LeftHigh extends LinearOpMode {
         lift.reset();
 
         Servos.Slider.moveInside();
-        Servos.Gripper.openGripper();
+        Servos.Gripper.openGripperAutoStart();
         Servos.Wrist.goGripping();
         Servos.AlignBar_2.goInside();
         Servos.SliderServo.setPosition(0);
@@ -96,8 +96,8 @@ public class LeftHigh extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(-1.8, ()->Robot.targetDegree = -(AutoPositions.preloadTurretPosition+2))
                 .UNSTABLE_addTemporalMarkerOffset(-1, ()-> Servos.Wrist.setPosition(AutoPositions.preloadWristPosition))
 //                .waitSeconds(0.01)
-                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> Servos.AlignBar_2.setPosition(AutoPositions.preloadAlignPosition))
-                .addTemporalMarker(()-> robot.setTargetForSlider(AutoPositions.preloadSliderPosition+1))
+                .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> Servos.AlignBar_2.setPosition(AutoPositions.preloadAlignPosition+0.03))
+                .addTemporalMarker(()-> robot.setTargetForSlider(AutoPositions.preloadSliderPosition+0.46))
                 .waitSeconds(0.0001)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
                 .waitSeconds(0.2)
@@ -113,6 +113,7 @@ public class LeftHigh extends LinearOpMode {
         TrajectorySequence preloadToPick = robot.trajectorySequenceBuilder(startToMid.end())
                 .addTemporalMarker(()->lift.extendTo(lift.AUTO_POSITION[4],1))
                 .lineToLinearHeading(pickingPosition1)
+//                .lineToLinearHeading(new Pose2d(-44.01, -11.8, Math.toRadians(180)))
                 .addTemporalMarker(()->robot.setTargetForSlider(0.4))
                 .waitSeconds(0.25)
                 .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
@@ -126,13 +127,13 @@ public class LeftHigh extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.5))
-                .addTemporalMarker(()->Robot.targetDegree = -(AutoPositions.highTurretPosition+3))
+                .addTemporalMarker(()->Robot.targetDegree = -(AutoPositions.highTurretPosition+8))
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(AutoPositions.highWristPosition))
                 .lineToLinearHeading(dropPosition)
                 .waitSeconds(0.3)
-                .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(AutoPositions.highAlignPosition))
+                .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(AutoPositions.highAlignPosition+0.06))
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 2.7)
-                .addTemporalMarker(()->robot.setTargetForSlider(AutoPositions.highSliderPosition))
+                .addTemporalMarker(()->robot.setTargetForSlider(AutoPositions.highSliderPosition+0.05))
                 .waitSeconds(0.55)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
                 .waitSeconds(0.15)
@@ -142,7 +143,7 @@ public class LeftHigh extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.7))
-                .addTemporalMarker(()->Robot.targetDegree = 0)
+                .addTemporalMarker(()->Robot.targetDegree = -3)
                 .waitSeconds(0.1)
                 .build();
 

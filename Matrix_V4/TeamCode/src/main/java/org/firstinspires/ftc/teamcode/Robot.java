@@ -20,7 +20,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.Servos;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-
+//Kd0.00269
+//Kp0.0239
 @Config
 public class Robot extends SampleMecanumDrive {
 
@@ -35,7 +36,7 @@ public class Robot extends SampleMecanumDrive {
 
     public static double heading = 0;
     Servo SliderServo, alignServo, wristServo;
-    MotionProfile sliderProfile;
+    public MotionProfile sliderProfile;
     ElapsedTime sliderProfileTimer;
 
     ElapsedTime robotTimer;
@@ -46,8 +47,8 @@ public class Robot extends SampleMecanumDrive {
     private PIDController liftController;
 
 //    public static double Kp_turret = 0.0111\\;
-    public static double Kp_turret = 0.0103;
-    public static double Ki_turret = 0.1;
+    public static double Kp_turret = 0.0109;
+    public static double Ki_turret = 0.101;
 //    public static double Kd_turret = 0.002;
 public static double Kd_turret = 0.0011;
     public static double Kf_turret = 0; //feedforward, turret no gravity so 0
@@ -125,7 +126,8 @@ public static double Kd_turret = 0.0011;
         telemetry.addData("Lift Current Positions: ", robotLift.getPosition()[0] + "::::" + robotLift.getPosition()[1]);
         telemetry.addData("Lift Target Positions: ", robotLift.getTarget()[0] + "::::" + robotLift.getTarget()[1]);
         telemetry.addData("Lift Target Position: ", targetHeight);
-
+        telemetry.addData("Turret Power: ", turretPower);
+        telemetry.addData("GripperPosition",Servos.GrippingPosition);
         telemetry.addData("Turret Current Position: ", currentTurretDegree);
         telemetry.addData("Turret Target Position: ", targetDegree);
         telemetry.addData("Roll: ", Math.toDegrees(getRoll()));

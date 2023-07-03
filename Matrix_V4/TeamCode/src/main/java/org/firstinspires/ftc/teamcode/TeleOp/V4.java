@@ -36,9 +36,13 @@ public class V4 extends LinearOpMode {
     ElapsedTime timerForThodaUpar;
     ElapsedTime returnToGrippingAfterDropTimer;
 
+    ElapsedTime timerForFallenCone;
+
     //----------------------------------------------------------------------------------------------------------
     boolean flagForSafe;
     boolean flagForAligner;
+
+    boolean flagForPickingFallen, flagForPickingFallenProceed;
     //--------------------------------------------------Subsystems--------------------------------------------------
     Lift lift = null;
     Servos servos = null;
@@ -57,11 +61,12 @@ public class V4 extends LinearOpMode {
     private double[] previousDriverTriggers, previousOperatorTriggers, driverTriggers, operatorTriggers;
 
     private int selection = 0;
-
+    boolean BeaconFlag =  false;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
+        timerForFallenCone = new ElapsedTime();
         timerForAligner = new ElapsedTime();             //This timer enables delayed deployment of the aligner after the required button has been pressed
         timerForLowDrop = new ElapsedTime();             //This timer enables the low sequence for the wrist, which helps in dropping a cone onto the low pole
         timerForSafe = new ElapsedTime();
@@ -82,7 +87,7 @@ public class V4 extends LinearOpMode {
         Servos.Wrist.goGripping();                    //Sets the servo to go to the gripping position
         Servos.Gripper.closeGripper();                //Closes the gripper initially for safety
         Servos.AlignBar.inside();                     //Take the Cone Aligner inside
-        Servos.Slider.moveInside();                   //Slider moves inside
+//        Servos.Slider.moveInside();                   //Slider moves inside
         Servos.AlignBar_2.goInside();                 //Take the Pole Aligner inside
 
         Pose2d startPose = new Pose2d(0,0,Robot.heading);
@@ -91,6 +96,9 @@ public class V4 extends LinearOpMode {
         Robot.Kp_turret = 0.005;
         turret.setMaxPower(1);
         Robot.Kd_turret = 0.0005;
+        Robot.sliderMaxAcceleration = 100;
+        robot.setTargetForSlider(0);
+
 
         waitForStart();
 
@@ -178,31 +186,86 @@ public class V4 extends LinearOpMode {
                         flagForSafe = true;
                     }
                     if (lift.getPosition()[0] < lift.POSITIONS[lift.LOW_POLE]) {
-                        Servos.Slider.moveSlider(0.3);
+                        robot.setTargetForSlider(0.3);
+//                        Servos.Slider.moveSlider(0.3);
                         Servos.AlignBar_2.setPosition(Servos.AlignBar_2.insideForTop);
                     }
                 }
             }
 
-            if (flagForSafe && timerForSafe.milliseconds() < 400) {
-                Servos.Slider.moveSlider(0.25);
-            } else if (timerForSafe.milliseconds() >= 400) {
-                flagForSafe = false;
-                Servos.Slider.moveSlider(gamepad1.left_trigger);
+
+            if(driverButtons[A] && !flagForPickingFallen){
+                flagForPickingFallen = true;
+                timerForFallenCone.reset();
+            }
+
+            if(flagForPickingFallen){
+                if(timerForFallenCone.milliseconds() < 600 && !flagForPickingFallenProceed){
+                    lift.extendTo(lift.AUTO_POSITION[4], 1);
+                }
+                if(timerForFallenCone.milliseconds()>500 && timerForFallenCone.milliseconds()<600 && !flagForPickingFallenProceed){
+                    Servos.Wrist.goTop();
+                    robot.setTargetForSlider(0.4);
+                }
+                if(timerForFallenCone.milliseconds()>1000 && timerForFallenCone.milliseconds()<1100 && !flagForPickingFallenProceed){
+                    Servos.AlignBar_2.setPosition(0.35);
+                }
+                if(driverButtons[Y] && !previousDriverButtons[Y] && !flagForPickingFallenProceed){
+                    Robot.sliderMaxAcceleration = 1;
+                    timerForFallenCone.reset();
+                    flagForPickingFallenProceed = true;
+                }
+                if(flagForPickingFallenProceed && timerForFallenCone.milliseconds()>50 && timerForFallenCone.milliseconds()<450){
+                    robot.setTargetForSlider(0.76);
+                }
+                if(flagForPickingFallenProceed && timerForFallenCone.milliseconds()>1150){
+                    lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1);
+                }
+                if(flagForPickingFallenProceed && timerForFallenCone.milliseconds()>1300){
+                    Servos.AlignBar_2.goInside();
+                }
+                if(flagForPickingFallenProceed && timerForFallenCone.milliseconds()>2500){
+                    flagForPickingFallen = false;
+                    Servos.Wrist.goGripping();
+//                    lift.extendTo(lift.POSITIONS[lift.GRIPPING_POSITION],1);
+                    flagForPickingFallenProceed = false;
+                    robot.sliderProfile = null;
+                    Robot.sliderMaxAcceleration = 100;
+                }
+            }
+
+
+            if(!flagForPickingFallen) {
+                if (flagForSafe && timerForSafe.milliseconds() < 400) {
+                    robot.setTargetForSlider(0.25);
+//                    Servos.Slider.moveSlider(0.25);
+                } else if (timerForSafe.milliseconds() >= 400) {
+                    flagForSafe = false;
+                    robot.setTargetForSlider(gamepad1.left_trigger);
+//                    Servos.Slider.moveSlider(gamepad1.left_trigger);
+                }
             }
 
             int RB = 8;
             if (driverButtons[RB] && !previousDriverButtons[RB]) {
-                if (Servos.Gripper.gripperState.equals("CLOSED") && lift.getPosition()[0] > lift.POSITIONS[lift.GRIPPING_POSITION] + 300) {
-                    returnToGrippingAfterDropTimer.reset();
-                    Servos.AlignBar_2.goInside();
-                    returnToGrippingAfterDropFlag = true;
+
+                if (BeaconFlag) {
+                    BeaconFlag = false;
+                    Servos.Gripper.gripBeacon();
+                } else {
+
+                    if (Servos.Gripper.gripperState.equals("CLOSED") && lift.getPosition()[0] > lift.POSITIONS[lift.GRIPPING_POSITION] + 300) {
+                        returnToGrippingAfterDropTimer.reset();
+                        Servos.AlignBar_2.goInside();
+                        returnToGrippingAfterDropFlag = true;
+                    }
+                    if (Servos.Gripper.gripperState.equals("OPEN") && lift.getPosition()[0] < lift.POSITIONS[lift.LOW_POLE] - 100) {
+                        timerForThodaUpar.reset();
+                        thodaUparFlag = true;
+                    }
+
+                    Servos.Gripper.toggle();
                 }
-                if (Servos.Gripper.gripperState.equals("OPEN") && lift.getPosition()[0] < lift.POSITIONS[lift.LOW_POLE] - 100) {
-                    timerForThodaUpar.reset();
-                    thodaUparFlag = true;
-                }
-                Servos.Gripper.toggle();
             }
 
             if (thodaUparFlag && timerForThodaUpar.milliseconds() > 300) {
@@ -243,6 +306,10 @@ public class V4 extends LinearOpMode {
             if (flagForAligner && timerForAligner.milliseconds() > 300) {
                 Servos.AlignBar_2.goOutside();
                 flagForAligner = false;
+            }
+            if(operatorButtons[START])
+            {
+                BeaconFlag=true;
             }
 
             previousDriverButtons = driverButtons;

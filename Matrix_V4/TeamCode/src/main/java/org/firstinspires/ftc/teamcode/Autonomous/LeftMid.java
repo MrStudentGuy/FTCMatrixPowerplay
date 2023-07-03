@@ -78,7 +78,7 @@ public class LeftMid extends LinearOpMode {
         lift.reset();
 
         Servos.Slider.moveInside();
-        Servos.Gripper.openGripper();
+        Servos.Gripper.openGripperAutoStart();
         Servos.Wrist.goGripping();
         Servos.AlignBar_2.goInside();
         Servos.SliderServo.setPosition(0);
