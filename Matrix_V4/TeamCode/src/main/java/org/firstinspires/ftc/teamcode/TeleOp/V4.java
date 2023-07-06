@@ -154,7 +154,7 @@ public class V4 extends LinearOpMode {
             robot.update();
 
             int r2 = 14;
-            if (operatorButtons[r2]) {
+            if (operatorButtons[r2] || flagForPickingFallen || lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]-10) {
                 speedThrottle = 0.34;
                 headingThrottle = 0.4;
             } else {
@@ -194,57 +194,61 @@ public class V4 extends LinearOpMode {
             }
 
 
-            if(driverButtons[A] && !flagForPickingFallen){
-                flagForPickingFallen = true;
-                timerForFallenCone.reset();
+            if(driverButtons[A] && !previousDriverButtons[A]){
+                flagForPickingFallen = !flagForPickingFallen;
+//                timerForFallenCone.reset();
             }
 
-            if(flagForPickingFallen){
-                if(timerForFallenCone.milliseconds() < 600 && !flagForPickingFallenProceed){
-                    lift.extendTo(lift.AUTO_POSITION[4], 1);
-                }
-                if(timerForFallenCone.milliseconds()>500 && timerForFallenCone.milliseconds()<600 && !flagForPickingFallenProceed){
-                    Servos.Wrist.goTop();
-                    robot.setTargetForSlider(0.4);
-                }
-                if(timerForFallenCone.milliseconds()>1000 && timerForFallenCone.milliseconds()<1100 && !flagForPickingFallenProceed){
-                    Servos.AlignBar_2.setPosition(0.35);
-                }
-                if(driverButtons[Y] && !previousDriverButtons[Y] && !flagForPickingFallenProceed){
-                    Robot.sliderMaxAcceleration = 1;
-                    timerForFallenCone.reset();
-                    flagForPickingFallenProceed = true;
-                }
-                if(flagForPickingFallenProceed && timerForFallenCone.milliseconds()>50 && timerForFallenCone.milliseconds()<450){
-                    robot.setTargetForSlider(0.76);
-                }
-                if(flagForPickingFallenProceed && timerForFallenCone.milliseconds()>1150){
-                    lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1);
-                }
-                if(flagForPickingFallenProceed && timerForFallenCone.milliseconds()>1300){
-                    Servos.AlignBar_2.goInside();
-                }
-                if(flagForPickingFallenProceed && timerForFallenCone.milliseconds()>2500){
-                    flagForPickingFallen = false;
-                    Servos.Wrist.goGripping();
-//                    lift.extendTo(lift.POSITIONS[lift.GRIPPING_POSITION],1);
-                    flagForPickingFallenProceed = false;
-                    robot.sliderProfile = null;
-                    Robot.sliderMaxAcceleration = 100;
-                }
+            if(flagForPickingFallen) {
+                Servos.AlignBar.goodAngle2();
+            }
+            else{
+                Servos.AlignBar.inside();
+//                if(timerForFallenCone.milliseconds() < 600 && !flagForPickingFallenProceed){
+//                    lift.extendTo(lift.AUTO_POSITION[3], 1);
+//                }
+//                if(timerForFallenCone.milliseconds()>500 && timerForFallenCone.milliseconds()<600 && !flagForPickingFallenProceed){
+//                    Servos.Wrist.goTop();
+//                    robot.setTargetForSlider(0.4);
+//                }
+//                if(timerForFallenCone.milliseconds()>1000 && timerForFallenCone.milliseconds()<1100 && !flagForPickingFallenProceed){
+//                    Servos.AlignBar_2.setPosition(0.35);
+//                }
+//                if(driverButtons[Y] && !previousDriverButtons[Y] && !flagForPickingFallenProceed){
+//                    Robot.sliderMaxAcceleration = 1;
+//                    timerForFallenCone.reset();
+//                    flagForPickingFallenProceed = true;
+//                }
+//                if(flagForPickingFallenProceed && timerForFallenCone.milliseconds()>50 && timerForFallenCone.milliseconds()<450){
+//                    robot.setTargetForSlider(0.76);
+//                }
+//                if(flagForPickingFallenProceed && timerForFallenCone.milliseconds()>1150){
+//                    lift.extendTo(lift.POSITIONS[lift.LOW_POLE], 1);
+//                }
+//                if(flagForPickingFallenProceed && timerForFallenCone.milliseconds()>1300){
+//                    Servos.AlignBar_2.goInside();
+//                }
+//                if(flagForPickingFallenProceed && timerForFallenCone.milliseconds()>2500){
+//                    flagForPickingFallen = false;
+//                    Servos.Wrist.goGripping();
+////                    lift.extendTo(lift.POSITIONS[lift.GRIPPING_POSITION],1);
+//                    flagForPickingFallenProceed = false;
+//                    robot.sliderProfile = null;
+//                    Robot.sliderMaxAcceleration = 100;
+//                }
             }
 
 
-            if(!flagForPickingFallen) {
-                if (flagForSafe && timerForSafe.milliseconds() < 400) {
-                    robot.setTargetForSlider(0.25);
-//                    Servos.Slider.moveSlider(0.25);
-                } else if (timerForSafe.milliseconds() >= 400) {
-                    flagForSafe = false;
-                    robot.setTargetForSlider(gamepad1.left_trigger);
-//                    Servos.Slider.moveSlider(gamepad1.left_trigger);
-                }
-            }
+//            if(!flagForPickingFallen) {
+//                if (flagForSafe && timerForSafe.milliseconds() < 400) {
+//                    robot.setTargetForSlider(0.25);
+////                    Servos.Slider.moveSlider(0.25);
+//                } else if (timerForSafe.milliseconds() >= 400) {
+//                    flagForSafe = false;
+//                    robot.setTargetForSlider(gamepad1.left_trigger);
+////                    Servos.Slider.moveSlider(gamepad1.left_trigger);
+//                }
+//            }
 
             int RB = 8;
             if (driverButtons[RB] && !previousDriverButtons[RB]) {

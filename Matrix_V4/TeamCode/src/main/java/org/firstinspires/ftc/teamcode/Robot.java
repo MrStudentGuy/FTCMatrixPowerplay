@@ -132,6 +132,7 @@ public static double Kd_turret = 0.0011;
         telemetry.addData("Turret Target Position: ", targetDegree);
         telemetry.addData("Roll: ", Math.toDegrees(getRoll()));
         telemetry.addData("Pitch: ", Math.toDegrees(getPitch()));
+        telemetry.addData("Turret Current: ", robotTurret.getCurrent());
 
         telemetry.update();
     }

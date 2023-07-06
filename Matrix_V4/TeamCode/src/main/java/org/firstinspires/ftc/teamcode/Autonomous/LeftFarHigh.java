@@ -26,7 +26,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous
-@Disabled
+//@Disabled
 public class LeftFarHigh extends LinearOpMode {
 
     OpenCvCamera camera;

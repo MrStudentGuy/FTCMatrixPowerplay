@@ -57,7 +57,7 @@ public class RightHigh extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
     Pose2d startPose = new Pose2d(31.8, -63.3, Math.toRadians(0));
     final Pose2d dropPosition = new Pose2d(40, -12, Math.toRadians(0));
-    final Pose2d pickingPosition1 = new Pose2d(45.01, -11, Math.toRadians(0));
+    final Pose2d pickingPosition1 = new Pose2d(45.01, -12, Math.toRadians(0));
     final Pose2d midDropPosition = new Pose2d(36, -10, Math.toRadians(0));
 
     Lift lift = null;
@@ -128,7 +128,7 @@ public class RightHigh extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.5))
-                .addTemporalMarker(()->Robot.targetDegree = (AutoPositions.highTurretPosition-1))
+                .addTemporalMarker(()->Robot.targetDegree = (AutoPositions.highTurretPosition-2))
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(AutoPositions.highWristPosition))
                 .lineToLinearHeading(dropPosition)
                 .waitSeconds(0.3)

@@ -16,11 +16,12 @@ public class    Servos {
     public static Servo SliderServo;
     static Servo AlignServo;
 
+    public static double gripperBeaconPosition = 0.5;
     public static double gripperClosePosition = 0.4;
     public static double gripperOpenPosition = 0.68;
+    public static double gripperOpenPositionAutoStart = 0.8;
 
-    public static double gripperInitPosition = 0.7;
-
+    public static boolean beaconFlag = false;
     public static double TopPosition = 0.27;
     public static double InitPosition = 0.05;
     public static double GrippingPosition = 0.01;
@@ -39,14 +40,26 @@ public class    Servos {
         WristServo.setDirection(Servo.Direction.REVERSE);
     }
 
+
+
     public static class Gripper {
         public static String gripperState = "OPEN";
 
-        private static final double gripperBeaconPosition = 0.4;
+
 
         public static void openGripper() {
             gripperState = "OPEN";
             GripperServo.setPosition(gripperOpenPosition);
+        }
+
+        public static void openGripperAutoStart() {
+            gripperState = "OPEN";
+            GripperServo.setPosition(gripperOpenPositionAutoStart);
+        }
+        public static void gripBeacon() {
+
+            gripperState = "CLOSED";
+            GripperServo.setPosition(gripperBeaconPosition);
         }
 
         public static void update(){
@@ -54,7 +67,13 @@ public class    Servos {
                 GripperServo.setPosition(0.71);
             }
             else if(gripperState == "CLOSED"){
-                GripperServo.setPosition(gripperClosePosition);
+                if(beaconFlag){
+                    GripperServo.setPosition(gripperBeaconPosition);
+                }
+                else{
+                    GripperServo.setPosition(gripperClosePosition);
+                }
+
             }
         }
         public static void openGripperFull(){
@@ -65,11 +84,6 @@ public class    Servos {
         public static void closeGripper() {
             gripperState = "CLOSED";
             GripperServo.setPosition(gripperClosePosition);
-        }
-
-        public static void gripBeacon(){
-            gripperState = "OPEN";
-            GripperServo.setPosition(gripperBeaconPosition);
         }
 
         public static void toggle(){
@@ -109,6 +123,7 @@ public class    Servos {
             wristState = "GRIPPING";
             WristServo.setPosition(GrippingPosition);
         }
+
 
         public static void goAutoTop(){
             wristState = "TOP";

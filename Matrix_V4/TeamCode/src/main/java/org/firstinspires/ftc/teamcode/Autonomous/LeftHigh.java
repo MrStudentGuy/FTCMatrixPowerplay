@@ -107,7 +107,7 @@ public class LeftHigh extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.6))
-                .addTemporalMarker(()->Robot.targetDegree = 0)
+                .addTemporalMarker(()->Robot.targetDegree = -1)
                 .build();
 
         TrajectorySequence preloadToPick = robot.trajectorySequenceBuilder(startToMid.end())

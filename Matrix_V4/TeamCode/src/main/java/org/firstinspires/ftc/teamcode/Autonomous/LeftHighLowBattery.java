@@ -25,7 +25,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous
-public class LeftMid1 extends LinearOpMode {
+public class LeftHighLowBattery extends LinearOpMode {
 
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -92,8 +92,8 @@ public class LeftMid1 extends LinearOpMode {
                 .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.2))
                 .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
-                .UNSTABLE_addTemporalMarkerOffset(-1.3, ()->lift.extendTo(lift.POSITIONS[lift.MID_POLE],1))
-                .UNSTABLE_addTemporalMarkerOffset(-1.8, ()->Robot.targetDegree = (AutoPositions.preloadTurretPosition+2))
+                .UNSTABLE_addTemporalMarkerOffset(-1.3, ()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
+                .UNSTABLE_addTemporalMarkerOffset(-1.8, ()->Robot.targetDegree = -(AutoPositions.preloadTurretPosition+2))
                 .UNSTABLE_addTemporalMarkerOffset(-1, ()-> Servos.Wrist.setPosition(AutoPositions.preloadWristPosition))
 //                .waitSeconds(0.01)
                 .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> Servos.AlignBar_2.setPosition(AutoPositions.preloadAlignPosition+0.03))
@@ -106,8 +106,8 @@ public class LeftMid1 extends LinearOpMode {
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
-                .addTemporalMarker(()->turret.setMaxPower(0.6))
-                .addTemporalMarker(()->Robot.targetDegree = -1)
+                .addTemporalMarker(()->turret.setMaxPower(0.8))
+                .addTemporalMarker(()->Robot.targetDegree = 0)
                 .build();
 
         TrajectorySequence preloadToPick = robot.trajectorySequenceBuilder(startToMid.end())
@@ -122,12 +122,12 @@ public class LeftMid1 extends LinearOpMode {
                 .build();
 
         TrajectorySequence pickToDrop = robot.trajectorySequenceBuilder(pickingPosition1)
-                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.MID_POLE],1))
+                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
-                .addTemporalMarker(()->turret.setMaxPower(0.5))
-                .addTemporalMarker(()->Robot.targetDegree = (AutoPositions.highTurretPosition))
+                .addTemporalMarker(()->turret.setMaxPower(0.7))
+                .addTemporalMarker(()->Robot.targetDegree = -(AutoPositions.highTurretPosition+8))
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(AutoPositions.highWristPosition))
                 .lineToLinearHeading(dropPosition)
                 .waitSeconds(0.3)
@@ -142,7 +142,7 @@ public class LeftMid1 extends LinearOpMode {
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
-                .addTemporalMarker(()->turret.setMaxPower(0.7))
+                .addTemporalMarker(()->turret.setMaxPower(0.9))
                 .addTemporalMarker(()->Robot.targetDegree = -3)
                 .waitSeconds(0.1)
                 .build();
@@ -151,10 +151,10 @@ public class LeftMid1 extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[3],1))
                 .lineToLinearHeading(pickingPosition1)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.4))
-                .waitSeconds(0.2)
+                .waitSeconds(0.25)
                 .addTemporalMarker(()->turret.setMaxPower(0))
                 .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
-                .waitSeconds(0.25)
+                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Gripper.closeGripper())
                 .build();
 
@@ -163,10 +163,10 @@ public class LeftMid1 extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[2],1))
                 .lineToLinearHeading(pickingPosition1)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.4))
-                .waitSeconds(0.2)
-                .addTemporalMarker(()->turret.setMaxPower(0.4))
-                .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.25)
+                .addTemporalMarker(()->turret.setMaxPower(0.6))
+                .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
+                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Gripper.closeGripper())
                 .build();
 
@@ -175,10 +175,10 @@ public class LeftMid1 extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[1],1))
                 .lineToLinearHeading(pickingPosition1)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.4))
-                .waitSeconds(0.2)
-                .addTemporalMarker(()->turret.setMaxPower(0.4))
-                .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.25)
+                .addTemporalMarker(()->turret.setMaxPower(0.6))
+                .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
+                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Gripper.closeGripper())
                 .build();
 
@@ -187,10 +187,10 @@ public class LeftMid1 extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[0],1))
                 .lineToLinearHeading(pickingPosition1)
                 .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->robot.setTargetForSlider(0.4))
-                .waitSeconds(0.2)
-                .addTemporalMarker(()->turret.setMaxPower(0.4))
-                .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
                 .waitSeconds(0.25)
+                .addTemporalMarker(()->turret.setMaxPower(0.6))
+                .addTemporalMarker(()-> robot.setTargetForSlider(0.78))
+                .waitSeconds(0.2)
                 .addTemporalMarker(()-> Servos.Gripper.closeGripper())
                 .build();
 
