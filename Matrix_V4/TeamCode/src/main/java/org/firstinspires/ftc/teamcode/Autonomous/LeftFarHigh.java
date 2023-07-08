@@ -83,6 +83,7 @@ public class LeftFarHigh extends LinearOpMode {
         Servos.Gripper.openGripper();
         Servos.Wrist.goGripping();
         Servos.AlignBar_2.goInside();
+        Servos.AlignBar.inside();
         Servos.SliderServo.setPosition(0);
         Robot.targetDegree = 0;
         robot.setPoseEstimate(startPose);

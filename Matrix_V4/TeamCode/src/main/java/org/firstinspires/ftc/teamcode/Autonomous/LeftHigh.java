@@ -31,14 +31,14 @@ public class LeftHigh extends LinearOpMode {
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
     static final double FEET_PER_METER = 3.28084;
 
-    Pose2d PARKING1 = new Pose2d(-58, -12, Math.toRadians(90));
+    Pose2d PARKING1 = new Pose2d(-58, -12, Math.toRadians(180));
     Pose2d PARKING1_INSIDE = new Pose2d(-58, -24, Math.toRadians(90));
 
-    Pose2d PARKING2 = new Pose2d(-34, -13, Math.toRadians(90));
+    Pose2d PARKING2 = new Pose2d(-32, -13, Math.toRadians(180));
     Pose2d PARKING2_INSIDE = new Pose2d(-34, -24, Math.toRadians(90));
 
 
-    Pose2d PARKING3 = new Pose2d(-10, -12, Math.toRadians(90));
+    Pose2d PARKING3 = new Pose2d(-8, -12, Math.toRadians(180));
     Pose2d PARKING3_INSIDE = new Pose2d(-10, -24, Math.toRadians(90));
 
     double fx = 578.272;
@@ -55,7 +55,7 @@ public class LeftHigh extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
     Pose2d startPose = new Pose2d(-31.8, -63.3, Math.toRadians(180));
     final Pose2d dropPosition = new Pose2d(-40, -12, Math.toRadians(180));
-    final Pose2d pickingPosition1 = new Pose2d(-45.01, -12, Math.toRadians(180));
+    final Pose2d pickingPosition1 = new Pose2d(-45.3, -12, Math.toRadians(180));
     final Pose2d midDropPosition = new Pose2d(-36, -10, Math.toRadians(180));
 
     Lift lift = null;
@@ -81,6 +81,7 @@ public class LeftHigh extends LinearOpMode {
         Servos.Gripper.openGripperAutoStart();
         Servos.Wrist.goGripping();
         Servos.AlignBar_2.goInside();
+        Servos.AlignBar.inside();
         Servos.SliderServo.setPosition(0);
         Robot.targetDegree = 0;
         robot.setPoseEstimate(startPose);
@@ -97,7 +98,7 @@ public class LeftHigh extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(-1, ()-> Servos.Wrist.setPosition(AutoPositions.preloadWristPosition))
 //                .waitSeconds(0.01)
                 .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> Servos.AlignBar_2.setPosition(AutoPositions.preloadAlignPosition+0.03))
-                .addTemporalMarker(()-> robot.setTargetForSlider(AutoPositions.preloadSliderPosition+0.46))
+                .addTemporalMarker(()-> robot.setTargetForSlider(AutoPositions.preloadSliderPosition+0.32))
                 .waitSeconds(0.0001)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
                 .waitSeconds(0.2)
@@ -107,7 +108,7 @@ public class LeftHigh extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.6))
-                .addTemporalMarker(()->Robot.targetDegree = -1)
+                .addTemporalMarker(()->Robot.targetDegree = -3)
                 .build();
 
         TrajectorySequence preloadToPick = robot.trajectorySequenceBuilder(startToMid.end())
@@ -127,16 +128,18 @@ public class LeftHigh extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.5))
-                .addTemporalMarker(()->Robot.targetDegree = -(AutoPositions.highTurretPosition+8))
+                .addTemporalMarker(()->Robot.targetDegree = -(AutoPositions.highTurretPosition+8.2))
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(AutoPositions.highWristPosition))
+//                .addTemporalMarker(()-> Servos.AlignBar.interMediate())
                 .lineToLinearHeading(dropPosition)
-                .waitSeconds(0.3)
+                .waitSeconds(0.23)
                 .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(AutoPositions.highAlignPosition+0.06))
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 2.7)
                 .addTemporalMarker(()->robot.setTargetForSlider(AutoPositions.highSliderPosition+0.05))
                 .waitSeconds(0.55)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
-                .waitSeconds(0.15)
+//                .addTemporalMarker(()-> Servos.AlignBar.inside())
+                .waitSeconds(0.12)
                 .addTemporalMarker(()-> Servos.Gripper.openGripperFull())
                 .addTemporalMarker(()-> Servos.AlignBar_2.goInside())
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
@@ -195,34 +198,36 @@ public class LeftHigh extends LinearOpMode {
                 .build();
 
         TrajectorySequence parking1Traj = robot.trajectorySequenceBuilder(dropPosition)
-                .addTemporalMarker(()->Robot.targetDegree = 0)
+                .addTemporalMarker(()->Robot.targetDegree = 90)
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
-                .splineTo(new Vector2d(-56.42, -20.56), Math.toRadians(246.41))
-                .splineTo(new Vector2d(-58.48, -30.50), Math.toRadians(-90))
+                .lineToLinearHeading(PARKING1)
+//                .splineTo(new Vector2d(-56.42, -20.56), Math.toRadians(246.41))
+//                .splineTo(new Vector2d(-58.48, -30.50), Math.toRadians(-90))
                 .build();
 
         TrajectorySequence parking2Traj = robot.trajectorySequenceBuilder(dropPosition)
-                .addTemporalMarker(()->Robot.targetDegree = 0)
+                .addTemporalMarker(()->Robot.targetDegree = 90)
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
-//                .lineToLinearHeading(PARKING2)
-                .lineToLinearHeading(PARKING2_INSIDE)
+                .lineToLinearHeading(PARKING2)
+//                .lineToLinearHeading(PARKING2_INSIDE)
                 .build();
 
         TrajectorySequence parking3Traj = robot.trajectorySequenceBuilder(dropPosition)
-                .addTemporalMarker(()->Robot.targetDegree = 0)
+                .addTemporalMarker(()->Robot.targetDegree = 90)
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
-                .setReversed(true)
-                .splineTo(new Vector2d(-11.27, -32.32), Math.toRadians(-90))
+//                .setReversed(true)
+                .lineToLinearHeading(PARKING3)
+//                .splineTo(new Vector2d(-11.27, -32.32), Math.toRadians(-90))
                 .build();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
@@ -297,19 +302,20 @@ public class LeftHigh extends LinearOpMode {
         if(tagOfInterest != null){
             if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE1]){
                 robot.followTrajectorySequence(parking1Traj);
-                Robot.heading = Math.toRadians(180);
+                Robot.heading = Math.toRadians(90);
             }
             else if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE2]){
                 robot.followTrajectorySequence(parking2Traj);
-                Robot.heading = Math.toRadians(0);
+                Robot.heading = Math.toRadians(90);
             }
             else  if(tagOfInterest.id == MATRIX_IDS[PARKING_ZONE3]){
                 robot.followTrajectorySequence(parking3Traj);
-                Robot.heading = Math.toRadians(0);
+                Robot.heading = Math.toRadians(90);
             }
         }
         else{
             robot.followTrajectorySequence(parking2Traj);
+            Robot.heading = Math.toRadians(90);
         }
 
         while(opModeIsActive()){

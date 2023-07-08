@@ -81,6 +81,7 @@ public class LeftMid1 extends LinearOpMode {
         Servos.Gripper.openGripperAutoStart();
         Servos.Wrist.goGripping();
         Servos.AlignBar_2.goInside();
+        Servos.AlignBar.inside();
         Servos.SliderServo.setPosition(0);
         Robot.targetDegree = 0;
         robot.setPoseEstimate(startPose);

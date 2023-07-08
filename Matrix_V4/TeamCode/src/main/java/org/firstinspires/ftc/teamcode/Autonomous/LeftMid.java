@@ -80,6 +80,7 @@ public class LeftMid extends LinearOpMode {
         Servos.Slider.moveInside();
         Servos.Gripper.openGripperAutoStart();
         Servos.Wrist.goGripping();
+        Servos.AlignBar.inside();
         Servos.AlignBar_2.goInside();
         Servos.SliderServo.setPosition(0);
         Robot.targetDegree = 0;
@@ -93,7 +94,7 @@ public class LeftMid extends LinearOpMode {
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.2))
                 .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
                 .UNSTABLE_addTemporalMarkerOffset(-1.3, ()->lift.extendTo(lift.POSITIONS[lift.MID_POLE],1))
-                .UNSTABLE_addTemporalMarkerOffset(-1.8, ()->Robot.targetDegree = (AutoPositions.preloadTurretPosition+2))
+                .UNSTABLE_addTemporalMarkerOffset(-1.8, ()->Robot.targetDegree = (AutoPositions.preloadTurretPosition+0.5))
                 .UNSTABLE_addTemporalMarkerOffset(-1, ()-> Servos.Wrist.setPosition(AutoPositions.preloadWristPosition))
 //                .waitSeconds(0.01)
                 .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> Servos.AlignBar_2.setPosition(AutoPositions.preloadAlignPosition))
@@ -193,37 +194,36 @@ public class LeftMid extends LinearOpMode {
                 .build();
 
         TrajectorySequence parking1Traj = robot.trajectorySequenceBuilder(dropPosition)
-                .addTemporalMarker(()->turret.setMaxPower(1))
-                .addTemporalMarker(()->Robot.targetDegree = 0)
+                .addTemporalMarker(()->Robot.targetDegree = 90)
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
-                .splineTo(new Vector2d(-56.42, -20.56), Math.toRadians(246.41))
-                .splineTo(new Vector2d(-58.48, -30.50), Math.toRadians(-90))
+                .lineToLinearHeading(PARKING1)
+//                .splineTo(new Vector2d(-56.42, -20.56), Math.toRadians(246.41))
+//                .splineTo(new Vector2d(-58.48, -30.50), Math.toRadians(-90))
                 .build();
 
         TrajectorySequence parking2Traj = robot.trajectorySequenceBuilder(dropPosition)
-                .addTemporalMarker(()->turret.setMaxPower(1))
-                .addTemporalMarker(()->Robot.targetDegree = 0)
+                .addTemporalMarker(()->Robot.targetDegree = 90)
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
-//                .lineToLinearHeading(PARKING2)
-                .lineToLinearHeading(PARKING2_INSIDE)
+                .lineToLinearHeading(PARKING2)
+//                .lineToLinearHeading(PARKING2_INSIDE)
                 .build();
 
         TrajectorySequence parking3Traj = robot.trajectorySequenceBuilder(dropPosition)
-                .addTemporalMarker(()->turret.setMaxPower(1))
-                .addTemporalMarker(()->Robot.targetDegree = 0)
+                .addTemporalMarker(()->Robot.targetDegree = 90)
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
-                .setReversed(true)
-                .splineTo(new Vector2d(-11.27, -32.32), Math.toRadians(-90))
+//                .setReversed(true)
+                .lineToLinearHeading(PARKING3)
+//                .splineTo(new Vector2d(-11.27, -32.32), Math.toRadians(-90))
                 .build();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);

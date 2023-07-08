@@ -7,10 +7,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Autonomous.AutoPositions;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.Lift;
 import org.firstinspires.ftc.teamcode.Subsystems.Servos;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @SuppressWarnings("InstantiationOfUtilityClass")
 @TeleOp
@@ -42,6 +44,7 @@ public class V4 extends LinearOpMode {
     boolean flagForSafe;
     boolean flagForAligner;
 
+    boolean autoSeqFlag;
     boolean flagForPickingFallen, flagForPickingFallenProceed;
     //--------------------------------------------------Subsystems--------------------------------------------------
     Lift lift = null;
@@ -65,6 +68,7 @@ public class V4 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
 
         timerForFallenCone = new ElapsedTime();
         timerForAligner = new ElapsedTime();             //This timer enables delayed deployment of the aligner after the required button has been pressed
@@ -93,9 +97,48 @@ public class V4 extends LinearOpMode {
         Pose2d startPose = new Pose2d(0,0,Robot.heading);
         robot.setPoseEstimate(startPose);   //Set the robot pose to be facing the driver, so that field oriented works properly
 
-        Robot.Kp_turret = 0.005;
+        TrajectorySequence teleopSequence = robot.trajectorySequenceBuilder(startPose)
+                .addTemporalMarker(()-> Servos.Gripper.openGripper())
+                .addTemporalMarker(()->Robot.targetDegree = 0)
+                .addTemporalMarker(()->lift.extendTo(15,1))
+                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 4)
+                .addTemporalMarker(()-> robot.setTargetForSlider(0.76))
+                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.GRIPPING_POSITION],1))
+                .waitSeconds(1.3)
+                .addTemporalMarker(()-> Servos.Gripper.closeGripper())
+                .waitSeconds(0.25)
+                .addTemporalMarker(()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
+                .waitSeconds(0.01)
+                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
+                .addTemporalMarker(()->robot.setTargetForSlider(0))
+                .waitSeconds(0.1)
+                .addTemporalMarker(()->turret.setMaxPower(0.5))
+                .addTemporalMarker(()->Robot.targetDegree = -(AutoPositions.highTurretPosition+8.2))
+                .addTemporalMarker(()-> Servos.Wrist.setPosition(AutoPositions.highWristPosition))
+//                .addTemporalMarker(()-> Servos.AlignBar.interMediate())
+                .waitSeconds(1.3)
+                .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(AutoPositions.highAlignPosition+0.06))
+                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 2.7)
+                .addTemporalMarker(()->robot.setTargetForSlider(AutoPositions.highSliderPosition+0.05))
+                .waitSeconds(0.55)
+                .addTemporalMarker(()-> Servos.Wrist.goGripping())
+//                .addTemporalMarker(()-> Servos.AlignBar.inside())
+                .waitSeconds(0.12)
+                .addTemporalMarker(()-> Servos.Gripper.openGripperFull())
+                .addTemporalMarker(()-> Servos.AlignBar_2.goInside())
+                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
+                .addTemporalMarker(()->robot.setTargetForSlider(0))
+                .waitSeconds(0.1)
+                .addTemporalMarker(()->turret.setMaxPower(0.7))
+                .addTemporalMarker(()->Robot.targetDegree = -3)
+                .waitSeconds(0.1)
+                .addTemporalMarker(()->lift.extendTo(15,1))
+                .addTemporalMarker(()->autoSeqFlag = false)
+                .build();
+
+//        Robot.Kp_turret = 0.005;
         turret.setMaxPower(1);
-        Robot.Kd_turret = 0.0005;
+//        Robot.Kd_turret = 0.0005;
         Robot.sliderMaxAcceleration = 100;
         robot.setTargetForSlider(0);
 
@@ -150,11 +193,18 @@ public class V4 extends LinearOpMode {
                 Servos.Wrist.goGripping();
             }
 
+            if(driverButtons[Y]){
+                autoSeqFlag= true;
+                robot.followTrajectorySequenceAsync(teleopSequence);
+            }
+            else if(driverButtons[X]){
+            }
+
 
             robot.update();
 
             int r2 = 14;
-            if (operatorButtons[r2] || flagForPickingFallen || lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]-10) {
+            if (operatorButtons[r2] || flagForPickingFallen || (lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]-10 && Servos.Gripper.gripperState == "CLOSED")) {
                 speedThrottle = 0.34;
                 headingThrottle = 0.4;
             } else {
@@ -174,6 +224,9 @@ public class V4 extends LinearOpMode {
             if (driverButtons[LB] && !previousDriverButtons[LB]) {
                 Servos.Wrist.toggle();
                 if (Servos.Wrist.wristState.equals("GRIPPING")) {
+                    if(BeaconFlag){
+                        Servos.AlignBar.inside();
+                    }
                     if (lift.getPosition()[0] < lift.POSITIONS[lift.LOW_POLE] - 20) {
                         timerForSafe.reset();
                         flagForSafe = true;
@@ -238,16 +291,23 @@ public class V4 extends LinearOpMode {
 //                }
             }
 
+            if(lift.getPosition()[0] > lift.POSITIONS[lift.LOW_POLE]-10 && Servos.Wrist.wristState == "GRIPPING"){
+                Servos.Slider.minPosition = 0.3;
+            }
+            else{
+                Servos.Slider.minPosition = 0.15;
+            }
+
 
 //            if(!flagForPickingFallen) {
-//                if (flagForSafe && timerForSafe.milliseconds() < 400) {
-//                    robot.setTargetForSlider(0.25);
-////                    Servos.Slider.moveSlider(0.25);
-//                } else if (timerForSafe.milliseconds() >= 400) {
-//                    flagForSafe = false;
-//                    robot.setTargetForSlider(gamepad1.left_trigger);
-////                    Servos.Slider.moveSlider(gamepad1.left_trigger);
-//                }
+                if (flagForSafe && timerForSafe.milliseconds() < 400) {
+                    robot.setTargetForSlider(0.25);
+//                    Servos.Slider.moveSlider(0.25);
+                } else if (timerForSafe.milliseconds() >= 400 && autoSeqFlag == false) {
+                    flagForSafe = false;
+                    robot.setTargetForSlider(gamepad1.left_trigger);
+//                    Servos.Slider.moveSlider(gamepad1.left_trigger);
+                }
 //            }
 
             int RB = 8;
