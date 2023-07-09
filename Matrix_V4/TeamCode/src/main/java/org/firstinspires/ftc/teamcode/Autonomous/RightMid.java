@@ -129,7 +129,7 @@ public class RightMid extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.5))
-                .addTemporalMarker(()->Robot.targetDegree = -(AutoPositions.highTurretPosition-0.5))
+                .addTemporalMarker(()->Robot.targetDegree = -(AutoPositions.highTurretPosition+1))
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(AutoPositions.highWristPosition))
                 .lineToLinearHeading(dropPosition)
                 .waitSeconds(0.23)

@@ -65,7 +65,7 @@ public class Turret {
     }
 
     public double getPosition(){
-        return motor.getCurrentPosition();
+        return -motor.getCurrentPosition();
     }
 
     public double getDegree() {

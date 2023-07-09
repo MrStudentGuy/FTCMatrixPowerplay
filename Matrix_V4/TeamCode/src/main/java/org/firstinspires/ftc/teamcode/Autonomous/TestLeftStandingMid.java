@@ -25,7 +25,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous
-public class LeftMid extends LinearOpMode {
+public class TestLeftStandingMid extends LinearOpMode {
 
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -55,9 +55,7 @@ public class LeftMid extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
     Pose2d startPose = new Pose2d(-31.8, -63.3, Math.toRadians(180));
     final Pose2d dropPosition = new Pose2d(-40, -12, Math.toRadians(180));
-    final Pose2d pickingPosition1 = new Pose2d(-45.3, -12, Math.toRadians(180));
-    final Pose2d pickingPosition2 = new Pose2d(-45.3, -11.85, Math.toRadians(180));
-    final Pose2d pickingPosition3 = new Pose2d(-45.3, -11.7, Math.toRadians(180));
+    final Pose2d pickingPosition1 = new Pose2d(-44.8, -12, Math.toRadians(180));
     final Pose2d midDropPosition = new Pose2d(-36, -10, Math.toRadians(180));
 
     Lift lift = null;
@@ -96,7 +94,7 @@ public class LeftMid extends LinearOpMode {
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.2))
                 .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
                 .UNSTABLE_addTemporalMarkerOffset(-1.3, ()->lift.extendTo(lift.POSITIONS[lift.MID_POLE],1))
-                .UNSTABLE_addTemporalMarkerOffset(-1.8, ()->Robot.targetDegree = (AutoPositions.preloadTurretPosition))
+                .UNSTABLE_addTemporalMarkerOffset(-1.8, ()->Robot.targetDegree = (AutoPositions.preloadTurretPosition+2))
                 .UNSTABLE_addTemporalMarkerOffset(-1, ()-> Servos.Wrist.setPosition(AutoPositions.preloadWristPosition))
 //                .waitSeconds(0.01)
                 .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> Servos.AlignBar_2.setPosition(AutoPositions.preloadAlignPosition+0.03))
@@ -110,7 +108,7 @@ public class LeftMid extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.6))
-                .addTemporalMarker(()->Robot.targetDegree = -3)
+                .addTemporalMarker(()->Robot.targetDegree = -1.5)
                 .build();
 
         TrajectorySequence preloadToPick = robot.trajectorySequenceBuilder(startToMid.end())
@@ -130,15 +128,15 @@ public class LeftMid extends LinearOpMode {
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.5))
-                .addTemporalMarker(()->Robot.targetDegree = (AutoPositions.highTurretPosition-1.5))
+                .addTemporalMarker(()->Robot.targetDegree = (AutoPositions.highTurretPosition))
                 .addTemporalMarker(()-> Servos.Wrist.setPosition(AutoPositions.highWristPosition))
 //                .addTemporalMarker(()-> Servos.AlignBar.interMediate())
-                .lineToLinearHeading(dropPosition)
-                .waitSeconds(0.2)
+//                .lineToLinearHeading(dropPosition)
+                .waitSeconds(0.9)
                 .addTemporalMarker(()-> Servos.AlignBar_2.setPosition(AutoPositions.highAlignPosition+0.06))
-                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 10)
+                .addTemporalMarker(()->Robot.sliderMaxAcceleration = 2.7)
                 .addTemporalMarker(()->robot.setTargetForSlider(AutoPositions.highSliderPosition+0.05))
-                .waitSeconds(0.58)
+                .waitSeconds(0.85)
                 .addTemporalMarker(()-> Servos.Wrist.goGripping())
 //                .addTemporalMarker(()-> Servos.AlignBar.inside())
                 .waitSeconds(0.12)
@@ -146,9 +144,9 @@ public class LeftMid extends LinearOpMode {
                 .addTemporalMarker(()-> Servos.AlignBar_2.goInside())
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
-                .waitSeconds(0.08)
+                .waitSeconds(0.1)
                 .addTemporalMarker(()->turret.setMaxPower(0.7))
-                .addTemporalMarker(()->Robot.targetDegree = 0)
+                .addTemporalMarker(()->Robot.targetDegree = -3)
                 .waitSeconds(0.1)
                 .build();
 
@@ -166,7 +164,7 @@ public class LeftMid extends LinearOpMode {
 
         TrajectorySequence dropToPick2 = robot.trajectorySequenceBuilder(dropPosition)
                 .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[2],1))
-                .lineToLinearHeading(pickingPosition2)
+                .lineToLinearHeading(pickingPosition1)
                 .addTemporalMarker(()->robot.setTargetForSlider(0.4))
                 .waitSeconds(0.25)
                 .addTemporalMarker(()->turret.setMaxPower(0.4))
@@ -190,7 +188,7 @@ public class LeftMid extends LinearOpMode {
 
         TrajectorySequence dropToPick0 = robot.trajectorySequenceBuilder(dropPosition)
                 .UNSTABLE_addTemporalMarkerOffset(0.2,()->lift.extendTo(lift.AUTO_POSITION[0],1))
-                .lineToLinearHeading(pickingPosition3)
+                .lineToLinearHeading(pickingPosition1)
                 .UNSTABLE_addTemporalMarkerOffset(-0.1, ()->robot.setTargetForSlider(0.4))
                 .waitSeconds(0.25)
                 .addTemporalMarker(()->turret.setMaxPower(0.4))
@@ -203,8 +201,8 @@ public class LeftMid extends LinearOpMode {
                 .addTemporalMarker(()->Robot.targetDegree = 90)
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
-                .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.MID_POLE],1))
-                .lineToLinearHeading(PARKING1)
+                .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
+                .lineToLinearHeading(PARKING1, SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
 //                .splineTo(new Vector2d(-56.42, -20.56), Math.toRadians(246.41))
 //                .splineTo(new Vector2d(-58.48, -30.50), Math.toRadians(-90))
                 .build();
@@ -213,18 +211,18 @@ public class LeftMid extends LinearOpMode {
                 .addTemporalMarker(()->Robot.targetDegree = 90)
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
-                .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.MID_POLE],1))
-                .lineToLinearHeading(PARKING2)
+                .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
+                .lineToLinearHeading(PARKING2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
 //                .lineToLinearHeading(PARKING2_INSIDE)
                 .build();
 
         TrajectorySequence parking3Traj = robot.trajectorySequenceBuilder(dropPosition)
-                .addTemporalMarker(()->Robot.targetDegree = 90)
                 .addTemporalMarker(()->Robot.sliderMaxAcceleration = 100)
                 .addTemporalMarker(()->robot.setTargetForSlider(0))
                 .addTemporalMarker(()-> lift.extendTo(lift.POSITIONS[lift.LOW_POLE],1))
 //                .setReversed(true)
-                .lineToLinearHeading(PARKING3)
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->Robot.targetDegree = 90)
+                .lineToLinearHeading(PARKING3, SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
 //                .splineTo(new Vector2d(-11.27, -32.32), Math.toRadians(-90))
                 .build();
 

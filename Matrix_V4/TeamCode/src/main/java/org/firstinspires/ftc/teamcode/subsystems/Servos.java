@@ -48,40 +48,45 @@ public class    Servos {
 
 
         public static void openGripper() {
+            beaconFlag = false;
             gripperState = "OPEN";
             GripperServo.setPosition(gripperOpenPosition);
         }
 
         public static void openGripperAutoStart() {
+            beaconFlag = false;
             gripperState = "OPEN";
             GripperServo.setPosition(gripperOpenPositionAutoStart);
         }
         public static void gripBeacon() {
-
-            gripperState = "CLOSED";
+            beaconFlag = true;
+            gripperState = "OPEN";
             GripperServo.setPosition(gripperBeaconPosition);
         }
 
         public static void update(){
             if(gripperState == "OPEN"){
-                GripperServo.setPosition(0.71);
-            }
-            else if(gripperState == "CLOSED"){
+
                 if(beaconFlag){
                     GripperServo.setPosition(gripperBeaconPosition);
                 }
                 else{
-                    GripperServo.setPosition(gripperClosePosition);
+                    GripperServo.setPosition(0.71);
                 }
+            }
+            else if(gripperState == "CLOSED"){
+                GripperServo.setPosition(gripperClosePosition);
 
             }
         }
         public static void openGripperFull(){
+            beaconFlag = false;
             gripperState = "OPEN";
             GripperServo.setPosition(0.71);
         }
 
         public static void closeGripper() {
+            beaconFlag = false;
             gripperState = "CLOSED";
             GripperServo.setPosition(gripperClosePosition);
         }
