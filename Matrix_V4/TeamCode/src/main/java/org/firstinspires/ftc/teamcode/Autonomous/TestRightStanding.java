@@ -57,7 +57,7 @@ public class TestRightStanding extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
     Pose2d startPose = new Pose2d(31.3, -63.3, Math.toRadians(0));
     final Pose2d dropPosition = new Pose2d(40, -12, Math.toRadians(0));
-    final Pose2d pickingPosition1 = new Pose2d(45.01, -12, Math.toRadians(0));
+    final Pose2d pickingPosition1 = new Pose2d(45.01, -13, Math.toRadians(0));
     final Pose2d midDropPosition = new Pose2d(36, -10, Math.toRadians(0));
 
     Lift lift = null;

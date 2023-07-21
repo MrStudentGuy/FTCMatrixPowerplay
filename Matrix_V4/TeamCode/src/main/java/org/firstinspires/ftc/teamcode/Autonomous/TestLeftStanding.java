@@ -94,7 +94,7 @@ public class TestLeftStanding extends LinearOpMode {
                 .addTemporalMarker(()-> Servos.Slider.moveSlider(0.2))
                 .lineToLinearHeading(midDropPosition, SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(35))
                 .UNSTABLE_addTemporalMarkerOffset(-1.3, ()->lift.extendTo(lift.POSITIONS[lift.HIGH_POLE],1))
-                .UNSTABLE_addTemporalMarkerOffset(-1.8, ()->Robot.targetDegree = -(AutoPositions.preloadTurretPosition+2))
+                .UNSTABLE_addTemporalMarkerOffset(-1.8, ()->Robot.targetDegree = -(AutoPositions.preloadTurretPosition+5))
                 .UNSTABLE_addTemporalMarkerOffset(-1, ()-> Servos.Wrist.setPosition(AutoPositions.preloadWristPosition))
 //                .waitSeconds(0.01)
                 .UNSTABLE_addTemporalMarkerOffset(-0.1, ()-> Servos.AlignBar_2.setPosition(AutoPositions.preloadAlignPosition+0.03))

@@ -54,9 +54,9 @@ public class LeftHigh extends LinearOpMode {
 
     AprilTagDetection tagOfInterest = null;
     Pose2d startPose = new Pose2d(-31.8, -63.3, Math.toRadians(180));
-    final Pose2d dropPosition = new Pose2d(-40, -12, Math.toRadians(180));
-    final Pose2d pickingPosition1 = new Pose2d(-45.3, -12, Math.toRadians(180));
-    final Pose2d midDropPosition = new Pose2d(-36, -10, Math.toRadians(180));
+    final Pose2d dropPosition = new Pose2d(-39, -12, Math.toRadians(180));
+    final Pose2d pickingPosition1 = new Pose2d(-44.3, -12, Math.toRadians(180));
+    final Pose2d midDropPosition = new Pose2d(-35, -10, Math.toRadians(180));
 
     Lift lift = null;
     Servos servos = null;

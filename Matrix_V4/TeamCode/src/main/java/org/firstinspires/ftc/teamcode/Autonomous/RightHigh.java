@@ -55,9 +55,9 @@ public class RightHigh extends LinearOpMode {
     int[] MATRIX_IDS = {3, 7, 9};
 
     AprilTagDetection tagOfInterest = null;
-    Pose2d startPose = new Pose2d(31.3, -63.3, Math.toRadians(0));
+    Pose2d startPose = new Pose2d(32, -62.8, Math.toRadians(0));
     final Pose2d dropPosition = new Pose2d(40, -12, Math.toRadians(0));
-    final Pose2d pickingPosition1 = new Pose2d(45.01, -12, Math.toRadians(0));
+    final Pose2d pickingPosition1 = new Pose2d(45.01, -13, Math.toRadians(0));
     final Pose2d midDropPosition = new Pose2d(36, -10, Math.toRadians(0));
 
     Lift lift = null;

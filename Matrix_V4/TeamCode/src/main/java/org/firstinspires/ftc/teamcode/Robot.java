@@ -47,7 +47,7 @@ public class Robot extends SampleMecanumDrive {
     private PIDController liftController;
 
 //    public static double Kp_turret = 0.0111\\;
-    public static double Kp_turret = 0.0109;
+    public static double Kp_turret = 0.0148;
     public static double Ki_turret = 0.101;
 //    public static double Kd_turret = 0.002;
 public static double Kd_turret = 0.0011;
