@@ -56,8 +56,8 @@ public class Lift extends Subsystem{
 //        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftMotor.setTargetPositionTolerance(5);
-        rightMotor.setTargetPositionTolerance(5);
+        leftMotor.setTargetPositionTolerance(10);
+        rightMotor.setTargetPositionTolerance(10);
 //        leftMotorP = leftCoeff.p;
 //        leftMotorI = leftCoeff.i;
 //        leftMotorD = leftCoeff.d;
